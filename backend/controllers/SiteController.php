@@ -1,17 +1,19 @@
 <?php
 namespace backend\controllers;
 
+use backend\models\LoginForm;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use common\models\LoginForm;
 
 /**
  * Site controller
  */
 class SiteController extends Controller
 {
+    public $enableCsrfValidation = false;
+
     /**
      * @inheritdoc
      */
@@ -74,9 +76,15 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
+        $this->layout = false;
+
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+        if (Yii::$app->request->isPost) {
+            if ($model->load(Yii::$app->request->post(), 'info') && $model->login()) {
+                return 1;
+            } else {
+                return 0;
+            }
         } else {
             return $this->render('login', [
                 'model' => $model,

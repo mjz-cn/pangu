@@ -23,6 +23,14 @@
         "yiisoft/yii2": "~2.0.6",
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0",
+        "yiisoft/yii2-redis": "~2.0.0",
+        "kartik-v/yii2-widget-fileinput": "@dev",
+        "kartik-v/yii2-widgets": "*",
+        "trntv/yii2-glide": "*",
+        "kartik-v/yii2-field-range": "*",
+        "kucha/ueditor": "*",
+        "yiisoft/yii2-httpclient": "^2.0",
+        "e282486518/yii2-console-migration": "*",
         "vlucas/phpdotenv": "^2.4"
     },
     "require-dev": {

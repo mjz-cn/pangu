@@ -255,4 +255,8 @@ class BaseController extends Controller
         exit;
     }
 
+    public function renderJson($items) {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        return $items;
+    }
 }

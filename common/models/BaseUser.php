@@ -20,7 +20,7 @@ class BaseUser extends User implements IdentityInterface{
      */
     public static function findIdentity($userId)
     {
-        return static::findOne(['id' => $userId, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['id' => $userId]);
     }
 
     /**
@@ -39,7 +39,7 @@ class BaseUser extends User implements IdentityInterface{
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['username' => $username]);
     }
 
     /**

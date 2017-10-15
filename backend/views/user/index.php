@@ -62,36 +62,24 @@ $columns = [
         'header' => '状态',
         'attribute' => 'status',
         'options' => ['width' => '50px;'],
-        'content' => function($model){
-            return $model['status'] ?
-                Html::tag('span','正常',['class'=>'badge badge-success']) :
-                Html::tag('span','删除',['class'=>'badge badge-important']);
+        'content' => function($model) {
+            $class = $model->status == $model::STATUS_ACTIVED ?
+                'badge-success' : 'badge-important';
+            return Html::tag('span',$model->statusText, ['class'=>'badge ' . $class]);
         }
     ],
     [
         'class' => 'yii\grid\ActionColumn',
         'header' => '操作',
-        'template' => '{edit} {tuijian} {delete}',
+        'template' => '{edit}',
         //'options' => ['width' => '200px;'],
         'buttons' => [
             'edit' => function ($url, $model, $key) {
-                return Html::a('<i class="fa fa-edit"></i> 编辑', ['edit','uid'=>$key], [
-                    'title' => Yii::t('app', '编辑'),
+                return Html::a('更新', ['edit','uid'=>$key], [
+                    'title' => Yii::t('app', '更新'),
                     'class' => 'btn btn-xs purple'
                 ]);
             },
-            'tuijian' => function ($url, $model, $key) {
-                return Html::a('<i class="fa fa-jpy"></i> 推荐', ['order/index', 'tuid'=>$key], [
-                    'title' => Yii::t('app', '推荐人订单查询'),
-                    'class' => 'btn btn-xs red'
-                ]);
-            },
-            'delete' => function ($url, $model, $key) {
-                return Html::a('<i class="fa fa-times"></i>', ['delete', 'id'=>$key], [
-                    'title' => Yii::t('app', '删除'),
-                    'class' => 'btn btn-xs red ajax-get confirm'
-                ]);
-            }
         ],
     ],
 ];
@@ -104,8 +92,9 @@ $columns = [
         </div>
         <div class="actions">
             <div class="btn-group btn-group-devided">
-                <?=Html::a('添加 <i class="icon-plus"></i>',['add'],['class'=>'btn green'])?>
-                <?=Html::a('所有用户 <i class="icon-user"></i>',['','is_all'=>'1'],['class'=>'btn green'])?>
+                <?=Html::a('添加',['add'],['class'=>'btn btn-default'])?>
+                <?=Html::a('封禁',['delete'],['class'=>'btn red ajax-post confirm','target-form'=>'ids'])?>
+                <?=Html::a('激活',['active'],['class'=>'btn green ajax-post confirm','target-form'=>'ids'])?>
             </div>
         </div>
     </div>
@@ -116,6 +105,8 @@ $columns = [
         </div>
         <div class="table-container">
             <form class="ids">
+                <input name="<?= Yii::$app->request->csrfParam ?>" type="hidden" id="<?= Yii::$app->request->csrfParam ?>"
+                       value="<?= Yii::$app->request->csrfToken ?>">
             <?= GridView::widget([
                 'dataProvider' => $dataProvider, // 列表数据
                 //'filterModel' => $searchModel, // 搜索模型
@@ -123,7 +114,8 @@ $columns = [
                 /* 表格配置 */
                 'tableOptions' => ['class' => 'table table-striped table-bordered table-hover table-checkable order-column dataTable no-footer'],
                 /* 重新排版 摘要、表格、分页 */
-                'layout' => '{items}<div class=""><div class="col-md-5 col-sm-5">{summary}</div><div class="col-md-7 col-sm-7"><div class="dataTables_paginate paging_bootstrap_full_number" style="text-align:right;">{pager}</div></div></div>',
+                'layout' => '{items}<div class=""><div class="col-md-5 col-sm-5">{summary}</div><div class="col-md-7 col-sm-7">
+                    <div class="dataTables_paginate paging_bootstrap_full_number" style="text-align:right;">{pager}</div></div></div>',
                 /* 配置摘要 */
                 'summaryOptions' => ['class' => 'pagination'],
                 /* 配置分页样式 */
@@ -142,12 +134,3 @@ $columns = [
         <?php \yii\widgets\Pjax::end(); ?>
     </div>
 </div>
-
-<!-- 定义数据块 -->
-<?php $this->beginBlock('test'); ?>
-jQuery(document).ready(function() {
-    highlight_subnav('user/index'); //子导航高亮
-});
-<?php $this->endBlock() ?>
-<!-- 将数据块 注入到视图中的某个位置 -->
-<?php $this->registerJs($this->blocks['test'], \yii\web\View::POS_END); ?>

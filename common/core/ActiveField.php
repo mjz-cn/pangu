@@ -30,7 +30,7 @@ class ActiveField extends \yii\widgets\ActiveField
     /**
      * ---------------------------------------
      * 带前置/后置图标的input
-     * @param array $options
+     * @param array $options iconPos, iconClass
      * @return $this
      * ---------------------------------------
      */

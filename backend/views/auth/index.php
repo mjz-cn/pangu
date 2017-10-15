@@ -26,19 +26,7 @@ $this->params['title_sub'] = '管理用户角色信息';  // 在\yii\base\View�
         </div>
         <div class="actions">
             <div class="btn-group btn-group-devided">
-                <?=Html::a('添加 <i class="fa fa-plus"></i>',['add'],['class'=>'btn green','style'=>'margin-right:10px;'])?>
-                <?=Html::a('删除 <i class="fa fa-times"></i>',['delete'],['class'=>'btn green ajax-post confirm','target-form'=>'ids','style'=>'margin-right:10px;'])?>
-            </div>
-            <div class="btn-group">
-                <button class="btn blue btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                    工具箱
-                    <i class="fa fa-angle-down"></i>
-                </button>
-                <ul class="dropdown-menu pull-right" role="menu">
-                    <li><a href="javascript:;"><i class="fa fa-pencil"></i> 导出Excel </a></li>
-                    <li class="divider"> </li>
-                    <li><a href="javascript:;"> 其他 </a></li>
-                </ul>
+                <?=Html::a('添加',['add'],['class'=>'btn green','style'=>'margin-right:10px;'])?>
             </div>
         </div>
     </div>
@@ -72,7 +60,6 @@ $this->params['title_sub'] = '管理用户角色信息';  // 在\yii\base\View�
                             <a href="<?=Url::toRoute(['auth', 'role'=>$key])?>" class="btn btn-xs purple"><i class="icon-key"></i> 授权</a>
                             <a href="<?=Url::toRoute(['user', 'role'=>$key])?>" class="btn btn-xs purple"><i class="icon-user"></i> 用户</a>
                             <a href="<?=Url::toRoute(['edit', 'role'=>$key])?>" class="btn btn-xs purple"><i class="fa fa-edit"></i> 编辑</a>
-                            <a href="<?=Url::toRoute(['delete', 'role'=>$key])?>" class="btn btn-xs red ajax-get confirm"><i class="fa fa-times"></i></a>
                         </td>
                     </tr>
                     <?php endforeach ?>

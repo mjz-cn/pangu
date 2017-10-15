@@ -87,31 +87,25 @@ $columns = [
         'content' => function($model){
             return $model['status'] ?
                 Html::tag('span','正常',['class'=>'label label-sm label-success']) :
-                Html::tag('span','删除',['class'=>'label label-sm label-danger']);
+                Html::tag('span','封禁',['class'=>'label label-sm label-danger']);
         }
     ],
     [
         'class' => 'yii\grid\ActionColumn',
         'header' => '操作',
-        'template' => '{edit} {auth} {delete}',
+        'template' => '{edit} {auth}',
         //'options' => ['width' => '200px;'],
         'buttons' => [
             'edit' => function ($url, $model, $key) {
-                return Html::a('<i class="fa fa-edit"></i> 更新', ['edit','id'=>$key], [
+                return Html::a('更新', ['edit','id'=>$key], [
                     'title' => Yii::t('app', '更新'),
                     'class' => 'btn btn-xs red'
                 ]);
             },
             'auth' => function ($url, $model, $key) {
-                return Html::a('<i class="fa fa-user"></i> 授权', ['auth','id'=>$key], [
+                return Html::a('授权', ['auth','id'=>$key], [
                     'title' => Yii::t('app', '授权'),
                     'class' => 'btn btn-xs purple'
-                ]);
-            },
-            'delete' => function ($url, $model, $key) {
-                return Html::a('<i class="fa fa-times"></i>', ['delete', 'id'=>$key], [
-                    'title' => Yii::t('app', '删除'),
-                    'class' => 'btn btn-xs red ajax-get confirm'
                 ]);
             }
         ],
@@ -133,23 +127,9 @@ $columns = [
         </div>
         <div class="actions">
             <div class="btn-group btn-group-devided">
-                <?=Html::a('添加 <i class="fa fa-plus"></i>',['add'],['class'=>'btn green'])?>
-                <?=Html::a('删除 <i class="fa fa-times"></i>',['delete'],['class'=>'btn green ajax-post confirm','target-form'=>'ids'])?>
-            </div>
-            <div class="btn-group">
-                <button class="btn blue btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                    工具箱
-                    <i class="fa fa-angle-down"></i>
-                </button>
-                <ul class="dropdown-menu pull-right" role="menu">
-                    <li>
-                        <a href="javascript:;"> 导出Excel </a>
-                    </li>
-                    <li class="divider"> </li>
-                    <li>
-                        <a href="javascript:;"> 其他 </a>
-                    </li>
-                </ul>
+                <?=Html::a('添加', ['add'],['class'=>'btn btn-default'])?>
+                <?=Html::a('封禁', ['ban'],['class'=>'btn red ajax-post confirm','target-form'=>'ids'])?>
+                <?=Html::a('解封', ['unban'],['class'=>'btn green ajax-post confirm','target-form'=>'ids'])?>
             </div>
         </div>
     </div>
@@ -160,6 +140,8 @@ $columns = [
         </div>
         <div class="table-container">
             <form class="ids">
+                <input name="<?= Yii::$app->request->csrfParam ?>" type="hidden" id="<?= Yii::$app->request->csrfParam ?>"
+                       value="<?= Yii::$app->request->csrfToken ?>">
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'options' => ['class' => 'grid-view table-scrollable'],

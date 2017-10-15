@@ -32,7 +32,6 @@ class LayoutAsset extends AssetBundle
         'layouts/layout/scripts/layout.min.js',
         'layouts/layout/scripts/demo.min.js',
         'layouts/global/scripts/quick-sidebar.min.js',
-
         'other/js/common.js'
     ];
     /* 选项 */

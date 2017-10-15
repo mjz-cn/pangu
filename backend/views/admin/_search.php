@@ -20,7 +20,7 @@ use yii\widgets\ActiveForm;
     <div class="col-md-2">
     <?= $form->field($model, 'username')->textInput()->label('用户名') ?>
     </div>
-    <div class="col-md-1">
+    <div class="col-md-2">
     <?=$form->field($model, 'status')->dropDownList([''=>'全部',0=>'隐藏',1=>'正常'],['class'=>'form-control'])->label('状态'); ?>
     </div>
 

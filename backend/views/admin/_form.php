@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use common\core\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\Ad */
+/* @var $model backend\models\AdminUser */
 /* @var $form common\core\ActiveForm */
 ?>
 

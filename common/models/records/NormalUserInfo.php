@@ -8,15 +8,17 @@ use Yii;
  * This is the model class for table "{{%normal_user_info}}".
  *
  * @property integer $user_id
- * @property integer $broder_id
+ * @property integer $broker_id
  * @property integer $referrer_id
- * @property string $real_name
+ * @property string  $real_name
  * @property integer $gender
- * @property string $card_id
- * @property string $address
- * @property string $postcode
- * @property string $bank_account
- * @property string $bank_name
+ * @property string  $card_id
+ * @property string  $address
+ * @property string  $postcode
+ * @property string  $bank_account
+ * @property string  $bank_name
+ * @property integer $relation_pos
+ * @property string  $broker_path
  *
  * @property User $user
  */
@@ -36,9 +38,9 @@ class NormalUserInfo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'broder_id', 'referrer_id', 'real_name', 'gender', 'card_id', 'address', 'bank_account'], 'required'],
-            [['user_id', 'broder_id', 'referrer_id', 'gender'], 'integer'],
-            [['real_name', 'bank_account', 'bank_name'], 'string', 'max' => 255],
+            [['user_id', 'broker_id', 'referrer_id', 'real_name', 'gender', 'card_id', 'bank_account', 'bank_name'], 'required'],
+            [['user_id', 'broker_id', 'referrer_id', 'gender', 'relation_pos'], 'integer'],
+            [['real_name', 'bank_account', 'bank_name', 'broker_path'], 'string', 'max' => 255],
             [['card_id'], 'string', 'max' => 20],
             [['address'], 'string', 'max' => 500],
             [['postcode'], 'string', 'max' => 50],
@@ -52,16 +54,17 @@ class NormalUserInfo extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'user_id' => 'User ID',
-            'broder_id' => 'Broder ID',
-            'referrer_id' => 'Referrer ID',
-            'real_name' => 'Real Name',
-            'gender' => 'Gender',
-            'card_id' => 'Card ID',
+            'user_id' => '用户ID',
+            'broker_id' => '接点人 ID',
+            'referrer_id' => '推荐人 ID',
+            'real_name' => '真实姓名',
+            'gender' => '性别',
+            'card_id' => '身份证号',
             'address' => 'Address',
             'postcode' => 'Postcode',
-            'bank_account' => 'Bank Account',
-            'bank_name' => 'Bank Name',
+            'bank_account' => '银行账号',
+            'bank_name' => '开户行',
+            'relation_pos' => '在接点人系谱图中的位置',
         ];
     }
 

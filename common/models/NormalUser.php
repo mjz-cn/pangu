@@ -9,17 +9,20 @@
 namespace common\models;
 
 
+use common\models\records\Address;
+use common\models\records\NormalUserInfo;
+
 class NormalUser extends BaseUser
 {
-
-    public function beforeSave($insert)
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNormalUserInfo()
     {
-        $result = parent::beforeSave($insert);
-        if ($result) {
-            if ($insert) {
-                $this->role = static::ROLE_NORMAL;
-            }
-        }
-        return $result;
+        return $this->hasOne(NormalUserInfo::className(), ['user_id' => 'id']);
+    }
+
+    public function getAddresses() {
+        return $this->hasMany(Address::className(), ['user_id' => 'id']);
     }
 }

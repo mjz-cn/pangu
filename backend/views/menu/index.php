@@ -76,25 +76,19 @@ $columns = [
     [
         'class' => 'yii\grid\ActionColumn',
         'header' => '操作',
-        'template' => '{view} {edit} {delete}',
+        'template' => '{view} {edit}',
         'options' => ['width' => '200px;'],
         'buttons' => [
             'view' => function ($url, $model, $key) {
-                return Html::a('<i class="fa fa-eye"></i>', ['index', 'pid'=>$key], [
+                return Html::a('下级菜单', ['index', 'pid'=>$key], [
                     'title' => Yii::t('app', '下级菜单'),
                     'class' => 'btn btn-xs blue'
                 ]);
             },
             'edit' => function ($url, $model, $key) {
-                return Html::a('<i class="fa fa-edit"></i>', $url, [
+                return Html::a('更新', $url, [
                     'title' => Yii::t('app', '更新'),
                     'class' => 'btn btn-xs purple'
-                ]);
-            },
-            'delete' => function ($url, $model, $key) {
-                return Html::a('<i class="fa fa-times"></i>', $url, [
-                    'title' => Yii::t('app', '删除'),
-                    'class' => 'btn btn-xs red ajax-get confirm'
                 ]);
             }
         ],
@@ -110,20 +104,8 @@ $columns = [
         </div>
         <div class="actions">
             <div class="btn-group btn-group-devided">
-                <?=Html::a('添加 <i class="fa fa-plus"></i>',['add','pid'=>Yii::$app->request->get('pid',0)],['class'=>'btn green','style'=>'margin-right:10px;'])?>
-                <?=Html::a('删除 <i class="fa fa-times"></i>',['delete'],['class'=>'btn green ajax-post confirm','target-form'=>'ids','style'=>'margin-right:10px;'])?>
-                <!--<?=Html::a('排序 <i class="fa fa-plus"></i>',['add'],['class'=>'btn green'])?>-->
-            </div>
-            <div class="btn-group">
-                <button class="btn blue btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                    工具箱
-                    <i class="fa fa-angle-down"></i>
-                </button>
-                <ul class="dropdown-menu pull-right" role="menu">
-                    <li><a href="javascript:;"><i class="fa fa-pencil"></i> 导出Excel </a></li>
-                    <li class="divider"> </li>
-                    <li><a href="javascript:;"> 其他 </a></li>
-                </ul>
+                <?=Html::a('添加',['add','pid'=>Yii::$app->request->get('pid',0)],['class'=>'btn green','style'=>'margin-right:10px;'])?>
+                <?=Html::a('删除',['delete'],['class'=>'btn green ajax-post confirm','target-form'=>'ids','style'=>'margin-right:10px;'])?>
             </div>
         </div>
     </div>

@@ -38,6 +38,7 @@ $this->beginPage();
         <link rel="shortcut icon" href="<?=Yii::getAlias('@web/favicon.ico')?>" />
         <script language="JavaScript">
             var BaseUrl = '<?=Yii::getAlias('@web')?>';
+            var nav_url = undefined;
         </script>
     </head>
     <!-- END HEAD -->
@@ -175,12 +176,6 @@ $this->beginPage();
                     </ul>
                 </div>
                 <!-- END PAGE BAR -->
-                <!-- BEGIN PAGE TITLE 正副标题 -->
-                <h3 class="page-title">
-                    <?= Html::encode($this->title) ?>
-                    <small><?= Html::encode(isset($this->params['title_sub'])?$this->params['title_sub']:'') ?></small>
-                </h3>
-                <!-- END PAGE TITLE-->
                 <!-- BEGIN PAGE CONTENT 正文内容 -->
                 <div class="row">
                     <div class="col-md-12">
@@ -211,9 +206,12 @@ $this->beginPage();
 
     </html>
     <!-- 定义数据块 -->
-<?php $this->beginBlock('test1'); ?>
+<?php $this->beginBlock('test'); ?>
     jQuery(document).ready(function() {
-    highlight_subnav(window.location.pathname); //子导航高亮
+        if (nav_url === undefined) nav_url = "";
+        highlight_subnav(nav_url); //子导航高亮
     });
 <?php $this->endBlock() ?>
+    <!-- 将数据块 注入到视图中的某个位置 -->
+<?php $this->registerJs($this->blocks['test'], \yii\web\View::POS_END); ?>
 <?php $this->endPage() ?>

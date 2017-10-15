@@ -2,9 +2,13 @@
 
 namespace backend\controllers;
 
+use backend\models\RelationGraphForm;
 use common\models\NormalUser;
+use common\models\records\NormalUserInfo;
+use common\models\records\User;
 use common\models\search\NormalUserSearch;
 use Yii;
+use yii\web\NotFoundHttpException;
 
 /**
  * 用户控制器
@@ -47,12 +51,12 @@ class UserController extends BaseController
      */
     public function actionAdd()
     {
-
-        $model = new NormalUser();
+        $userModel = new NormalUser();
+        $userInfoModel = new NormalUserInfo();
 
         if (Yii::$app->request->isPost) {
             /* 表单验证 */
-            $data = Yii::$app->request->post('NormalUser');
+            $data = Yii::$app->request->post($userModel->formName());
             $data['create_time'] = time();
             $data['reg_ip'] = ip2long(Yii::$app->request->getUserIP());
             $data['last_login_time'] = 0;
@@ -63,20 +67,31 @@ class UserController extends BaseController
             if (empty($data['password']) || strlen($data['password']) < 6) {
                 $this->error('密码为空或小于6字符');
             }
-            $model->setAttributes($data);
-            $model->generateAuthKey();
-            $model->setPassword($data['password']);
+            $userModel->setAttributes($data);
+            $userModel->generateAuthKey();
+            $userModel->setPassword($data['password']);
+
+            $result = false;
             /* 保存用户数据到数据库 */
-            if ($model->save()) {
-                $this->success('操作成功', $this->getForward());
-            } else {
-                var_dump($model->errors);
-                $this->error('操作错误');
+            if ($userInfoModel->load(Yii::$app->request->post()) && $userModel->save()) {
+                $userInfoModel->user_id = $userModel->id;
+
+                if ($userInfoModel->save()) {
+                    $result = true;
+                    $this->success('操作成功', $this->getForward());
+                } else {
+                    $userModel->delete();
+                }
+            }
+            if (!$result) {
+                $errors = array_merge([], $userModel->errors, $userInfoModel->errors);
+                $this->error(json_encode($errors));
             }
         }
 
         return $this->render('edit', [
-            'model' => $model,
+            'model' => $userModel,
+            'userInfoModel' => $userInfoModel
         ]);
     }
 
@@ -87,30 +102,46 @@ class UserController extends BaseController
      */
     public function actionEdit($uid)
     {
-        $model = NormalUser::findOne($uid);
+        $userModel = $this->findModel($uid);
+        $userInfoModel = $userModel->normalUserInfo;
+        if (empty($userInfoModel)) {
+            $userInfoModel = new NormalUserInfo();
+        }
 
         if (Yii::$app->request->isPost) {
             /* 表单验证 */
-            $data = Yii::$app->request->post('User');
+            $data = Yii::$app->request->post($userModel->formName());
             $data['update_time'] = time();
             /* 如果设置密码则重置密码，否则不修改密码 */
             if (!empty($data['password'])) {
-                $model->generateAuthKey();
-                $model->setPassword($data['password']);
+                $userModel->generateAuthKey();
+                $userModel->setPassword($data['password']);
             }
             unset($data['password']);
 
-            $model->setAttributes($data);
+            $userModel->setAttributes($data);
+
+            $result = false;
             /* 保存用户数据到数据库 */
-            if ($model->save()) {
-                $this->success('操作成功', $this->getForward());
-            } else {
+            if ($userInfoModel->load(Yii::$app->request->post()) && $userModel->save()) {
+                $userInfoModel->user_id = $userModel->id;
+
+                if ($userInfoModel->save()) {
+                    $result = true;
+                    $this->success('操作成功', $this->getForward());
+                }
+            }
+            if (!$result) {
+                var_dump($userModel->errors);
+                var_dump($userInfoModel->errors);
                 $this->error('操作错误');
             }
+
         }
 
         return $this->render('edit', [
-            'model' => $model,
+            'model' => $userModel,
+            'userInfoModel' => $userInfoModel,
         ]);
     }
 
@@ -122,26 +153,70 @@ class UserController extends BaseController
     public function actionDelete()
     {
         $ids = Yii::$app->request->param('id', 0);
-        $ids = implode(',', array_unique((array)$ids));
+        $ids = array_unique((array)$ids);
+
+        if (empty($ids)) {
+            $this->error('请选择要操作的用户!');
+        }
+
+        // 也要删除用此用户相关的信息
+        // 由于与此用户关联的信息过多，目前只更新用户的状态为封禁状态
+        if (NormalUser::banUsers($ids) > 0) {
+            $this->success('封禁成功', $this->getForward());
+        } else {
+            $this->error('封禁失败！');
+        }
+    }
+
+    /**
+     * 激活用户
+     */
+    public function actionActive() {
+        $ids = Yii::$app->request->param('id', 0);
+        $ids = array_unique((array)$ids);
 
         if (empty($ids)) {
             $this->error('请选择要操作的数据!');
         }
 
-        $_where = 'id in(' . $ids . ')';
-        if (NormalUser::deleteAll($_where)) {
-            $this->success('删除成功', $this->getForward());
+        if (NormalUser::activeUsers($ids) > 0) {
+            $this->success('激活成功', $this->getForward());
         } else {
-            $this->error('删除失败！');
+            $this->error('激活失败！');
         }
     }
 
+    /**
+     * 获取会员系谱图
+     * 如果是通过ajax请求，则返回json数据，
+     * 否则返回视图
+     * @return string
+     */
     public function actionRelationGraph() {
-        $searchModel = new NormalUserSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        return $this->render('index', [
+        $request = Yii::$app->request;
+
+        $searchModel = new RelationGraphForm();
+        $searchModel->load($request->get());
+
+        if ($searchModel->load($request->get()) && $request->isAjax) {
+            if ($searchModel->validate()) {
+                return $this->renderJson(['status' => 1, 'data' => $searchModel->getTreantData()]);
+            } else {
+                $this->error(json_encode($searchModel->errors));
+            }
+        }
+
+        return $this->render('relation-graph', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
         ]);
+    }
+
+    public function findModel($id) {
+        $model = NormalUser::findOne($id);
+        if ($model) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException();
+        }
     }
 }

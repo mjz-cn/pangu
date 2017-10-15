@@ -79,5 +79,15 @@ return [
             'site/login','site/logout','public*','debug/*','gii/*', // 不需要权限检测
         ]
     ],
+    'as verbs' => [
+        'class' => \yii\filters\VerbFilter::className(),
+        'actions' => [
+            'index'  => ['get'],
+            'view'   => ['get'],
+            'create' => ['get', 'post'],
+            'update' => ['get', 'put', 'post'],
+            'delete' => ['post', 'delete'],
+        ],
+    ],
     'params' => $params,
 ];

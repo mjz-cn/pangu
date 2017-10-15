@@ -5,6 +5,7 @@ use common\core\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\records\User */
+/* @var $userInfoModel common\models\records\NormalUserInfo */
 /* @var $form ActiveForm */
 
 /* ===========================以下为本页配置信息================================= */
@@ -12,19 +13,19 @@ use common\core\ActiveForm;
 $this->title = '添加用户';
 $this->params['title_sub'] = '添加前台用户';  // 在\yii\base\View中有$params这个可以在视图模板中共享的参数
 
-$modelName = (new ReflectionClass($model))->getShortName();
 ?>
 
 <div class="portlet light bordered">
-    <div class="portlet-title">
-        <div class="caption font-red-sunglo">
-            <i class="icon-settings font-red-sunglo"></i>
-            <span class="caption-subject bold uppercase"> 内容信息</span>
-        </div>
-    </div>
+
     <div class="portlet-body form">
         <!-- BEGIN FORM-->
-
+        <div class="portlet-title">
+            <div class="caption font-red-sunglo">
+                <i class="icon-settings font-red-sunglo"></i>
+                <span class="caption-subject bold uppercase"> 内容信息</span>
+            </div>
+        </div>
+        <hr>
         <?php $form = ActiveForm::begin([
             'options'=>[
                 'class'=>"form-aaa "
@@ -44,7 +45,7 @@ $modelName = (new ReflectionClass($model))->getShortName();
                 <div class="input-icon left">
                     <i class="icon-lock"></i>
                     <input type="password" class="form-control c-md-2"
-                           name=<?= '"'.$modelName.'[password]"'  ?> placeholder="密码不变请留空" />
+                           name=<?= '"'.$model->formName().'[password]"'  ?> placeholder="密码不变请留空" />
                 </div>
             </div>
         </div>
@@ -62,8 +63,69 @@ $modelName = (new ReflectionClass($model))->getShortName();
             'iconClass' => 'fa fa-phone',
             'placeholder' => 'Phone'
         ])->label('电话') ?>
-        
-        <?= $form->field($model, 'status')->radioList(['1'=>'正常','0'=>'隐藏'])->label('用户状态') ?>
+
+        <?php
+            if ($model->isNewRecord) {
+                $model->status = $model::STATUS_NOT_ACTIVED;
+            }
+            echo $form->field($model, 'status')->radioList($model::getStatusArr())->label('用户状态')
+        ?>
+
+        <div class="portlet-title">
+            <div class="caption font-red-sunglo">
+                <i class="icon-settings font-red-sunglo"></i>
+                <span class="caption-subject bold uppercase"> 内容信息</span>
+            </div>
+        </div>
+        <hr>
+
+        <?= $form->field($userInfoModel, 'broker_id')->iconTextInput([
+            'class'=>'form-control c-md-2',
+            'type' => 'number',
+            'iconPos' => 'left',
+            'iconClass' => 'icon-user',
+            'placeholder' => 'broker_id'
+        ]) ?>
+
+        <?= $form->field($userInfoModel, 'referrer_id')->iconTextInput([
+            'class'=>'form-control c-md-2',
+            'type' => 'number',
+            'iconPos' => 'left',
+            'iconClass' => 'icon-user',
+            'placeholder' => 'referrer_id'
+        ]) ?>
+
+        <?= $form->field($userInfoModel, 'real_name')->iconTextInput([
+            'class'=>'form-control c-md-2',
+            'iconPos' => 'left',
+            'iconClass' => 'icon-user',
+            'placeholder' => 'real_name'
+        ]) ?>
+
+        <?= $form->field($userInfoModel, 'gender')->radioList(['0' => '女', '1' => '男']) ?>
+
+        <?= $form->field($userInfoModel, 'card_id')->iconTextInput([
+            'class'=>'form-control c-md-2',
+            'type' => 'number',
+            'iconPos' => 'left',
+            'iconClass' => 'icon-user',
+            'placeholder' => '身份证号'
+        ]) ?>
+
+        <?= $form->field($userInfoModel, 'bank_account')->iconTextInput([
+            'class'=>'form-control c-md-2',
+            'type' => 'number',
+            'iconPos' => 'left',
+            'iconClass' => 'icon-user',
+            'placeholder' => '银行账户'
+        ]) ?>
+
+        <?= $form->field($userInfoModel, 'bank_name')->iconTextInput([
+            'class'=>'form-control c-md-2',
+            'iconPos' => 'left',
+            'iconClass' => 'icon-user',
+            'placeholder' => '开户行名称'
+        ]) ?>
 
         <div class="form-actions">
             <?= Html::submitButton('<i class="icon-ok"></i> 确定', ['class' => 'btn blue ajax-post','target-form'=>'form-aaa']) ?>
@@ -73,12 +135,14 @@ $modelName = (new ReflectionClass($model))->getShortName();
 
         <!-- END FORM-->
     </div>
+
+
 </div>
 
 <!-- 定义数据块 -->
 <?php $this->beginBlock('test'); ?>
 jQuery(document).ready(function() {
-    highlight_subnav(window.location.pathname); //子导航高亮
+    highlight_subnav('user/index'); //子导航高亮
 });
 <?php $this->endBlock() ?>
 <!-- 将数据块 注入到视图中的某个位置 -->

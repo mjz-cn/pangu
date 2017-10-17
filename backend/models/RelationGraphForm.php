@@ -107,7 +107,7 @@ class RelationGraphForm extends Model
             $path = $userInfoModel['broker_path'];
             $leaf_user_id = $userInfoModel['user_id'];
             $k = $treeLevel - strlen($path);
-            // 忽略父节点与有效叶子节点之间的无效节点
+            // 只展示父节点与有效叶子节点之间的无效节点
             if ($k >= 0) {
                 $leaf_data = $this->treeData($leaf_user_id, $k);
                 $data = array_merge($data, [$path[0] => $this->genPath(substr($path, 0, $treeLevel), 0, $leaf_data)]);
@@ -117,14 +117,24 @@ class RelationGraphForm extends Model
         return ['user_id' => $rootUserId, 'child' => $data];
     }
 
-    private function _constructTreantData($originData)
+    private function _constructTreantData($originData, $parentBroker)
     {
         $data = [];
-        $data['text'] = ['title' => $originData['user_id'], 'other' => ''];
+        $data['text'] = ['user_id' => $originData['user_id'], 'parent_broker' => $parentBroker];
         $data['HTMLid'] = 'user_' . $originData['user_id'];
         ksort($originData['child']);
-        foreach ($originData['child'] as $childData) {
-            $data['children'][] = $this->_constructTreantData($childData);
+
+        $childDataArr = $originData['child'];
+        if (!empty($childDataArr)) {
+            if (empty($childDataArr['0'])) {
+                $childDataArr['0'] = ['user_id' => 0, 'child' => []];
+            } else if (empty($childDataArr['1'])) {
+                $childDataArr['1'] = ['user_id' => 0, 'child' => []];
+            }
+        }
+
+        foreach ($childDataArr as $childData) {
+            $data['children'][] = $this->_constructTreantData($childData, $originData['user_id']);
         }
         return $data;
     }
@@ -137,7 +147,7 @@ class RelationGraphForm extends Model
     {
         $originData = $this->getData();
         // 将数据转换成前端treant需要的格式
-        return $this->_constructTreantData($originData);
+        return $this->_constructTreantData($originData, 0);
     }
 
     public function formName()

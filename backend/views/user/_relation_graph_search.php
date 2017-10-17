@@ -22,16 +22,16 @@ use yii\widgets\ActiveForm;
     }
 ?>
 <div class="row">
-    <div class="col-md-2">
+    <div class="col-md-1">
     <?= $form->field($model, 'user_id')->textInput()->label("用户ID") ?>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-1">
     <?= $form->field($model, 'up_level')->dropDownList(
         $level_arr,
         ['class'=>'form-control'])->label('上层');
     ?>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-1">
         <?= $form->field($model, 'down_level')->dropDownList(
             $level_arr,
             ['class'=>'form-control'])->label('下层');

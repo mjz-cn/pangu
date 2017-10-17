@@ -9,6 +9,9 @@
 namespace backend\controllers;
 
 
+use backend\models\search\BonusSearch;
+use Yii;
+
 class FinanceController extends BaseController
 {
 
@@ -17,8 +20,16 @@ class FinanceController extends BaseController
     }
 
 
-    public function actionDetail() {
+    public function actionBonus() {
+        $this->setForward();
 
+        $searchModel = new BonusSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('bonus', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
     public function actionTransfer() {

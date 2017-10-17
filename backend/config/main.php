@@ -20,7 +20,7 @@ return [
         'request' => [
             'class' => 'common\core\Request',
             'csrfParam' => '_csrf',
-            // 'baseUrl' => Yii::getAlias('@backendUrl'), //等于 Yii::getAlias('@web')
+//            'baseUrl' => Yii::getAlias('@backendUrl'), //等于 Yii::getAlias('@web')
         ],
         'user' => [
             'class' => 'yii\web\User',
@@ -46,7 +46,7 @@ return [
             ],
         ],
         'errorHandler' => [
-//            'errorAction' => 'site/error',
+            'errorAction' => 'site/error',
         ],
         /* 链接管理 */
         'urlManager' => [
@@ -57,8 +57,8 @@ return [
                 //
             ],
         ],
-        'assetManager'=>[
-            'bundles'=>[
+        'assetManager' => [
+            'bundles' => [
                 'yii\web\JqueryAsset' => [
                     'sourcePath' => null,
                     'js' => [],
@@ -76,14 +76,14 @@ return [
     'as rbac' => [
         'class' => 'backend\behaviors\RbacBehavior',
         'allowActions' => [
-            'site/login','site/logout','public*','debug/*','gii/*', // 不需要权限检测
+            'site/login', 'site/logout', 'public*', 'debug/*', 'gii/*', // 不需要权限检测
         ]
     ],
     'as verbs' => [
         'class' => \yii\filters\VerbFilter::className(),
         'actions' => [
-            'index'  => ['get'],
-            'view'   => ['get'],
+            'index' => ['get'],
+            'view' => ['get'],
             'create' => ['get', 'post'],
             'update' => ['get', 'put', 'post'],
             'delete' => ['post', 'delete'],

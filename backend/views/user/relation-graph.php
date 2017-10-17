@@ -33,3 +33,25 @@ $this->params['title_sub'] = '管理用户信息';  // 在\yii\base\View中有$p
     </div>
 </div>
 
+<div id="aaa11" style="display: none">
+    <table align="center" class="table table-bordered table-sm table-node node-table-tpl">
+        <thead>
+        <tr>
+            <th colspan="3" class="node-user_id">bcld111 (VIP)
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="node-m1">1</td>
+            <td class="tdd">总</td>
+            <td class="node-m2">1</td>
+        </tr>
+        <tr>
+            <td class="node-m3">0.0000</td>
+            <td class="tdd">余</td>
+            <td class="node-m4">0.0000</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

@@ -26,7 +26,7 @@
             <?php if(!empty($menu['_child']) && is_array($menu['_child'])):?>
             <?php foreach ($menu['_child'] as $v): ?>
             <li class="nav-item ">
-                <a href="<?=\yii\helpers\Url::toRoute($v['url'])?>" nav="<?='/'.$v['url']?>" class="nav-link ">
+                <a href="<?=\yii\helpers\Url::toRoute($v['url'])?>" nav="<?=\yii\helpers\Url::toRoute($v['url'])?>" class="nav-link ">
                     <?=$v['title']?>
                 </a>
             </li>

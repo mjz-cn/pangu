@@ -158,6 +158,7 @@
         }
     };
 
+
 });
 
 // 导航高亮
@@ -173,4 +174,14 @@ function highlight_subnav(default_url) {
     ele.parent().parent().parent().addClass('active open');
     ele.parent().parent().parent().find('.arrow').addClass('open');
     ele.parent().parent().parent().find('.arrow').before('<span class="selected "></span>');
+}
+
+function urlParam(name) {
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results == null) {
+        return null;
+    }
+    else {
+        return decodeURI(results[1]) || 0;
+    }
 }

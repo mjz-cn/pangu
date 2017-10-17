@@ -44,5 +44,26 @@
         };
         // 生成二叉树
         new Treant(g_chart_config);
+        // 重新定义node里面的内容
+        $('.node').each(function() {
+            var that = $(this);
+            // that.empty();
+            var table = $('.node-table-tpl').clone();
+            table.removeClass('node-table-tpl');
+            // 获取所有数据
+            that.find('[class^=node-]').each(function() {
+                var nodeThat = $(this);
+                var css = nodeThat.attr('class');
+                table.attr('data-' + css.replace('node-', ''), nodeThat.text());
+                table.find('.' + css).text(nodeThat.text());
+            });
+            that.html(table);
+        });
+    }
+
+    // 如果url中包含user_id则执行任务
+    var user_id = urlParam('user_id');
+    if (user_id !== null) {
+        $('.ajax-get-relation').click();
     }
 })();

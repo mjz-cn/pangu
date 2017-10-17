@@ -5,8 +5,29 @@
     -moz-border-radius: 3px;
     border-radius: 3px;
     background-color: #ffffff;
-    border: 1px solid #000;
+    /*border: 1px solid #000;*/
     width: 200px;
     font-family: Tahoma;
     font-size: 12px;
+    height: 75px;
+}
+
+.table-node {
+    margin-bottom: 0;
+    height: 100%;
+}
+.table-node th {
+    text-align: center;
+}
+.table-node>tbody>tr>td, .table-node>tbody>tr>th, .table-node>tfoot>tr>td,
+.table-node>tfoot>tr>th, .table-node>thead>tr>td, .table-node>thead>tr>th {
+    padding: 1px;
+}
+
+.table-node>thead {
+    background-color: #CD6566;
+}
+
+.table-node>tbody {
+    background-color: #C0DBF3;
 }

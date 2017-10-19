@@ -52,8 +52,7 @@ class UserController extends BaseController
     public function actionAdd()
     {
         $userModel = new NormalUser();
-        $userInfoModel = new NormalUserInfo();
-
+        $userModel->loadDefaultValues();
         if (Yii::$app->request->isPost) {
             /* 表单验证 */
             $data = Yii::$app->request->post($userModel->formName());
@@ -67,31 +66,28 @@ class UserController extends BaseController
             if (empty($data['password']) || strlen($data['password']) < 6) {
                 $this->error('密码为空或小于6字符');
             }
+
             $userModel->setAttributes($data);
             $userModel->generateAuthKey();
             $userModel->setPassword($data['password']);
-
-            $result = false;
-            /* 保存用户数据到数据库 */
-            if ($userInfoModel->load(Yii::$app->request->post()) && $userModel->save()) {
-                $userInfoModel->user_id = $userModel->id;
-
-                if ($userInfoModel->save()) {
-                    $result = true;
-                    $this->success('操作成功', $this->getForward());
-                } else {
-                    $userModel->delete();
-                }
+            if ($userModel->broker_id == null) {
+                $userModel->broker_id = 0;
             }
-            if (!$result) {
-                $errors = array_merge([], $userModel->errors, $userInfoModel->errors);
+            if ($userModel->referrer_id == null) {
+                $userModel->referrer_id = 0;
+            }
+
+            /* 保存用户数据到数据库 */
+            if ($userModel->save()) {
+                $this->success('操作成功', '/user/index');
+            } else {
+                $errors = array_merge([], $userModel->errors);
                 $this->error(json_encode($errors));
             }
         }
 
         return $this->render('edit', [
-            'model' => $userModel,
-            'userInfoModel' => $userInfoModel
+            'model' => $userModel
         ]);
     }
 
@@ -103,10 +99,6 @@ class UserController extends BaseController
     public function actionEdit($uid)
     {
         $userModel = $this->findModel($uid);
-        $userInfoModel = $userModel->normalUserInfo;
-        if (empty($userInfoModel)) {
-            $userInfoModel = new NormalUserInfo();
-        }
 
         if (Yii::$app->request->isPost) {
             /* 表单验证 */
@@ -120,28 +112,23 @@ class UserController extends BaseController
             unset($data['password']);
 
             $userModel->setAttributes($data);
-
-            $result = false;
+            if ($userModel->broker_id == null) {
+                $userModel->broker_id = 0;
+            }
+            if ($userModel->referrer_id == null) {
+                $userModel->referrer_id = 0;
+            }
             /* 保存用户数据到数据库 */
-            if ($userInfoModel->load(Yii::$app->request->post()) && $userModel->save()) {
-                $userInfoModel->user_id = $userModel->id;
-
-                if ($userInfoModel->save()) {
-                    $result = true;
-                    $this->success('操作成功', $this->getForward());
-                }
+            if ($userModel->save()) {
+                $this->success('操作成功', '/user/index');
+            } else {
+                $errors = array_merge([], $userModel->errors);
+                $this->error(json_encode($errors));
             }
-            if (!$result) {
-                var_dump($userModel->errors);
-                var_dump($userInfoModel->errors);
-                $this->error('操作错误');
-            }
-
         }
 
         return $this->render('edit', [
-            'model' => $userModel,
-            'userInfoModel' => $userInfoModel,
+            'model' => $userModel
         ]);
     }
 
@@ -161,7 +148,7 @@ class UserController extends BaseController
 
         // 也要删除用此用户相关的信息
         // 由于与此用户关联的信息过多，目前只更新用户的状态为封禁状态
-        if (NormalUser::banUsers($ids) > 0) {
+        if (User::banUsers($ids) > 0) {
             $this->success('封禁成功', $this->getForward());
         } else {
             $this->error('封禁失败！');
@@ -171,7 +158,8 @@ class UserController extends BaseController
     /**
      * 激活用户
      */
-    public function actionActive() {
+    public function actionActive()
+    {
         $ids = Yii::$app->request->param('id', 0);
         $ids = array_unique((array)$ids);
 
@@ -179,7 +167,7 @@ class UserController extends BaseController
             $this->error('请选择要操作的数据!');
         }
 
-        if (NormalUser::activeUsers($ids) > 0) {
+        if (User::activeUsers($ids) > 0) {
             $this->success('激活成功', $this->getForward());
         } else {
             $this->error('激活失败！');
@@ -192,7 +180,8 @@ class UserController extends BaseController
      * 否则返回视图
      * @return string
      */
-    public function actionRelationGraph() {
+    public function actionRelationGraph()
+    {
         $request = Yii::$app->request;
 
         $searchModel = new RelationGraphForm();
@@ -211,7 +200,28 @@ class UserController extends BaseController
         ]);
     }
 
-    public function findModel($id) {
+    /**
+     * 根据用户名搜索用户
+     */
+    public function actionSearch($user_name)
+    {
+        $rows = User::find()->select('id, username')->where('username like :username', [
+            ':username' => "%" . $user_name . "%",
+        ])->asArray()->all();
+        return $this->renderJson($rows);
+    }
+
+    /**
+     * 福利统计
+     */
+    public function actionWelfare()
+    {
+
+        return $this->render('welfare');
+    }
+
+    public function findModel($id)
+    {
         $model = NormalUser::findOne($id);
         if ($model) {
             return $model;

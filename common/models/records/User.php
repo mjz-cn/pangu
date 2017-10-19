@@ -13,16 +13,26 @@ use Yii;
  * @property string $salt
  * @property string $email
  * @property string $phone
- * @property string $role
- * @property string $create_time
- * @property string $update_time
- * @property integer $status
+ * @property integer $role
  * @property integer $reg_ip
  * @property integer $last_login_time
  * @property integer $last_login_ip
+ * @property string $image
+ * @property integer $broker_id
+ * @property string $broker_path
+ * @property integer $referrer_id
+ * @property string $real_name
+ * @property integer $gender
+ * @property string $card_id
+ * @property string $bank_account
+ * @property string $bank_name
+ * @property integer $status
+ * @property integer $update_time
+ * @property integer $create_time
  *
+ * @property Address[] $addresses
  * @property ConsumeLog[] $consumeLogs
- * @property NormalUserInfo[] $normalUserInfos
+ * @property NormalUserInfo $normalUserInfo
  */
 class User extends \yii\db\ActiveRecord
 {
@@ -31,9 +41,6 @@ class User extends \yii\db\ActiveRecord
     const STATUS_NORMAL  = 1;
     const STATUS_ACTIVED = 2;
     const STATUS_NOT_ACTIVED = 3;
-
-    const ROLE_NORMAL = 1;
-    const ROLE_ADMIN = 2;
 
     /**
      * @inheritdoc
@@ -49,10 +56,11 @@ class User extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username', 'password', 'salt', 'email', 'phone', 'status'], 'required'],
-            [['id', 'status', 'reg_ip', 'last_login_time', 'last_login_ip', 'role'], 'integer'],
-            [['create_time', 'update_time'], 'safe'],
-            [['username', 'password', 'salt', 'email', 'phone'], 'string', 'max' => 255],
+            [['username', 'password', 'salt', 'email', 'real_name', 'gender', 'card_id', 'bank_account', 'bank_name'], 'required'],
+            [['role', 'reg_ip', 'last_login_time', 'last_login_ip', 'broker_id', 'referrer_id', 'gender', 'status', 'update_time', 'create_time'], 'integer'],
+            [['username', 'password', 'salt', 'email', 'image', 'real_name', 'bank_account', 'bank_name'], 'string', 'max' => 255],
+            [['phone'], 'string', 'max' => 15],
+            [['broker_path', 'card_id'], 'string', 'max' => 20],
             [['username'], 'unique'],
         ];
     }
@@ -64,19 +72,49 @@ class User extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'username' => 'Username',
-            'password' => 'Password',
+            'username' => '用户名',
+            'password' => '密码',
             'salt' => 'Salt',
-            'email' => 'Email',
-            'phone' => 'Phone',
+            'email' => '邮箱',
+            'phone' => '电话',
             'role' => 'Role',
-            'create_time' => 'Created Time',
-            'update_time' => 'Updated Time',
+            'reg_ip' => '注册IP',
+            'last_login_time' => '上一次登陆时间',
+            'last_login_ip' => '上一次登陆IP',
+            'image' => 'Image',
+            'broker_id' => '接点人',
+            'broker_path' => '系谱图路径',
+            'referrer_id' => '推荐人',
+            'real_name' => '真实姓名',
+            'gender' => '性别',
+            'card_id' => '身份证号',
+            'bank_account' => '银行账号',
+            'bank_name' => '开户行',
             'status' => 'Status',
-            'reg_ip' => 'Reg Ip',
-            'last_login_time' => 'Last Login Time',
-            'last_login_ip' => 'Last Login Ip',
+            'update_time' => '更新时间',
+            'create_time' => '注册时间',
         ];
+    }
+
+    public function beforeSave($insert)
+    {
+        $result = parent::beforeSave($insert);
+        if ($result) {
+            if ($insert) {
+                $this->create_time = time();
+            } else {
+                $this->update_time = time();
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAddresses()
+    {
+        return $this->hasMany(Address::className(), ['user_id' => 'id']);
     }
 
     /**
@@ -87,14 +125,38 @@ class User extends \yii\db\ActiveRecord
         return $this->hasMany(ConsumeLog::className(), ['user_id' => 'id']);
     }
 
+    /**
+     * 获取推荐人
+     */
+    public function getReferrer()
+    {
+        if (empty($this->referrer_id)) {
+            return null;
+        }
+        return static::findOne(['id' => $this->referrer_id]);
+    }
+
+    /**
+     * 获取接点人
+     */
+    public function getBroker()
+    {
+        if (empty($this->broker_id)) {
+            return null;
+        }
+        return static::findOne(['id' => $this->broker_id]);
+    }
+
     public function getStatusText() {
+        if ($this->status == static::STATUS_NORMAL) {
+            return '正常';
+        }
         return static::getStatusArr()[$this->status];
     }
 
     public static function getStatusArr() {
         return [
             static::STATUS_DELETED => '封禁',
-            static::STATUS_NORMAL => '正常',
             static::STATUS_ACTIVED => '已激活',
             static::STATUS_NOT_ACTIVED => '未激活'
         ];
@@ -121,5 +183,16 @@ class User extends \yii\db\ActiveRecord
     public static function activeUsers($ids) {
         $ids_str = implode(',', $ids);
         return User::updateAll(['status' => static::STATUS_ACTIVED], "id in ($ids_str)");
+    }
+
+    public static function getUserName($id) {
+        if ($id === 0) {
+            return '';
+        }
+        $model = static::find()->select('username')->where(['id' => $id])->one();
+        if ($model) {
+            return $model->username;
+        }
+        return '';
     }
 }

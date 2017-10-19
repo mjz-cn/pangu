@@ -13,7 +13,17 @@ $this->title = '奖金详细';
 $this->params['title_sub'] = '管理用户信息';  // 在\yii\base\View中有$params这个可以在视图模板中共享的参数
 
 $columns = [
-
+    [
+        'header' => '推荐人账号',
+        'value' => function($model, $key, $index, $column) {
+            $referrer = $model->user->referrer;
+            if (empty($referrer)) {
+                return '无';
+            } else {
+                return $referrer->name;
+            }
+        },
+    ],
 ];
 ?>
 

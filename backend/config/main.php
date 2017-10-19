@@ -82,8 +82,6 @@ return [
     'as verbs' => [
         'class' => \yii\filters\VerbFilter::className(),
         'actions' => [
-            'index' => ['get'],
-            'view' => ['get'],
             'create' => ['get', 'post'],
             'update' => ['get', 'put', 'post'],
             'delete' => ['post', 'delete'],

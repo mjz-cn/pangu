@@ -17,19 +17,19 @@ class BonusSearch extends ConsumeLog
 {
 
     // 用户账号
-    public $user_name;
+    public $user_id;
     // 查询开始时间
     public $start_time;
     // 查询结束时间
     public $end_time;
     // 推荐人账号
-    public $referrer_name;
+    public $referrer_id;
 
 
     public function rules()
     {
         return [
-            [['user_name', 'referrer_name'], 'string', 'max' => 250],
+            [['user_id', 'referrer_id'], 'integer'],
             [['start_time', 'end_time'], 'date']
         ];
     }
@@ -37,8 +37,8 @@ class BonusSearch extends ConsumeLog
     public function attributeLabels()
     {
         return [
-            'user_name' => '用户账号',
-            'referrer_name' => '推荐人账号',
+            'user_id' => '用户账号',
+            'referrer_id' => '推荐人账号',
             'start_time' => '起始时间',
             'end_time' => '结束时间',
         ];
@@ -66,9 +66,16 @@ class BonusSearch extends ConsumeLog
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+             $query->where('0=1');
             return $dataProvider;
         }
+
+        if (!empty($this->user_id)) {
+            $query->filterWhere(['user_id' => $this->user_id]);
+        } else if (!empty($this->referrer_id)) {
+            $query->filterWhere(['user_id' => $this->referrer_id]);
+        }
+        $query->filterWhere(['between', 'date', $this->start_time, $this->end_time]);
 
         return $dataProvider;
     }

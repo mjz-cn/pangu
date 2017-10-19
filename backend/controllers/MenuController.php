@@ -21,7 +21,6 @@ class MenuController extends BaseController
      */
     public function actionIndex()
     {
-
         /* 添加当前位置到cookie供后续跳转调用*/
         $this->setForward();
 
@@ -45,7 +44,7 @@ class MenuController extends BaseController
 
         if (Yii::$app->request->isPost) {
             /* 表单验证 */
-            $data = Yii::$app->request->post('Menu');
+            $data = Yii::$app->request->post($model->formName());
             $data['status'] = 1;
 
             if ($this->saveRow($model, $data)) {

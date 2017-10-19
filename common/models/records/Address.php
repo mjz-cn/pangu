@@ -13,6 +13,10 @@ use Yii;
  * @property integer $city
  * @property integer $area
  * @property string $street
+ * @property integer $phone
+ * @property integer $postcode
+ *
+ * @property User $user
  */
 class Address extends \yii\db\ActiveRecord
 {
@@ -30,9 +34,10 @@ class Address extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id'], 'required'],
-            [['user_id', 'province', 'city', 'area'], 'integer'],
+            [['user_id', 'phone'], 'required'],
+            [['user_id', 'province', 'city', 'area', 'phone', 'postcode'], 'integer'],
             [['street'], 'string', 'max' => 60],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -48,6 +53,16 @@ class Address extends \yii\db\ActiveRecord
             'city' => 'City',
             'area' => 'Area',
             'street' => 'Street',
+            'phone' => 'Phone',
+            'postcode' => 'Postcode',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 }

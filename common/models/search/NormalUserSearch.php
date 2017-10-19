@@ -68,7 +68,6 @@ class NormalUserSearch extends \common\models\NormalUser
             'last_login_ip' => $this->last_login_ip,
             'update_time' => $this->update_time,
             'status' => $this->status,
-            'role' => static::ROLE_NORMAL
         ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])

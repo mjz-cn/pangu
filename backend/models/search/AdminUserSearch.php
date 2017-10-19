@@ -3,6 +3,7 @@
 namespace backend\models\search;
 
 use backend\models\AdminUser;
+use common\models\records\Administrator;
 use common\models\records\User;
 use Yii;
 use yii\base\Model;
@@ -12,7 +13,7 @@ use common\models\records\AuthAssignment;
 /**
  * AdminSearch represents the model behind the search form about `backend\models\Admin`.
  */
-class AdminUserSearch extends AdminUser
+class AdminUserSearch extends Administrator
 {
     /**
      * @inheritdoc
@@ -68,7 +69,6 @@ class AdminUserSearch extends AdminUser
             'last_login_ip' => $this->last_login_ip,
             'update_time' => $this->update_time,
             'status' => $this->status,
-            'role' => User::ROLE_ADMIN
         ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])

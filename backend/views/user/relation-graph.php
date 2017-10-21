@@ -34,7 +34,7 @@ $this->params['title_sub'] = '管理用户信息';  // 在\yii\base\View中有$p
 </div>
 
 <div id="aaa11" style="display: none">
-    <table align="center" class="table table-bordered table-sm table-node node-table-tpl">
+    <table align="center" class="table table-bordered table-sm table-condensed table-node node-table-tpl">
         <thead>
         <tr>
             <th colspan="3" class="node-user_id">bcld111 (VIP)
@@ -54,4 +54,5 @@ $this->params['title_sub'] = '管理用户信息';  // 在\yii\base\View中有$p
         </tr>
         </tbody>
     </table>
+
 </div>

@@ -1,6 +1,7 @@
 <?php
 
 use yii\grid\GridView;
+use yii\helpers\Html;
 
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $searchModel backend\models\search\BonusSearch */
@@ -12,67 +13,46 @@ $this->params['title_sub'] = '管理用户信息';  // 在\yii\base\View中有$p
 
 $columns = [
     [
-        'label' => '推荐人账号',
-        'value' => function ($model, $key, $index, $column) {
-            $referrer = $model->referrer;
-            if (empty($referrer)) {
-                return '-';
-            } else {
-                return $referrer->username;
-            }
-        },
+        'label' => '结算日期',
+
     ],
     [
-        'label' => '会员账号',
-        'value' => 'username'
+        'label' => '推荐奖',
     ],
     [
-        'label' => '真实姓名',
-        'value' => 'real_name',
+        'label' => '运营奖',
     ],
     [
-        'label' => '会员姓名',
-        'value' => 'real_name',
+        'label' => '拓展奖',
     ],
     [
-        'label' => '会员级别',
-        'value' => 'real_name',
+        'label' => '月底薪',
     ],
     [
-        'label' => '注册金额',
-        'value' => 'real_name',
+        'label' => '报单佣金',
     ],
     [
-        'label' => '福利级别',
-        'value' => 'real_name',
+        'label' => '扣税',
     ],
     [
-        'label' => '联系电话',
-        'value' => 'phone',
+        'label' => '重复消费',
     ],
     [
-        'label' => '是否实单',
-        'value' => 'real_name',
+        'label' => '实发奖金',
     ],
     [
-        'label' => '奖金余额',
-        'value' => 'real_name',
-    ],
-    [
-        'label' => '电子币余额',
-        'value' => 'real_name',
-    ],
-    [
-        'label' => '消费币余额',
-        'value' => 'real_name',
-    ],
-    [
-        'label' => '谁开通',
-        'value' => 'real_name',
-    ],
-    [
-        'label' => '开通日期',
-        'value' => function($model) {return date('Y-m-d H:i', $model->create_time);},
+        'class' => 'yii\grid\ActionColumn',
+        'header' => '操作',
+        'template' => '{view}',
+        //'options' => ['width' => '200px;'],
+        'buttons' => [
+            'view' => function ($url, $model, $key) {
+                return Html::a('查看明细', ['edit','uid'=>$key], [
+                    'title' => Yii::t('app', '更新'),
+                    'class' => 'btn btn-xs'
+                ]);
+            },
+        ],
     ],
 ];
 ?>
@@ -87,7 +67,7 @@ $columns = [
     <div class="portlet-body">
         <?php \yii\widgets\Pjax::begin(['options' => ['id' => 'pjax-container']]); ?>
         <div>
-            <?php echo $this->render('_bonus_search', ['model' => $searchModel]); ?> <!-- 条件搜索-->
+            <?php echo $this->render('_search', ['model' => $searchModel]); ?> <!-- 条件搜索-->
         </div>
         <div class="table-container">
             <form class="ids">
@@ -96,7 +76,6 @@ $columns = [
                        value="<?= Yii::$app->request->csrfToken ?>">
                 <?= GridView::widget([
                     'dataProvider' => $dataProvider, // 列表数据
-                    //'filterModel' => $searchModel, // 搜索模型
                     'options' => ['class' => 'grid-view'],
                     /* 表格配置 */
                     'tableOptions' => ['class' => 'table table-striped table-bordered table-condensed table-hover order-column dataTable no-footer'],

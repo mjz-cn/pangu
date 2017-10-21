@@ -2,6 +2,7 @@
 
 namespace common\models\records;
 
+use backend\models\AdminUser;
 use Yii;
 
 /**
@@ -20,6 +21,12 @@ use Yii;
  */
 class ConsumeLog extends \yii\db\ActiveRecord
 {
+
+    const CURRENCY_HUOBI = 1;
+    const CURRENCY_DIANZIBI = 2;
+    const CURRENCY_JIANGJIN = 3;
+    const CURRENCY_XIAOFEI = 4;
+
     /**
      * @inheritdoc
      */
@@ -65,5 +72,9 @@ class ConsumeLog extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    public function getAdmin() {
+        return $this->hasOne(AdminUser::tableName(), ['id' => 'from_user_id']);
     }
 }

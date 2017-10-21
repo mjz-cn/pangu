@@ -145,7 +145,7 @@ $this->beginPage();
             <style>
                 .fixed{position: fixed!important;}
                 .alert{color: #c09853;font-weight: bold;border: 1px solid #fbeed5;background-color: #fcf8e3;}
-                #top-alert {display: block;top: 40px;right: 20px;z-index: 9999;margin-top: 20px;padding-top: 12px;padding-bottom: 12px;overflow: hidden;font-size: 16px;}
+                #top-alert {display: block;top: 40px;right: 20px;z-index: 10052;margin-top: 20px;padding-top: 12px;padding-bottom: 12px;overflow: hidden;font-size: 16px;}
                 .alert-error {color: white;border-color: #eed3d7;background-color: #FF6666;}
                 .alert-success {color: #468847;background-color: #CCFF99;border-color: #eed3d7;}
                 @media (max-width: 768px) {.alert_left {left:20px; }}

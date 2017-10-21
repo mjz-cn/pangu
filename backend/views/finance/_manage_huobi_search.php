@@ -13,7 +13,7 @@ use yii\widgets\ActiveForm;
 ?>
 
 <?php $form = ActiveForm::begin([
-    'action' => ['bonus'],
+    'action' => ['manage-huobi'],
     'method' => 'get',
     'options' => [
         //'class'=>"form-inline",
@@ -23,25 +23,6 @@ use yii\widgets\ActiveForm;
 <div class="row">
     <div class="col-md-2" style="padding-left:0;">
         <?= $form->field($model, "user_id")->widget(Select2::classname(), [
-            'data' => [],
-            'options' => ['placeholder' => '选择用户'],
-            'pluginOptions' => [
-                'allowClear' => true,
-                'minimumInputLength' => 2,
-                'dataType' => 'json',
-                'ajax' => [
-                    'url' => \yii\helpers\Url::toRoute('/user/search'),
-                    'delay' => 250,
-                    'data' => new JsExpression('function(params) { return {user_name:params.term}; }'),
-                    'processResults' => new JsExpression('function(data, params) {return {results: data};}'),
-                ],
-                'templateResult' => new JsExpression('function(user) { return user.username; }'),
-                'templateSelection' => new JsExpression('function (user) { return user.username; }'),
-            ],
-        ]); ?>
-    </div>
-    <div class="col-md-2" style="padding-left:0;">
-        <?= $form->field($model, "referrer_id")->widget(Select2::classname(), [
             'data' => [],
             'options' => ['placeholder' => '选择用户'],
             'pluginOptions' => [

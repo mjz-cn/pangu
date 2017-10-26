@@ -10,11 +10,10 @@ namespace common\core;
 
 class GridView extends \yii\grid\GridView
 {
-
     public $dataColumnClass = 'common\core\DefaultDataColumn';
     public $options = ['class' => 'grid-view'];
-    public $tableOptions = ['class' => 'table table-striped table-bordered table-condensed table-hover order-column dataTable no-footer'];
-    public $layout = '{items}<div class=""><div class="col-md-5 col-sm-5">{summary}</div><div class="col-md-7 col-sm-7">
+    public $tableOptions = ['class' => 'table table-striped table-bordered table-condensed table-hover order-column  no-footer'];
+    public $layout = '{items}<div class="row"><div class="col-md-5 col-sm-5">{summary}</div><div class="col-md-7 col-sm-7">
                     <div class="dataTables_paginate paging_bootstrap_full_number" style="text-align:right;">{pager}</div></div></div>';
     public $summaryOptions = ['class' => 'pagination'];
     public $pager = [

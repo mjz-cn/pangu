@@ -5,10 +5,9 @@ namespace backend\controllers;
 use backend\models\ActiveUserForm;
 use backend\models\RelationGraphForm;
 use common\models\NormalUser;
-use common\models\records\NormalUserInfo;
 use common\models\records\User;
 use common\models\search\NormalUserSearch;
-use common\utils\Constants;
+use common\helpers\Constants;
 use Yii;
 use yii\web\NotFoundHttpException;
 
@@ -78,6 +77,20 @@ class UserController extends BaseController
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    /**
+     * 激活用户
+     */
+    public function actionActive()
+    {
+        $model = new ActiveUserForm();
+        $model->setAttributes(Yii::$app->request->get());
+        if ($model->validate() && $model->active()) {
+            $this->success('激活成功', $this->getForward(), true);
+        } else {
+            $this->error(json_encode($model->errors), '', true);
+        }
     }
 
     /**
@@ -184,20 +197,6 @@ class UserController extends BaseController
             $this->success('删除成功', $this->getForward());
         } else {
             $this->error('删除失败！');
-        }
-    }
-
-    /**
-     * 激活用户
-     */
-    public function actionActive()
-    {
-        $model = new ActiveUserForm();
-        $model->setAttributes(Yii::$app->request->get());
-        if ($model->validate() && $model->save()) {
-            $this->success('激活成功', $this->getForward(), true);
-        } else {
-            $this->error(json_encode($model->errors), '', true);
         }
     }
 

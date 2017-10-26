@@ -14,7 +14,7 @@
     },
     "autoload": {
         "files": [
-            "common/utils/env.php"
+            "common/helpers/env.php"
         ]
     },
     "minimum-stability": "stable",

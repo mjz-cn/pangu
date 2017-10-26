@@ -149,7 +149,8 @@ $columns = [
                     ConsumeLog::CURRENCY_DIANZIBI => '电子币', ConsumeLog::CURRENCY_HUOBI => '货币'
                 ]) ?>
 
-                <?= $form->field($model, 'count')->textInput(['type' => 'number'])->label('数值(正数代表增加,负数代表扣除)') ?>
+                <?= $form->field($model, 'amount')->textInput(['type' => 'number'])->label('数值(正数代表增加,负数代表扣除)') ?>
+                <?= $form->field($model, 'desc')->textarea() ?>
 
                 <div class="form-actions">
                     <?= Html::submitButton('<i class="icon-ok"></i> 确定', ['class' => 'btn blue ajax-post', 'target-form' => 'form-aaa']) ?>

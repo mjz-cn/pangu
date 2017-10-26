@@ -10,6 +10,8 @@ namespace backend\controllers;
 
 
 use backend\models\search\BonusSearch;
+use backend\models\search\CheckHuobiSearch;
+use backend\models\search\CheckInfoSearch;
 use backend\models\search\FinanceSearch;
 use backend\models\search\ManageHuobiSearch;
 use backend\models\MangageHuobiForm;
@@ -68,12 +70,30 @@ class FinanceController extends BaseController
     }
 
     /**
-     * 货币提现管理
+     * 货币提现管理 - 申请记录
      */
-    public function actionCheckHuobi()
+    public function actionCheckHb()
     {
-        return $this->render('check_huobi', [
+        $searchModel = new CheckHuobiSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        return $this->render('check_hb', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * 货币提现管理 － 提现记录
+     */
+    public function actionCheckedHb()
+    {
+        $searchModel = new CheckHuobiSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('checked_hb', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -103,12 +123,30 @@ class FinanceController extends BaseController
     }
 
     /**
-     * 审核状况
+     * 审核状况 未审核
      */
     public function actionCheckInfo()
     {
-        return $this->render('check_info', [
+        $searchModel = new CheckInfoSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        return $this->render('check_info', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * 审核状况 已审核
+     */
+    public function actionCheckedInfo()
+    {
+        $searchModel = new CheckInfoSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('checked_info', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 }

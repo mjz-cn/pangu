@@ -1,36 +1,31 @@
 <?php
-
-namespace common\models\search;
-
-use common\models\NormalUser;
-use yii\base\Model;
-use yii\data\ActiveDataProvider;
-
 /**
  * Created by PhpStorm.
  * User: mjz
- * Date: 17/9/29
- * Time: 下午9:50
+ * Date: 17/10/23
+ * Time: 下午2:47
  */
 
-class NormalUserSearch extends Model
+namespace backend\models\search;
+
+
+use common\models\records\ConsumeLog;
+use yii\base\Model;
+use yii\data\ActiveDataProvider;
+
+class CheckInfoSearch extends Model
 {
-    // 用户账号
+// 用户账号
     public $user_id;
     // 查询开始时间
     public $start_time;
     // 查询结束时间
     public $end_time;
-    // 推荐人账号
-    public $referrer_id;
-    // 状态
-    public $is_actived;
 
     public function rules()
     {
         return [
-            ['is_actived', 'required'],
-            [['user_id', 'referrer_id', 'is_actived'], 'integer'],
+            [['user_id'], 'integer'],
             [['start_time', 'end_time'], 'date', 'format' => 'php:Y-m-d']
         ];
     }
@@ -39,7 +34,6 @@ class NormalUserSearch extends Model
     {
         return [
             'user_id' => '用户账号',
-            'referrer_id' => '推荐人账号',
             'start_time' => '起始时间',
             'end_time' => '结束时间',
         ];
@@ -54,8 +48,13 @@ class NormalUserSearch extends Model
      */
     public function search($params)
     {
-        $query = NormalUser::find();
+        $query = ConsumeLog::find();
 
+        /**
+         * 在PHP5中 对象的复制是通过引用来实现的，
+         * 运行到return处的$query对象和这里的$query在内存中的地址是一样的，
+         * 所以不需要将这个语句写在return前
+         */
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
@@ -67,20 +66,9 @@ class NormalUserSearch extends Model
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
-            $query->where('0=1');
+            // $query->where('0=1');
             return $dataProvider;
         }
-
-        $query->andFilterWhere([
-            "is_actived" => $this->is_actived
-        ]);
-
-        if (!empty($this->user_id)) {
-            $query->andFilterWhere(['id' => $this->user_id]);
-        } else if (!empty($this->referrer_id)) {
-            $query->andFilterWhere(['id' => $this->referrer_id]);
-        }
-        $query->andFilterWhere(['between', 'create_time', strtotime($this->start_time), strtotime($this->end_time . ' +1 day')]);
 
         return $dataProvider;
     }

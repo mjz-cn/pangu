@@ -21,6 +21,8 @@ use Yii;
  * @property integer $broker_id
  * @property string $broker_path
  * @property integer $referrer_id
+ * @property integer $baodan_id
+ * @property integer $level
  * @property string $real_name
  * @property integer $gender
  * @property string $card_id
@@ -29,6 +31,11 @@ use Yii;
  * @property integer $status
  * @property integer $update_time
  * @property integer $create_time
+ * @property integer $is_shidan
+ * @property integer $is_baned
+ * @property integer $is_actived
+ * @property float $reg_money
+ * @property integer $reg_user_id
  *
  * @property Address[] $addresses
  * @property ConsumeLog[] $consumeLogs
@@ -38,9 +45,12 @@ class User extends \yii\db\ActiveRecord
 {
 
     const STATUS_DELETED = 0;
-    const STATUS_NORMAL  = 1;
+    const STATUS_NORMAL = 1;
     const STATUS_ACTIVED = 2;
     const STATUS_NOT_ACTIVED = 3;
+
+    const LEVEL_UNSET = 0;
+    const LEVEL_VIP = 1;
 
     /**
      * @inheritdoc
@@ -56,8 +66,12 @@ class User extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username', 'password', 'salt', 'email', 'real_name', 'gender', 'card_id', 'bank_account', 'bank_name'], 'required'],
-            [['role', 'reg_ip', 'last_login_time', 'last_login_ip', 'broker_id', 'referrer_id', 'gender', 'status', 'update_time', 'create_time'], 'integer'],
+            [['username', 'password', 'salt', 'email', 'real_name', 'gender', 'card_id', 'bank_account'], 'required'],
+            [['role', 'reg_ip', 'last_login_time', 'last_login_ip', 'broker_id', 'referrer_id',
+                'baodan_id', 'gender', 'level', 'status', 'update_time', 'create_time', 'is_shidan',
+                'is_baned', 'is_actived', 'reg_user_id'],
+                'integer'],
+            [['reg_money'], 'number'],
             [['username', 'password', 'salt', 'email', 'image', 'real_name', 'bank_account', 'bank_name'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 15],
             [['broker_path', 'card_id'], 'string', 'max' => 20],
@@ -93,6 +107,13 @@ class User extends \yii\db\ActiveRecord
             'status' => 'Status',
             'update_time' => '更新时间',
             'create_time' => '注册时间',
+            'baodan_id' => '报单中心',
+            'level' => '会员级别',
+            'is_shidan' => '是否为实单',
+            'is_baned' => '是否被封禁',
+            'is_actived' => '是否激活',
+            'reg_user_id' => '开通此用户的账号',
+            'reg_money' => '注册金额'
         ];
     }
 
@@ -125,6 +146,10 @@ class User extends \yii\db\ActiveRecord
         return $this->hasMany(ConsumeLog::className(), ['user_id' => 'id']);
     }
 
+    public function getWallet() {
+        return $this->hasOne(Wallet::className(), ['user_id' => 'id']);
+    }
+
     /**
      * 获取推荐人
      */
@@ -147,14 +172,16 @@ class User extends \yii\db\ActiveRecord
         return static::findOne(['id' => $this->broker_id]);
     }
 
-    public function getStatusText() {
+    public function getStatusText()
+    {
         if ($this->status == static::STATUS_NORMAL) {
             return '正常';
         }
         return static::getStatusArr()[$this->status];
     }
 
-    public static function getStatusArr() {
+    public static function getStatusArr()
+    {
         return [
             static::STATUS_DELETED => '封禁',
             static::STATUS_ACTIVED => '已激活',
@@ -162,11 +189,31 @@ class User extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getLevelText()
+    {
+        if ($this->level == 0) {
+            return '普通';
+        } else if ($this->level == 1) {
+            return 'VIP';
+        } else {
+            return '未知';
+        }
+    }
+
+    public static function getLevelArr()
+    {
+        return [
+            static::LEVEL_UNSET => '',
+            static::LEVEL_VIP => 'VIP'
+        ];
+    }
+
     /**
      * 封禁用户
      * @param array $ids
      */
-    public static function banUsers($ids) {
+    public static function banUsers($ids)
+    {
         $ids_str = implode(',', $ids);
         return User::updateAll(['status' => static::STATUS_DELETED], "id in ($ids_str)");
     }
@@ -175,17 +222,20 @@ class User extends \yii\db\ActiveRecord
      * 解封用户
      * @param array $ids
      */
-    public static function UnbanUsers($ids) {
+    public static function UnbanUsers($ids)
+    {
         $ids_str = implode(',', $ids);
         return User::updateAll(['status' => static::STATUS_NORMAL], "id in ($ids_str)");
     }
 
-    public static function activeUsers($ids) {
+    public static function activeUsers($ids)
+    {
         $ids_str = implode(',', $ids);
         return User::updateAll(['status' => static::STATUS_ACTIVED], "id in ($ids_str)");
     }
 
-    public static function getUserName($id) {
+    public static function getUserName($id)
+    {
         if ($id === 0) {
             return '';
         }

@@ -198,6 +198,13 @@ $this->beginPage();
         <div class="scroll-to-top">
             <i class="icon-arrow-up"></i>
         </div>
+        <div style="display: none">
+            <form class="hide-data">
+                <input name="<?= Yii::$app->request->csrfParam ?>" type="hidden"
+                       id="<?= Yii::$app->request->csrfParam ?>"
+                       value="<?= Yii::$app->request->csrfToken ?>">
+            </form>
+        </div>
     </div>
     <?php \backend\assets\LayoutAsset::register($this); ?>
     <?php $this->endBody() ?>

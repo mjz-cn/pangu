@@ -2,11 +2,13 @@
 
 namespace backend\controllers;
 
+use backend\models\ActiveUserForm;
 use backend\models\RelationGraphForm;
 use common\models\NormalUser;
 use common\models\records\NormalUserInfo;
 use common\models\records\User;
 use common\models\search\NormalUserSearch;
+use common\utils\Constants;
 use Yii;
 use yii\web\NotFoundHttpException;
 
@@ -37,6 +39,40 @@ class UserController extends BaseController
         $this->setForward();
 
         $searchModel = new NormalUserSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * 激活用户
+     */
+    public function actionActived()
+    {
+        /* 添加当前位置到cookie供后续操作调用 */
+        $this->setForward();
+
+        $searchModel = new NormalUserSearch();
+        $searchModel->is_actived = Constants::NUMBER_TRUE;
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * 未激活用户
+     */
+    public function actionUnActived()
+    {
+        /* 添加当前位置到cookie供后续操作调用 */
+        $this->setForward();
+
+        $searchModel = new NormalUserSearch();
+        $searchModel->is_actived = Constants::NUMBER_FALSE;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -96,9 +132,9 @@ class UserController extends BaseController
      * 编辑
      * ---------------------------------------
      */
-    public function actionEdit($uid)
+    public function actionEdit($id)
     {
-        $userModel = $this->findModel($uid);
+        $userModel = $this->findModel($id);
 
         if (Yii::$app->request->isPost) {
             /* 表单验证 */
@@ -139,19 +175,15 @@ class UserController extends BaseController
      */
     public function actionDelete()
     {
-        $ids = Yii::$app->request->param('id', 0);
-        $ids = array_unique((array)$ids);
-
-        if (empty($ids)) {
-            $this->error('请选择要操作的用户!');
-        }
+        $uid = Yii::$app->request->get('id');
+        $rowCnt = User::updateAll(['status' => User::STATUS_DELETED], ['id' => $uid]);
 
         // 也要删除用此用户相关的信息
         // 由于与此用户关联的信息过多，目前只更新用户的状态为封禁状态
-        if (User::banUsers($ids) > 0) {
-            $this->success('封禁成功', $this->getForward());
+        if ($rowCnt > 0) {
+            $this->success('删除成功', $this->getForward());
         } else {
-            $this->error('封禁失败！');
+            $this->error('删除失败！');
         }
     }
 
@@ -160,17 +192,25 @@ class UserController extends BaseController
      */
     public function actionActive()
     {
-        $ids = Yii::$app->request->param('id', 0);
-        $ids = array_unique((array)$ids);
-
-        if (empty($ids)) {
-            $this->error('请选择要操作的数据!');
-        }
-
-        if (User::activeUsers($ids) > 0) {
-            $this->success('激活成功', $this->getForward());
+        $model = new ActiveUserForm();
+        $model->setAttributes(Yii::$app->request->get());
+        if ($model->validate() && $model->save()) {
+            $this->success('激活成功', $this->getForward(), true);
         } else {
-            $this->error('激活失败！');
+            $this->error(json_encode($model->errors), '', true);
+        }
+    }
+
+    public function actionCheckBan($id)
+    {
+        $model = $this->findModel($id);
+        $model->is_baned = $model->is_baned == Constants::NUMBER_FALSE ?
+            Constants::NUMBER_TRUE : Constants::NUMBER_FALSE;
+        $rowCnt = $model->update(false, ['is_baned']);
+        if ($rowCnt == 1) {
+            $this->success('操作成功', $this->getForward(), true);
+        } else {
+            $this->error(json_encode($model->errors), '', true);
         }
     }
 

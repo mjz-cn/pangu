@@ -49,6 +49,10 @@
         var target_form = $(this).attr('target-form');
         var that = this;
         var need_confirm = false;
+        var confirmText = $(that).data('confirm');
+        if (confirmText !== undefined && !confirm(confirmText)) {
+            return false;
+        }
         if (($(this).attr('type') == 'submit') || (target = $(this).attr('href')) || (target = $(this).attr('url'))) {
             form = $('.' + target_form);
 
@@ -137,10 +141,11 @@
     window.updateAlert = function (text, c) {
         text = text || 'default';
         c = c || false;
+        console.log(text);
         text = text.replace(r, function (match, grp) {
             return String.fromCharCode(parseInt(grp, 16));
         });
-        if (text != 'default') {
+        if (text !== 'default') {
             top_alert.find('.alert-content').text(text);
             if (top_alert.hasClass('block')) {
             } else {

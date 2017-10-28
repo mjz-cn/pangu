@@ -9,6 +9,7 @@
 namespace backend\models;
 
 
+use common\helpers\TransactionHelper;
 use common\models\records\User;
 use common\helpers\Constants;
 use yii\base\Model;
@@ -60,25 +61,40 @@ class ActiveUserForm extends Model
         $model->is_shidan = Constants::NUMBER_TRUE;
         $model->reg_money = 6800.0;
 
-        return $this->a($model) && $model->update('false', ['is_actived', 'is_shidan']);
+        return $this->divideRevenue($model) && $model->update('false', ['is_actived', 'is_shidan']);
     }
 
-    // 分成
-    private function a($model) {
-        // 推荐人，分15％
+    /**
+     * 分成
+     * @param $userModel User
+     */
+    private function divideRevenue($userModel)
+    {
+        $now = time();
+        $date = date('Ymd', $now);
+        if (empty($userModel->referrer_id)) {
+            // 推荐奖
+            $referrerTransaction = TransactionHelper::generateThreeTransactionForJiangjin(
+                $userModel->id,
+                $userModel->referrer_id,
+                $userModel->reg_money,
+                $now,
+                TransactionHelper::TRANSACTION_REFERRER_REVENUE);
+            // 保存到数据库
 
-        // 查看接点人往上两层的网络状况
+            // 验证有收入的用户，日奖金是否达到一万
+        }
 
-        // 计算分成，收费
+        // 一个节点的出现，最多只能产生一个平衡奖
 
-        // 在产生奖金时，同时计算扣税
+        // 拓展奖, 查找节点人的第一层子节点是否达到平衡
 
-        // 10% 作为重复消费税
+        // 管理奖, 此用户系谱图上几层是否有达到平衡
 
-        // 7.5%作为管理税
     }
 
-    private function findUser() {
+    private function findUser()
+    {
         $model = User::findOne($this->user_id);
         if (empty($model)) {
             $this->addError('user_id', '用户不存在');

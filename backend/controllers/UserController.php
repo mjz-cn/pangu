@@ -268,4 +268,15 @@ class UserController extends BaseController
             throw new NotFoundHttpException();
         }
     }
+
+    public function actionExists($username)
+    {
+        return $this->asJson(User::findOne(['username' => $username]) !== null);
+    }
+
+    public function actionValidateBroker($user_id)
+    {
+        // 验证此用户下是否已经有两个节点人
+
+    }
 }

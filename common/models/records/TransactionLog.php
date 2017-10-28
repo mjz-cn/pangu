@@ -3,13 +3,15 @@
 namespace common\models\records;
 
 use backend\models\AdminUser;
+use common\helpers\TransactionConstants;
+use common\helpers\TransactionHelper;
 use Yii;
 
 /**
- * This is the model class for table "{{%consume_log}}".
+ * This is the model class for table "{{%transaction_log}}".
  *
  * @property integer $user_id
- * @property integer $consume_type
+ * @property integer $transaction_type
  * @property integer $currency_type
  * @property double $amount
  * @property integer $from_user_id
@@ -20,22 +22,15 @@ use Yii;
  *
  * @property User $user
  */
-class ConsumeLog extends \yii\db\ActiveRecord
+class TransactionLog extends \yii\db\ActiveRecord
 {
-
-    const CURRENCY_HUOBI = 1;
-    const CURRENCY_DIANZIBI = 2;
-    const CURRENCY_JIANGJIN = 3;
-    const CURRENCY_XIAOFEI = 4;
-
-    const CONSUME_ADMIN = 1;
 
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%consume_log}}';
+        return '{{%transaction_log}}';
     }
 
     /**
@@ -44,8 +39,8 @@ class ConsumeLog extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'consume_type', 'currency_type', 'date'], 'required'],
-            [['user_id', 'consume_type', 'currency_type', 'from_user_id', 'from_admin_id', 'create_time'], 'integer'],
+            [['user_id', 'transaction_type', 'currency_type', 'date'], 'required'],
+            [['user_id', 'transaction_type', 'currency_type', 'from_user_id', 'from_admin_id', 'create_time'], 'integer'],
             [['amount'], 'number'],
             [['date'], 'safe'],
             [['desc'], 'string', 'max' => 255],
@@ -60,14 +55,14 @@ class ConsumeLog extends \yii\db\ActiveRecord
     {
         return [
             'user_id' => 'User ID',
-            'consume_type' => 'Consume Type',
-            'currency_type' => 'Currency Type',
-            'amount' => 'Amount',
+            'transaction_type' => '交易类型',
+            'currency_type' => '货币类型',
+            'amount' => '金额',
             'from_user_id' => 'From User ID',
             'from_admin_id' => 'From Admin ID',
-            'desc' => 'Desc',
-            'create_time' => 'Create Time',
-            'date' => 'Date',
+            'desc' => '描述',
+            'create_time' => '交易时间',
+            'date' => '交易日期',
         ];
     }
 
@@ -99,20 +94,15 @@ class ConsumeLog extends \yii\db\ActiveRecord
         return $this->hasOne(Administrator::className(), ['id' => 'from_admin_id']);
     }
 
-    public static function getCurrencyText($t) {
-        $arr = static::getCurrencyArr();
-        if (isset($t)) {
-            return $arr[$t];
-        }
-        return '未知';
+    public function currencyText() {
+        return TransactionHelper::$CURRENCY_TYPE_ARR[$this->currency_type];
     }
 
-    public static function getCurrencyArr() {
-        return [
-            static::CURRENCY_HUOBI => '货币',
-            static::CURRENCY_DIANZIBI => '电子币',
-            static::CURRENCY_JIANGJIN => '奖金币',
-            static::CURRENCY_XIAOFEI => '消费币',
-        ];
+    public function transactionText() {
+        return TransactionHelper::$TRANSACTION_TYPE_ARR[$this->transaction_type];
+    }
+
+    public function generateDesc() {
+        $this->desc = TransactionHelper::generateDescWithModel($this);
     }
 }

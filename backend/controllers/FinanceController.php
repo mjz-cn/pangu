@@ -20,7 +20,7 @@ use Yii;
 class FinanceController extends BaseController
 {
 
-    public function actionIndex()
+    public function actionIndex($detail_type = '')
     {
         $this->setForward();
 
@@ -32,6 +32,7 @@ class FinanceController extends BaseController
             'dataProvider' => $dataProvider,
         ]);
     }
+
 
 
     /**

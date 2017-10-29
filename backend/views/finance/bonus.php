@@ -1,6 +1,8 @@
 <?php
 
 use common\core\GridView;
+use common\helpers\Constants;
+use yii\helpers\Html;
 
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $searchModel backend\models\search\BonusSearch */
@@ -36,15 +38,15 @@ $columns = [
     ],
     [
         'label' => '会员级别',
-        'value' => 'real_name',
+        'value' => 'level',
     ],
     [
         'label' => '注册金额',
-        'value' => 'real_name',
+        'value' => 'reg_money',
     ],
     [
         'label' => '福利级别',
-        'value' => 'real_name',
+        'defaultValue' => '暂无'
     ],
     [
         'label' => '联系电话',
@@ -52,19 +54,26 @@ $columns = [
     ],
     [
         'label' => '是否实单',
-        'value' => 'real_name',
+        'format' => 'raw',
+        'value' => function ($model) {
+            if ($model->is_shidan == Constants::NUMBER_TRUE) {
+                return "实单";
+            } else {
+                return Html::tag("span", '空单', ['style' => 'color:red']);
+            }
+        }
     ],
     [
         'label' => '奖金余额',
-        'value' => 'real_name',
+        'value' => 'wallet.jiangjin',
     ],
     [
         'label' => '电子币余额',
-        'value' => 'real_name',
+        'value' => 'wallet.dianzi',
     ],
     [
         'label' => '消费币余额',
-        'value' => 'real_name',
+        'value' => 'wallet.chongxiao',
     ],
     [
         'label' => '谁开通',

@@ -38,7 +38,7 @@ use Yii;
  * @property integer $reg_user_id
  *
  * @property Address[] $addresses
- * @property ConsumeLog[] $consumeLogs
+ * @property TransactionLog[] $consumeLogs
  * @property NormalUserInfo $normalUserInfo
  */
 class User extends \yii\db\ActiveRecord
@@ -141,9 +141,9 @@ class User extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getConsumeLogs()
+    public function getTransactionLogs()
     {
-        return $this->hasMany(ConsumeLog::className(), ['user_id' => 'id']);
+        return $this->hasMany(TransactionLog::className(), ['user_id' => 'id']);
     }
 
     public function getWallet() {

@@ -69,10 +69,6 @@ class BaodanSearch extends Baodan
             'status' => $this->status,
         ]);
 
-        if ($this->end_time < $this->start_time || empty($this->start_time)) {
-            $this->end_time = $this->start_time;
-        }
-
         $query->andFilterWhere(['between', 'create_time', strtotime($this->start_time),
             strtotime($this->end_time . ' +1 day')]);
 

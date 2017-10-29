@@ -8,12 +8,12 @@ use yii\web\JsExpression;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\search\BonusSearch */
+/* @var $model backend\models\search\FinanceSearch */
 /* @var $form common\core\ActiveForm */
 ?>
 
 <?php $form = ActiveForm::begin([
-    'action' => ['index'],
+    'action' => ['index', 'detail_type' => $model->detail_type],
     'method' => 'get',
     'options' => [
         //'class'=>"form-inline",
@@ -24,7 +24,8 @@ use yii\widgets\ActiveForm;
 
     <div class="col-md-4">
 
-        <?php echo '<label class="control-label">时间范围</label>';
+        <?php
+        echo '<label class="control-label">时间范围</label>';
         echo DatePicker::widget([
             'model' => $model,
             'attribute' => 'start_time',
@@ -38,10 +39,33 @@ use yii\widgets\ActiveForm;
                 'format' => 'yyyy-mm-dd',
                 'autoclose' => true,
             ]
-        ]); ?>
-
+        ]);
+        ?>
     </div>
 
+    <?php
+    if ($model->detail_type != \backend\models\search\FinanceSearch::DETAIL_TYPE_ALL) {
+        echo '<div class="col-md-2" style="padding-left:0;">';
+        echo $form->field($model, "user_id")->widget(Select2::classname(), [
+            'data' => [],
+            'options' => ['placeholder' => '选择用户'],
+            'pluginOptions' => [
+                'allowClear' => true,
+                'minimumInputLength' => 2,
+                'dataType' => 'json',
+                'ajax' => [
+                    'url' => \yii\helpers\Url::toRoute('/user/search'),
+                    'delay' => 250,
+                    'data' => new JsExpression('function(params) { return {user_name:params.term}; }'),
+                    'processResults' => new JsExpression('function(data, params) {return {results: data};}'),
+                ],
+                'templateResult' => new JsExpression('function(user) { return user.username; }'),
+                'templateSelection' => new JsExpression('function (user) { return user.username; }'),
+            ],
+        ])->label('选择用户');
+        echo '</div>';
+    }
+    ?>
     <div class="col-md-2">
         <div class="form-group" style="margin-top: 24px;">
             <?= Html::submitButton('搜索', ['class' => 'btn btn-primary']) ?>
@@ -49,4 +73,5 @@ use yii\widgets\ActiveForm;
         </div>
     </div>
 </div>
+
 <?php ActiveForm::end(); ?>

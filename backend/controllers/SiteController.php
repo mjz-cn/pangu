@@ -2,6 +2,7 @@
 namespace backend\controllers;
 
 use backend\models\LoginForm;
+use backend\models\Tree;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -24,7 +25,7 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login', 'error'],
+                        'actions' => ['login', 'error', 'test', 't1'],
                         'allow' => true,
                     ],
                     [
@@ -35,6 +36,36 @@ class SiteController extends Controller
                 ],
             ]
         ];
+    }
+
+    public function actionTest() {
+//        $countries = new Tree(['name' => 'testRoot1']);
+//        $countries->makeRoot();
+//
+//        $testTreeLeft1 = new Tree(['name' => 'testTreeLeft1']);
+//        $testTreeLeft1->appendTo($countries);
+//
+//        $testTreeRight1 = new Tree(['name' => 'testTreeRight1']);
+//        $testTreeRight1->appendTo($countries);
+        $testTreeLeft1 = Tree::findOne(['name' => 'testTreeLeft1']);
+
+        $russia = new Tree(['name' => 'testTreeLeft12']);
+        $russia->appendTo($testTreeLeft1);
+//        $testTreeLeft1->appendTo($countries);
+
+//        $russia = new Tree(['name' => 'testTreeRight2']);
+//        $russia->appendTo($testTreeRight1);
+    }
+
+    public function actionT1()  {
+        $testRoot = Tree::findOne(['name' => 'testTreeRight1']);
+        $children = $testRoot->prev()->all();
+
+
+//        var_dump($testRoot);
+        var_dump($children);
+
+//        var_dump($children[0]->children(1)->all());
     }
 
     /**

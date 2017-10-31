@@ -1,19 +1,21 @@
 <?php
 
+use common\core\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use kartik\widgets\DatePicker;
 use kartik\widgets\Select2;
 use yii\helpers\Html;
 use yii\web\JsExpression;
-use yii\widgets\ActiveForm;
 
+/* @var $searchModel \yii\base\Model */
 /* @var $this yii\web\View */
-/* @var $model backend\models\search\BonusSearch */
 /* @var $form common\core\ActiveForm */
+/* @var $shownFields   array   要展示在在表单中的field */
+
 ?>
 
 <?php $form = ActiveForm::begin([
-    'action' => ['bonus'],
+    'action' => [Yii::$app->request->pathInfo],
     'method' => 'get',
     'options' => [
         //'class'=>"form-inline",
@@ -21,7 +23,15 @@ use yii\widgets\ActiveForm;
     ]
 ]); ?>
 <div class="row">
-
+    <div style="display:none;">
+        <?php
+        if (!empty($hiddenFields)) {
+            foreach ($hiddenFields as $hiddenField) {
+                echo $form->field($model, $hiddenField)->hiddenInput();
+            }
+        }
+        ?>
+    </div>
     <div class="col-md-2" style="padding-left:0;">
         <?= $form->field($model, "user_id")->widget(Select2::classname(), [
             'data' => [],
@@ -38,27 +48,25 @@ use yii\widgets\ActiveForm;
                 ],
                 'templateResult' => new JsExpression('function(user) { return user.username; }'),
                 'templateSelection' => new JsExpression('function (user) { return user.username; }'),
-            ],
-        ]); ?>
-    </div>
-    <div class="col-md-4">
-
-        <?php echo '<label class="control-label">时间范围</label>';
-        echo DatePicker::widget([
-            'model' => $model,
-            'attribute' => 'start_time',
-            'attribute2' => 'end_time',
-            'options' => ['placeholder' => '开始日期'],
-            'options2' => ['placeholder' => '结束日期'],
-            'separator' => '至',
-            'type' => DatePicker::TYPE_RANGE,
-            'form' => $form,
-            'pluginOptions' => [
-                'format' => 'yyyy-mm-dd',
-                'autoclose' => true,
             ]
         ]); ?>
+    </div>
 
+    <div class="col-md-4">
+        <?= $form->field($model, 'start_time')->widget(DatePicker::className(), [
+                'attribute' => 'start_time',
+                'attribute2' => 'end_time',
+                'options' => ['placeholder' => '开始日期'],
+                'options2' => ['placeholder' => '结束日期'],
+                'separator' => '至',
+                'type' => DatePicker::TYPE_RANGE,
+                'form' => $form,
+                'pluginOptions' => [
+                    'format' => 'yyyy-mm-dd',
+                    'autoclose' => true,
+                ]
+            ]
+        )->label('时间范围'); ?>
     </div>
 
     <div class="col-md-2">

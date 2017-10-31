@@ -48,7 +48,7 @@ $this->params['title_sub'] = '添加前台用户';  // 在\yii\base\View中有$p
                 <div class="input-icon left">
                     <i class="icon-lock"></i>
                     <input type="password" class="form-control c-md-3"
-                           name=<?= '"' . $model->formName() . '[password]"' ?> placeholder="密码不变请留空"/>
+                           name=<?= '"' . $model->formName() . '[password]"' ?> placeholder="密码不变请留空" />
                 </div>
             </div>
         </div>

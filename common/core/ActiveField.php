@@ -1,4 +1,5 @@
 <?php
+
 namespace common\core;
 
 use Yii;
@@ -20,10 +21,10 @@ class ActiveField extends \yii\widgets\ActiveField
     public $labelOptions = ['class' => ''];
 
     /* tip 提示标签选项 */
-    public $hintOptions = ['tag'=>'span', 'class' => 'help-inline'];
+    public $hintOptions = ['tag' => 'span', 'class' => 'help-inline'];
 
     /* error 错误选项 */
-    public $errorOptions = ['tag'=>'span', 'class' => 'help-block'];
+    public $errorOptions = ['tag' => 'span', 'class' => 'help-block'];
 
     public $enableClientValidation = true;
 
@@ -34,19 +35,20 @@ class ActiveField extends \yii\widgets\ActiveField
      * @return $this
      * ---------------------------------------
      */
-    public function iconTextInput($options = []){
+    public function iconTextInput($options = [])
+    {
 
 
         /* 设置图标左右位置 */
         $icon_pos = isset($options['iconPos']) ? $options['iconPos'] : 'left';
         /* 设置图标样式 */
         $icon_class = isset($options['iconClass']) ? $options['iconClass'] : 'icon-user';
-        $icon_tag = Html::tag('i', '', ['class'=>$icon_class]);
+        $icon_tag = Html::tag('i', '', ['class' => $icon_class]);
 
         $input = Html::activeTextInput($this->model, $this->attribute, $options);
-        $input = $icon_pos == 'left'?$icon_tag.$input:$input.$icon_tag;
+        $input = $icon_pos == 'left' ? $icon_tag . $input : $input . $icon_tag;
 
-        $this->parts['{input}'] = Html::tag('div', $input, ['class'=>'input-icon '.$icon_pos]);
+        $this->parts['{input}'] = Html::tag('div', $input, ['class' => 'input-icon ' . $icon_pos]);
 
         return $this;
     }
@@ -60,22 +62,23 @@ class ActiveField extends \yii\widgets\ActiveField
      * @return $this
      * ---------------------------------------
      */
-    public function radioList($items, $options = [], $class='mt-radio mt-radio-outline'){
+    public function radioList($items, $options = [], $class = 'mt-radio mt-radio-outline')
+    {
         $class = $class ? $class : 'radio';
         $options = array_merge([
-            'tag'=>false,
-            'encode'=>false,
-            'itemOptions'=>[
-                'labelOptions'=>[
+            'tag' => false,
+            'encode' => false,
+            'itemOptions' => [
+                'labelOptions' => [
                     'class' => $class,
                     'style' => 'padding-right:20px;margin-bottom:5px;',
                 ],
             ]
         ], $options);
-        
+
         $this->adjustLabelFor($options);
         $this->parts['{input}'] = Html::activeRadioList($this->model, $this->attribute, $items, $options);
-        
+
         return $this;
     }
 
@@ -88,13 +91,14 @@ class ActiveField extends \yii\widgets\ActiveField
      * @return $this
      * ---------------------------------------
      */
-    public function checkboxList($items, $options = [], $class='mt-checkbox mt-checkbox-outline'){
+    public function checkboxList($items, $options = [], $class = 'mt-checkbox mt-checkbox-outline')
+    {
         $class = $class ? $class : 'mt-checkbox';
         $options = array_merge([
-            'tag'=>false,
-            'itemOptions'=>[
-                'labelOptions'=>[
-                    'class'=>$class,
+            'tag' => false,
+            'itemOptions' => [
+                'labelOptions' => [
+                    'class' => $class,
                     'style' => 'padding-right:20px;margin-bottom:5px;',
                 ]
             ]
@@ -113,9 +117,10 @@ class ActiveField extends \yii\widgets\ActiveField
      * @return \yii\widgets\ActiveField
      * ---------------------------------------
      */
-    public function selectList($items, $options = []){
-        $options = array_merge(['widthclass'=>''], $options);
-        $this->template = '<div>{label}{hint}</div><div class="'.$options['widthclass'].'">{input}</div>{error}';
+    public function selectList($items, $options = [])
+    {
+        $options = array_merge(['widthclass' => ''], $options);
+        $this->template = '<div>{label}{hint}</div><div class="' . $options['widthclass'] . '">{input}</div>{error}';
         return parent::dropDownList($items, $options);
     }
 
@@ -135,9 +140,8 @@ class ActiveField extends \yii\widgets\ActiveField
         $config['model'] = $this->model;
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
-        $options['class'] = isset($options['class'])?$options['class']:'c-md-4';
-        $this->parts['{input}'] = '<div class="'.$options['class'].'">'.$class::widget($config).'</div>';
-
+        $options['class'] = isset($options['class']) ? $options['class'] : 'c-md-4';
+        $this->parts['{input}'] = Html::tag('div', $class::widget($config), $options);
         return $this;
     }
 
@@ -152,7 +156,7 @@ class ActiveField extends \yii\widgets\ActiveField
     public function hint($content, $options = [])
     {
         $options = array_merge($this->hintOptions, $options);
-        $options['hint'] = $content?'（'.$content.'）':'';
+        $options['hint'] = $content ? '（' . $content . '）' : '';
         $this->parts['{hint}'] = Html::activeHint($this->model, $this->attribute, $options);
 
         return $this;
@@ -165,9 +169,10 @@ class ActiveField extends \yii\widgets\ActiveField
      * @return \yii\widgets\ActiveField
      * ---------------------------------------
      */
-    public function error($options = []){
+    public function error($options = [])
+    {
 
         return parent::error($options);
     }
-    
+
 }

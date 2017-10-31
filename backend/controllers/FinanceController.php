@@ -132,32 +132,4 @@ class FinanceController extends BaseController
             'model' => $model
         ]);
     }
-
-    /**
-     * 审核状况 未审核
-     */
-    public function actionCheckInfo()
-    {
-        $searchModel = new CheckInfoSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('check_info', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * 审核状况 已审核
-     */
-    public function actionCheckedInfo()
-    {
-        $searchModel = new CheckInfoSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('checked_info', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
 }

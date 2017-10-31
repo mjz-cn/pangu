@@ -6,8 +6,15 @@
  * Time: 上午11:29
  */
 
+namespace common\helpers;
+
+
 class BrokerHelper
 {
+
+    // 管理奖最高追溯的层数
+    CONST REVENUE_UP_LEVEL = 5;
+
 
     /**
      * 验证用户是否能成为节点人
@@ -25,5 +32,6 @@ class BrokerHelper
      */
     public function a()
     {
+
     }
 }

@@ -8,10 +8,10 @@
 
 use common\assets\BootstrapDialogAsset;
 use common\core\ActiveForm;
-use common\models\records\ConsumeLog;
+use common\helpers\TransactionHelper;
 use kartik\helpers\Html;
 use kartik\widgets\Select2;
-use yii\grid\GridView;
+use common\core\GridView;
 use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
@@ -63,7 +63,7 @@ $columns = [
         </div>
         <div class="actions">
             <div class="btn-group btn-group-devided">
-                <?= Html::button('加减(电子币/货币)', [
+                <?= Html::button('加减(电子币/奖金)', [
                     'class' => 'btn btn-primary',
                     "data-toggle" => "modal",
                     "data-target" => "#myModal"])
@@ -83,23 +83,6 @@ $columns = [
                        value="<?= Yii::$app->request->csrfToken ?>">
                 <?= GridView::widget([
                     'dataProvider' => $dataProvider, // 列表数据
-                    'options' => ['class' => 'grid-view'],
-                    /* 表格配置 */
-                    'tableOptions' => ['class' => 'table table-striped table-bordered table-condensed table-hover order-column dataTable no-footer'],
-                    /* 重新排版 摘要、表格、分页 */
-                    'layout' => '{items}<div class=""><div class="col-md-5 col-sm-5">{summary}</div><div class="col-md-7 col-sm-7">
-                    <div class="dataTables_paginate paging_bootstrap_full_number" style="text-align:right;">{pager}</div></div></div>',
-                    /* 配置摘要 */
-                    'summaryOptions' => ['class' => 'pagination'],
-                    /* 配置分页样式 */
-                    'pager' => [
-                        'options' => ['class' => 'pagination', 'style' => 'visibility: visible;'],
-                        'nextPageLabel' => '下一页',
-                        'prevPageLabel' => '上一页',
-                        'firstPageLabel' => '第一页',
-                        'lastPageLabel' => '最后页'
-                    ],
-                    /* 定义列表格式 */
                     'columns' => $columns,
                 ]); ?>
             </form>
@@ -116,7 +99,7 @@ $columns = [
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="myModalLabel">加减(电子币/货币)</h4>
+                <h4 class="modal-title" id="myModalLabel">加减(电子币/奖金)</h4>
             </div>
             <div class="modal-body">
                 <?php $form = ActiveForm::begin([
@@ -146,7 +129,7 @@ $columns = [
                 ]); ?>
 
                 <?= $form->field($model, 'huobi_type')->radioList([
-                    ConsumeLog::CURRENCY_DIANZIBI => '电子币', ConsumeLog::CURRENCY_HUOBI => '货币'
+                    TransactionHelper::CURRENCY_DIANZIBI => '电子币', TransactionHelper::CURRENCY_JIANGJIN => '奖金'
                 ]) ?>
 
                 <?= $form->field($model, 'amount')->textInput(['type' => 'number'])->label('数值(正数代表增加,负数代表扣除)') ?>

@@ -44,8 +44,6 @@ use yii\widgets\ActiveForm;
         ]); ?>
     </div>
     <div class="col-md-4">
-
-
         <?php
         echo '<label class="control-label">时间范围</label>';
         echo DatePicker::widget([

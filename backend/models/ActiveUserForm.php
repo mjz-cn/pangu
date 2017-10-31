@@ -9,9 +9,11 @@
 namespace backend\models;
 
 
+use common\helpers\BrokerHelper;
 use common\helpers\TransactionHelper;
 use common\models\records\User;
 use common\helpers\Constants;
+use common\models\UserTree;
 use yii\base\Model;
 
 class ActiveUserForm extends Model
@@ -61,36 +63,58 @@ class ActiveUserForm extends Model
         $model->is_shidan = Constants::NUMBER_TRUE;
         $model->reg_money = 6800.0;
 
-        return $this->divideRevenue($model) && $model->update('false', ['is_actived', 'is_shidan']);
+        return $model->update('false', ['is_actived', 'is_shidan'] && $this->shareRegMoney($model));
     }
 
     /**
-     * 分成
+     * 对注册资金进行分成
+     *
      * @param $userModel User
      */
-    private function divideRevenue($userModel)
+    private function shareRegMoney($userModel)
     {
         $now = time();
         $date = date('Ymd', $now);
         if (empty($userModel->referrer_id)) {
             // 推荐奖
-            $referrerTransaction = TransactionHelper::generateThreeTransactionForJiangjin(
+            TransactionHelper::saveRevenueTransaction(
                 $userModel->id,
                 $userModel->referrer_id,
                 $userModel->reg_money,
                 $now,
                 TransactionHelper::TRANSACTION_REFERRER_REVENUE);
-            // 保存到数据库
-
-            // 验证有收入的用户，日奖金是否达到一万
         }
 
         // 一个节点的出现，最多只能产生一个平衡奖
+        // 检查是否有左兄弟节点
+        $userTreeNode = UserTree::findOne(['user_id' => $userModel->id]);
+        $prevNode = $userTreeNode->prev()->one();
 
-        // 拓展奖, 查找节点人的第一层子节点是否达到平衡
+        if (empty($prevNode)) {
+            // 检查整颗树中达到平衡的子树, 管理奖
+            for ($i = 2; $i < BrokerHelper::REVENUE_UP_LEVEL; $i++) {
+                $parent = $userTreeNode->parents(i)->one();
+                $children = $parent->children($i)->all();
+                if (count($children) == 2) {
+                    TransactionHelper::saveRevenueTransaction(
+                        $userModel->id,
+                        $userModel->referrer_id,
+                        $userModel->reg_money,
+                        $now,
+                        TransactionHelper::TRANSACTION_BD_REVENUE);
+                    break;
+                }
+            }
 
-        // 管理奖, 此用户系谱图上几层是否有达到平衡
-
+        } else {
+            // 拓展奖, 左边有兄弟节点，说明第一次达到平衡，给节点人，增加奖金
+            TransactionHelper::saveRevenueTransaction(
+                $userModel->id,
+                $userModel->referrer_id,
+                $userModel->reg_money,
+                $now,
+                TransactionHelper::TRANSACTION_BD_REVENUE_1);
+        }
     }
 
     private function findUser()

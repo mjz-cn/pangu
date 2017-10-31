@@ -21,6 +21,7 @@ use yii\widgets\ActiveForm;
     ]
 ]); ?>
 <div class="row">
+
     <div class="col-md-2" style="padding-left:0;">
         <?= $form->field($model, "user_id")->widget(Select2::classname(), [
             'data' => [],

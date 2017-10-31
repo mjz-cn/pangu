@@ -10,17 +10,20 @@ namespace backend\controllers;
 
 
 use backend\models\search\BonusSearch;
-use backend\models\search\CheckHuobiSearch;
+use backend\models\search\ExchangeSearch;
 use backend\models\search\CheckInfoSearch;
 use backend\models\search\FinanceSearch;
+use backend\models\search\JiangjinToDianziSearch;
 use backend\models\search\ManageHuobiSearch;
 use backend\models\MangageHuobiForm;
+use common\models\records\ExchangeLog;
+use common\models\search\TransferSearch;
 use Yii;
 
 class FinanceController extends BaseController
 {
 
-    public function actionIndex()
+    public function actionIndex($detail_type = '')
     {
         $this->setForward();
 
@@ -32,6 +35,7 @@ class FinanceController extends BaseController
             'dataProvider' => $dataProvider,
         ]);
     }
+
 
 
     /**
@@ -54,8 +58,15 @@ class FinanceController extends BaseController
      */
     public function actionTransfer()
     {
-        return $this->render('transfer', [
 
+        $this->setForward();
+
+        $searchModel = new TransferSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('transfer', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -64,34 +75,34 @@ class FinanceController extends BaseController
      */
     public function actionBonusToDianzibi()
     {
-        return $this->render('b_to_dz', [
+        $this->setForward();
 
-        ]);
-    }
-
-    /**
-     * 货币提现管理 - 申请记录
-     */
-    public function actionCheckHb()
-    {
-        $searchModel = new CheckHuobiSearch();
+        $searchModel = new JiangjinToDianziSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('check_hb', [
+        return $this->render('jiangjin_to_dz', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
 
     /**
-     * 货币提现管理 － 提现记录
+     * 货币提现管理 - 申请记录
      */
-    public function actionCheckedHb()
+    public function actionExchange()
     {
-        $searchModel = new CheckHuobiSearch();
+        if (Yii::$app->request->isPost) {
+            $msg = ExchangeLog::exchange(Yii::$app->request->get('eid'), Yii::$app->request->get('status'));
+            if (empty($msg)) {
+                $this->success('审核成功');
+            } else {
+                $this->error($msg);
+            }
+        }
+        $searchModel = new ExchangeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('checked_hb', [
+        return $this->render('exchange', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);

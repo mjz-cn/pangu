@@ -28,6 +28,7 @@ use Yii;
  * @property string $card_id
  * @property string $bank_account
  * @property string $bank_name
+ * @property string $bank_username
  * @property integer $status
  * @property integer $update_time
  * @property integer $create_time
@@ -38,7 +39,7 @@ use Yii;
  * @property integer $reg_user_id
  *
  * @property Address[] $addresses
- * @property ConsumeLog[] $consumeLogs
+ * @property TransactionLog[] $consumeLogs
  * @property NormalUserInfo $normalUserInfo
  */
 class User extends \yii\db\ActiveRecord
@@ -66,13 +67,13 @@ class User extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username', 'password', 'salt', 'email', 'real_name', 'gender', 'card_id', 'bank_account'], 'required'],
+            [['username', 'password', 'phone', 'salt', 'email', 'real_name', 'gender', 'card_id', 'bank_account', 'bank_name', 'bank_username'], 'required'],
             [['role', 'reg_ip', 'last_login_time', 'last_login_ip', 'broker_id', 'referrer_id',
                 'baodan_id', 'gender', 'level', 'status', 'update_time', 'create_time', 'is_shidan',
                 'is_baned', 'is_actived', 'reg_user_id'],
                 'integer'],
             [['reg_money'], 'number'],
-            [['username', 'password', 'salt', 'email', 'image', 'real_name', 'bank_account', 'bank_name'], 'string', 'max' => 255],
+            [['username', 'password', 'salt', 'email', 'image', 'real_name', 'bank_account', 'bank_name', 'bank_username'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 15],
             [['broker_path', 'card_id'], 'string', 'max' => 20],
             [['username'], 'unique'],
@@ -104,6 +105,7 @@ class User extends \yii\db\ActiveRecord
             'card_id' => '身份证号',
             'bank_account' => '银行账号',
             'bank_name' => '开户行',
+            'bank_username' => '银行帐户姓名',
             'status' => 'Status',
             'update_time' => '更新时间',
             'create_time' => '注册时间',
@@ -141,9 +143,9 @@ class User extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getConsumeLogs()
+    public function getTransactionLogs()
     {
-        return $this->hasMany(ConsumeLog::className(), ['user_id' => 'id']);
+        return $this->hasMany(TransactionLog::className(), ['user_id' => 'id']);
     }
 
     public function getWallet() {

@@ -11,9 +11,14 @@ namespace common\helpers;
 
 use common\models\records\TransactionLog;
 use common\models\records\User;
+use common\models\records\Wallet;
+use yii\base\Exception;
 
 class TransactionHelper
 {
+
+    const DAILY_JIANGJIN = 10000;
+
     /**
      * 货币类型
      */
@@ -47,11 +52,12 @@ class TransactionHelper
     const TRANSACTION_MANAGE_TAX = 5;
     const TRANSACTION_CHONGXIAO_TAX = 6;
     // 提现税收 3%
-    const TRANSACTION_TIXIAN_TAX = 7;
+    const TRANSACTION_EXCHANGE = 7;
     // 转账转出
     const TRANSACTION_TRANSFER_IN = 8;
     // 转账转入
     const TRANSACTION_TRANSFER_OUT = 9;
+    const TRANSACTION_JIANGJIN_TO_DIANZIBI = 10;
 
     public static $TRANSACTION_TYPE_ARR = [
         TransactionHelper::TRANSACTION_ADMIN => "来自管理员",
@@ -60,7 +66,7 @@ class TransactionHelper
         TransactionHelper::TRANSACTION_BD_REVENUE_1 => "管理奖",
         TransactionHelper::TRANSACTION_MANAGE_TAX => "管理税",
         TransactionHelper::TRANSACTION_CHONGXIAO_TAX => "重复消费",
-        TransactionHelper::TRANSACTION_TIXIAN_TAX => "提现税",
+        TransactionHelper::TRANSACTION_EXCHANGE => "提现税",
         TransactionHelper::TRANSACTION_TRANSFER_IN => "转账-转入",
         TransactionHelper::TRANSACTION_TRANSFER_OUT => "转账-转出",
     ];
@@ -78,7 +84,7 @@ class TransactionHelper
     const RATIO_MANAGE_TAX = 0.75;
     const RATIO_CHONGXIAO_TAX = 0.10;
     // 提现税收 3%
-    const RATIO_TIXIAN_TAX = 0.03;
+    const RATIO_EXCHANGE_TAX = 0.03;
 
     /**
      * @param $model TransactionLog
@@ -201,16 +207,54 @@ class TransactionHelper
         return array_merge([$jiangjinTransaction], static::generateTaxTransactionForJiangjin($jiangjinTransaction));
     }
 
+
     /**
-     * 同时保存一个用户的多条记录
+     * 保存产生奖金的交易记录, 如果用户当日收到的奖金已经超过1万，
+     * 则收到的奖金置为0
      *
-     * @param $transactions array 同一个用户的多条交易记录
+     * @param $userId               integer     交易对象
+     * @param $fromUserId           integer     产生交易的对象
+     * @param $originAmount         integer     原始额度，不同的交易类型产生不同的奖金
+     * @param $transactionTime      integer     交易时间
+     * @param $transactionType      integer     交易类型
+     * @return int|mixed            返回用户今天收到的奖金数量
      */
-    public static function saveTransactions($transactions)
+    public static function saveRevenueTransaction($userId, $fromUserId, $originAmount, $transactionTime, $transactionType)
     {
-        // 获取此次交易用户的收入
+        // 获取用户今天的奖金
+        $todayJiangjin = TransactionLog::find()->where([
+                'user_id' => $userId,
+                'currency_type' => static::CURRENCY_JIANGJIN,
+                'date' => date("Ymd", $transactionTime)]
+        )->sum("amount");
 
-        // 验证用户日收入是否达到一万
+        $transactions = static::generateThreeTransactionForJiangjin($userId, $fromUserId, $originAmount, $transactionTime, $transactionType);
+        $totalAmount = 0;
 
+        $wallet = Wallet::getValidWallet($userId);
+
+        $db = \Yii::$app->db;
+        $dbTransaction = $db->beginTransaction();
+        try {
+            foreach ($transactions as $transactionLog) {
+                if ($todayJiangjin >= static::DAILY_JIANGJIN) {
+                    $transactionLog->amout = 0.0;
+                }
+                if ($transactionLog->currency_type == TransactionHelper::CURRENCY_CHONGXIAO) {
+                    $wallet->chongxiao += $transactionLog->amout;
+                }
+                $totalAmount += $transactionLog->amout;
+                $transactionLog->save();
+            }
+            // 更新钱包, 奖金, 重消
+            $wallet->jiangjin += $totalAmount;
+            $wallet->update();
+
+            $dbTransaction->commit();
+        } catch (Exception $e) {
+            \Yii::error("save revenue transaction error, $userId, $fromUserId, $originAmount, $transactionTime, $transactionType");
+            $dbTransaction->rollback();
+        }
+        return $todayJiangjin + $totalAmount;
     }
 }

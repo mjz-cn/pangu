@@ -10,6 +10,7 @@ use Yii;
 /**
  * This is the model class for table "{{%transaction_log}}".
  *
+ * @property integer $id
  * @property integer $user_id
  * @property integer $transaction_type
  * @property integer $currency_type
@@ -40,7 +41,7 @@ class TransactionLog extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'transaction_type', 'currency_type', 'date'], 'required'],
-            [['user_id', 'transaction_type', 'currency_type', 'from_user_id', 'from_admin_id', 'create_time'], 'integer'],
+            [['id', 'user_id', 'transaction_type', 'currency_type', 'from_user_id', 'from_admin_id', 'create_time'], 'integer'],
             [['amount'], 'number'],
             [['date'], 'safe'],
             [['desc'], 'string', 'max' => 255],
@@ -54,6 +55,7 @@ class TransactionLog extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
+            'id' => 'ID',
             'user_id' => 'User ID',
             'transaction_type' => '交易类型',
             'currency_type' => '货币类型',

@@ -32,7 +32,9 @@
         "yiisoft/yii2-httpclient": "^2.0",
         "e282486518/yii2-console-migration": "*",
         "vlucas/phpdotenv": "^2.4",
-        "bower-asset/bootstrap3-dialog": "^1.35"
+        "bower-asset/bootstrap3-dialog": "^1.35",
+        "kartik-v/yii2-tree-manager": "@dev",
+        "creocoder/yii2-nested-sets": "^0.9.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
@@ -49,6 +51,12 @@
                 "npm-asset-library": "vendor/npm",
                 "bower-asset-library": "vendor/bower"
             }
+        }
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
         }
     }
 }

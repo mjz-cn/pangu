@@ -9,7 +9,8 @@
 namespace backend\models;
 
 
-use common\models\records\ConsumeLog;
+use common\helpers\TransactionHelper;
+use common\models\records\TransactionLog;
 use yii\base\Model;
 
 class MangageHuobiForm extends Model
@@ -24,7 +25,7 @@ class MangageHuobiForm extends Model
         return [
             [['user_id', 'huobi_type', 'amount'], 'integer'],
             [['user_id', 'huobi_type', 'amount'], 'required'],
-            ['huobi_type', 'in', 'range' => [ConsumeLog::CURRENCY_HUOBI, ConsumeLog::CURRENCY_DIANZIBI]],
+            ['huobi_type', 'in', 'range' => [TransactionHelper::CURRENCY_JIANGJIN, TransactionHelper::CURRENCY_DIANZIBI]],
             ['desc', 'string', 'max' => 255]
         ];
     }
@@ -40,12 +41,12 @@ class MangageHuobiForm extends Model
     }
 
     public function save() {
-        $model = new ConsumeLog();
+        $model = new TransactionLog();
 
         $model->user_id = $this->user_id;
         $model->amount = $this->amount;
         $model->currency_type = $this->huobi_type;
-        $model->consume_type = ConsumeLog::CONSUME_ADMIN;
+        $model->transaction_type = TransactionHelper::TRANSACTION_ADMIN;
         $model->create_time = time();
         $model->date = date('Ymd');
         $model->from_admin_id = \Yii::$app->user->identity->getId();
@@ -68,6 +69,6 @@ class MangageHuobiForm extends Model
         if ($this->amount) {
             $arg1 = "扣除";
         }
-        return sprintf($fmt, $arg1, ConsumeLog::getCurrencyText($this->huobi_type));
+        return sprintf($fmt, $arg1, TransactionHelper::currencyTypeText($this->huobi_type));
     }
 }

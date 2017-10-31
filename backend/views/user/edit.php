@@ -36,7 +36,7 @@ $this->params['title_sub'] = '添加前台用户';  // 在\yii\base\View中有$p
         ]); ?>
 
         <?= $form->field($model, 'username')->iconTextInput([
-            'class' => 'form-control c-md-2',
+            'class' => 'form-control c-md-3',
             'iconPos' => 'left',
             'iconClass' => 'icon-user',
             'placeholder' => 'username'
@@ -47,21 +47,21 @@ $this->params['title_sub'] = '添加前台用户';  // 在\yii\base\View中有$p
             <div class="">
                 <div class="input-icon left">
                     <i class="icon-lock"></i>
-                    <input type="password" class="form-control c-md-2"
+                    <input type="password" class="form-control c-md-3"
                            name=<?= '"' . $model->formName() . '[password]"' ?> placeholder="密码不变请留空"/>
                 </div>
             </div>
         </div>
 
         <?= $form->field($model, 'email')->iconTextInput([
-            'class' => 'form-control c-md-2',
+            'class' => 'form-control c-md-3',
             'iconPos' => 'left',
             'iconClass' => 'icon-envelope',
             'placeholder' => 'Email Address'
         ])->label('邮箱') ?>
 
         <?= $form->field($model, 'phone')->iconTextInput([
-            'class' => 'form-control c-md-2',
+            'class' => 'form-control c-md-3',
             'iconPos' => 'left',
             'iconClass' => 'fa fa-phone',
             'placeholder' => 'Phone'
@@ -153,7 +153,7 @@ $this->params['title_sub'] = '添加前台用户';  // 在\yii\base\View中有$p
         ]); ?>
 
         <?= $form->field($model, 'real_name')->iconTextInput([
-            'class' => 'form-control c-md-2',
+            'class' => 'form-control c-md-3',
             'iconPos' => 'left',
             'iconClass' => 'icon-user',
             'placeholder' => 'real_name'
@@ -162,7 +162,7 @@ $this->params['title_sub'] = '添加前台用户';  // 在\yii\base\View中有$p
         <?= $form->field($model, 'gender')->radioList(['0' => '女', '1' => '男']) ?>
 
         <?= $form->field($model, 'card_id')->iconTextInput([
-            'class' => 'form-control c-md-2',
+            'class' => 'form-control c-md-3',
             'type' => 'number',
             'iconPos' => 'left',
             'iconClass' => 'icon-user',
@@ -170,7 +170,7 @@ $this->params['title_sub'] = '添加前台用户';  // 在\yii\base\View中有$p
         ]) ?>
 
         <?= $form->field($model, 'bank_account')->iconTextInput([
-            'class' => 'form-control c-md-2',
+            'class' => 'form-control c-md-3',
             'type' => 'number',
             'iconPos' => 'left',
             'iconClass' => 'icon-user',
@@ -178,10 +178,17 @@ $this->params['title_sub'] = '添加前台用户';  // 在\yii\base\View中有$p
         ]) ?>
 
         <?= $form->field($model, 'bank_name')->iconTextInput([
-            'class' => 'form-control c-md-2',
+            'class' => 'form-control c-md-3',
             'iconPos' => 'left',
             'iconClass' => 'icon-user',
             'placeholder' => '开户行名称'
+        ]) ?>
+
+        <?= $form->field($model, 'bank_username')->iconTextInput([
+            'class' => 'form-control c-md-3',
+            'iconPos' => 'left',
+            'iconClass' => 'icon-user',
+            'placeholder' => '银行帐户姓名'
         ]) ?>
 
         <div class="form-actions">

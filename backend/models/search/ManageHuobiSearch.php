@@ -9,7 +9,7 @@
 namespace backend\models\search;
 
 
-use common\models\records\ConsumeLog;
+use common\models\records\TransactionLog;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
@@ -45,7 +45,7 @@ class ManageHuobiSearch extends Model
      */
     public function search($params)
     {
-        $query = ConsumeLog::find();
+        $query = TransactionLog::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

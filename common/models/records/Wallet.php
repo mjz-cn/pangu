@@ -55,4 +55,14 @@ class Wallet extends \yii\db\ActiveRecord
             'update_time' => '更新时间',
         ];
     }
+
+    public static function getValidWallet($userId) {
+        $wallet = static::findOne(['user_id' => $userId]);
+        if (empty($wallet)) {
+            $wallet = new Wallet();
+            $wallet->loadDefaultValues();
+            $wallet->save();
+        }
+        return $wallet;
+    }
 }

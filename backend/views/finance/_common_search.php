@@ -8,12 +8,11 @@ use yii\web\JsExpression;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\search\FinanceSearch */
 /* @var $form common\core\ActiveForm */
 ?>
 
 <?php $form = ActiveForm::begin([
-    'action' => ['index', 'detail_type' => $model->detail_type],
+    'action' => [Yii::$app->request->pathInfo],
     'method' => 'get',
     'options' => [
         //'class'=>"form-inline",
@@ -21,32 +20,17 @@ use yii\widgets\ActiveForm;
     ]
 ]); ?>
 <div class="row">
-
-    <div class="col-md-4">
-
+    <div style="display:none;">
         <?php
-        echo '<label class="control-label">时间范围</label>';
-        echo DatePicker::widget([
-            'model' => $model,
-            'attribute' => 'start_time',
-            'attribute2' => 'end_time',
-            'options' => ['placeholder' => '开始日期'],
-            'options2' => ['placeholder' => '结束日期'],
-            'separator' => '至',
-            'type' => DatePicker::TYPE_RANGE,
-            'form' => $form,
-            'pluginOptions' => [
-                'format' => 'yyyy-mm-dd',
-                'autoclose' => true,
-            ]
-        ]);
+            if (!empty($hiddenFields)) {
+                foreach ($hiddenFields as $hiddenField) {
+                    echo $form->field($model, $hiddenField)->hiddenInput();
+                }
+            }
         ?>
     </div>
-
-    <?php
-    if ($model->detail_type != \backend\models\search\FinanceSearch::DETAIL_TYPE_ALL) {
-        echo '<div class="col-md-2" style="padding-left:0;">';
-        echo $form->field($model, "user_id")->widget(Select2::classname(), [
+    <div class="col-md-2" style="padding-left:0;">
+        <?= $form->field($model, "user_id")->widget(Select2::classname(), [
             'data' => [],
             'options' => ['placeholder' => '选择用户'],
             'pluginOptions' => [
@@ -62,16 +46,33 @@ use yii\widgets\ActiveForm;
                 'templateResult' => new JsExpression('function(user) { return user.username; }'),
                 'templateSelection' => new JsExpression('function (user) { return user.username; }'),
             ],
-        ])->label('选择用户');
-        echo '</div>';
-    }
-    ?>
+        ]); ?>
+    </div>
+    <div class="col-md-4">
+
+        <?php echo '<label class="control-label">时间范围</label>';
+        echo DatePicker::widget([
+            'model' => $model,
+            'attribute' => 'start_time',
+            'attribute2' => 'end_time',
+            'options' => ['placeholder' => '开始日期'],
+            'options2' => ['placeholder' => '结束日期'],
+            'separator' => '至',
+            'type' => DatePicker::TYPE_RANGE,
+            'form' => $form,
+            'pluginOptions' => [
+                'format' => 'yyyy-mm-dd',
+                'autoclose' => true,
+            ]
+        ]); ?>
+
+    </div>
+
     <div class="col-md-2">
         <div class="form-group" style="margin-top: 24px;">
             <?= Html::submitButton('搜索', ['class' => 'btn btn-primary']) ?>
-            <?= Html::a('重置', ['#'], ['class' => 'btn btn-default']) ?>
+            <?= Html::resetButton('重置', ['class' => 'btn btn-default']) ?>
         </div>
     </div>
 </div>
-
 <?php ActiveForm::end(); ?>

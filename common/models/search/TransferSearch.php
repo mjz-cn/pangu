@@ -2,22 +2,21 @@
 /**
  * Created by PhpStorm.
  * User: mjz
- * Date: 17/10/23
- * Time: 下午2:47
+ * Date: 17/10/30
+ * Time: 上午9:19
  */
 
-namespace backend\models\search;
+namespace common\models\search;
 
 
+use common\helpers\TransactionHelper;
 use common\models\records\TransactionLog;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
-class CheckInfoSearch extends Model
+class TransferSearch extends Model
 {
-// 用户账号
     public $user_id;
-    // 查询开始时间
     public $start_time;
     // 查询结束时间
     public $end_time;
@@ -40,8 +39,6 @@ class CheckInfoSearch extends Model
     }
 
     /**
-     * Creates data provider instance with search query applied
-     *
      * @param array $params
      *
      * @return ActiveDataProvider
@@ -50,11 +47,6 @@ class CheckInfoSearch extends Model
     {
         $query = TransactionLog::find();
 
-        /**
-         * 在PHP5中 对象的复制是通过引用来实现的，
-         * 运行到return处的$query对象和这里的$query在内存中的地址是一样的，
-         * 所以不需要将这个语句写在return前
-         */
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
@@ -65,10 +57,13 @@ class CheckInfoSearch extends Model
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+            $query->where('0=1');
             return $dataProvider;
         }
+
+        $query->andWhere(['transaction_type' => TransactionHelper::TRANSACTION_TRANSFER_IN])
+            ->andFilterWhere(['between', 'date', $this->start_time, $this->end_time])
+            ->andFilterWhere(['or', ['user_id' => $this->user_id], ['from_user_id' => $this->user_id]]);
 
         return $dataProvider;
     }

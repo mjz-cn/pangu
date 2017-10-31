@@ -83,6 +83,22 @@ $columns = [
         'label' => '开通日期',
         'value' => function($model) {return date('Y-m-d H:i', $model->create_time);},
     ],
+    [
+        'class' => 'yii\grid\ActionColumn',
+        'header' => '操作',
+        'template' => '{view}',
+        'buttons' => [
+            'view' => function ($url, $model, $key) {
+                return Html::a('查看明细', ['index',
+                    'detail_type' => \backend\models\search\FinanceSearch::DETAIL_TYPE_DAILY,
+                    'user_id' => $model['id']
+                ], [
+                    'title' => Yii::t('app', '查看明细'),
+                    'class' => 'btn btn-xs'
+                ]);
+            },
+        ],
+    ],
 ];
 ?>
 

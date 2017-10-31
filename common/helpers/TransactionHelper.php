@@ -52,11 +52,12 @@ class TransactionHelper
     const TRANSACTION_MANAGE_TAX = 5;
     const TRANSACTION_CHONGXIAO_TAX = 6;
     // 提现税收 3%
-    const TRANSACTION_TIXIAN_TAX = 7;
+    const TRANSACTION_EXCHANGE = 7;
     // 转账转出
     const TRANSACTION_TRANSFER_IN = 8;
     // 转账转入
     const TRANSACTION_TRANSFER_OUT = 9;
+    const TRANSACTION_JIANGJIN_TO_DIANZIBI = 10;
 
     public static $TRANSACTION_TYPE_ARR = [
         TransactionHelper::TRANSACTION_ADMIN => "来自管理员",
@@ -65,7 +66,7 @@ class TransactionHelper
         TransactionHelper::TRANSACTION_BD_REVENUE_1 => "管理奖",
         TransactionHelper::TRANSACTION_MANAGE_TAX => "管理税",
         TransactionHelper::TRANSACTION_CHONGXIAO_TAX => "重复消费",
-        TransactionHelper::TRANSACTION_TIXIAN_TAX => "提现税",
+        TransactionHelper::TRANSACTION_EXCHANGE => "提现税",
         TransactionHelper::TRANSACTION_TRANSFER_IN => "转账-转入",
         TransactionHelper::TRANSACTION_TRANSFER_OUT => "转账-转出",
     ];
@@ -83,7 +84,7 @@ class TransactionHelper
     const RATIO_MANAGE_TAX = 0.75;
     const RATIO_CHONGXIAO_TAX = 0.10;
     // 提现税收 3%
-    const RATIO_TIXIAN_TAX = 0.03;
+    const RATIO_EXCHANGE_TAX = 0.03;
 
     /**
      * @param $model TransactionLog

@@ -8,12 +8,11 @@ use yii\web\JsExpression;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\search\BonusSearch */
 /* @var $form common\core\ActiveForm */
 ?>
 
 <?php $form = ActiveForm::begin([
-    'action' => ['bonus'],
+    'action' => [Yii::$app->request->pathInfo],
     'method' => 'get',
     'options' => [
         //'class'=>"form-inline",
@@ -21,7 +20,15 @@ use yii\widgets\ActiveForm;
     ]
 ]); ?>
 <div class="row">
-
+    <div style="display:none;">
+        <?php
+            if (!empty($hiddenFields)) {
+                foreach ($hiddenFields as $hiddenField) {
+                    echo $form->field($model, $hiddenField)->hiddenInput();
+                }
+            }
+        ?>
+    </div>
     <div class="col-md-2" style="padding-left:0;">
         <?= $form->field($model, "user_id")->widget(Select2::classname(), [
             'data' => [],

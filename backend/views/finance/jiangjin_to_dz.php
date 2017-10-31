@@ -14,20 +14,12 @@ use yii\helpers\Html;
 
 /* ===========================以下为本页配置信息================================= */
 /* 页面基本属性 */
-$this->title = '奖金详细';
+$this->title = '奖金转电子币';
 $this->params['title_sub'] = '管理用户信息';  // 在\yii\base\View中有$params这个可以在视图模板中共享的参数
 
 $columns = [
     [
-        'header' => '转出账号',
-        'value' => 'fromUser.username'
-    ],
-    [
-        'header' => '会员姓名',
-        'value' => 'fromUser.real_name'
-    ],
-    [
-        'header' => '转入账号',
+        'header' => '会员账号',
         'value' => 'user.username'
     ],
     [
@@ -35,11 +27,11 @@ $columns = [
         'value' => 'user.real_name'
     ],
     [
-        'header' => '转账金额',
+        'header' => '金额',
         'value' => 'amount'
     ],
     [
-        'header' => '转账日期',
+        'header' => '日期',
         'value' => 'create_time',
         'format' => ['date', 'php:Y-m-d H:i']
     ],

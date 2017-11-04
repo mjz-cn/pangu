@@ -59,6 +59,28 @@ class ExchangeSearch extends Model
      */
     public function search($params)
     {
+        $this->load($params);
+        return $this->basicSearch();
+    }
+
+    /**
+     * Creates data provider instance with search query applied
+     *
+     * @param array $params
+     *
+     * @return ActiveDataProvider
+     */
+    public function frontendSearch($params)
+    {
+        $this->load($params);
+        $this->user_id = \Yii::$app->user->identity->getId();
+        return $this->basicSearch();
+    }
+
+    /**
+     * @return ActiveDataProvider
+     */
+    private function basicSearch() {
         $query = ExchangeLog::find();
 
         /**
@@ -73,8 +95,6 @@ class ExchangeSearch extends Model
             ],
         ]);
 
-        $this->load($params);
-
         if (!$this->validate()) {
             return $dataProvider;
         }
@@ -86,6 +106,4 @@ class ExchangeSearch extends Model
 
         return $dataProvider;
     }
-
-
 }

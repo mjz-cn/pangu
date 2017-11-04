@@ -16,8 +16,9 @@ use Yii;
  */
 class Baodan extends \yii\db\ActiveRecord
 {
+    const STATUS_CHECKING = 0;
     const STATUS_CHECKED = 1;
-    const STATUS_UNCHECKED = 2;
+    const STATUS_REJECT = 2;
 
     private $_user;
 

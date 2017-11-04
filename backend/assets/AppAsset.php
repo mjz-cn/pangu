@@ -24,7 +24,7 @@ class AppAsset extends AssetBundle
     //public $jsOptions = ['condition' => 'lt IE9'];
     /* 依赖关系 */
     public $depends = [
-        'backend\assets\IeAsset',
+        'common\assets\IeAsset',
         'backend\assets\CoreAsset',
         //'backend\assets\LayoutAsset', //因为加载顺序，这个放到了main.php的endBody()前手动加载了，不然某些样式会被覆盖
     ];

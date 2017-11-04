@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\controllers\BaseController;
 use Yii;
 use backend\models\AdminUser;
 use backend\models\Menu;

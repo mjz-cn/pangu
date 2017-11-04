@@ -12,6 +12,7 @@ namespace backend\models\search;
 use common\models\NormalUser;
 use common\models\records\TransactionLog;
 use common\models\records\User;
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
@@ -66,7 +67,27 @@ class FinanceSearch extends Model
     {
         $this->load($params);
 
+        return $this->basicSearch();
+    }
 
+    /**
+     * 仅用与前端用户搜索
+     *
+     * @param $params array
+     *
+     * @return ActiveDataProvider
+     */
+    public function frontendSearch($params)
+    {
+        $this->load($params);
+        $this->user_id = Yii::$app->user->identity->getId();
+        $this->detail_type = FinanceSearch::DETAIL_TYPE_DAILY;
+
+        return $this->basicSearch();
+    }
+
+    private function basicSearch()
+    {
         switch ($this->detail_type) {
             case static::DETAIL_TYPE_DAILY:
                 $query = $this->getMultiUserQuery();

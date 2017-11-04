@@ -39,11 +39,10 @@ class JiangjinToDianziSearch extends Model
     }
 
     /**
-     * @param array $params
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    private function basicSearch()
     {
         $query = TransactionLog::find();
 
@@ -53,8 +52,6 @@ class JiangjinToDianziSearch extends Model
                 'pageSize' => 10,
             ],
         ]);
-
-        $this->load($params);
 
         if (!$this->validate()) {
             $query->where('0=1');
@@ -70,5 +67,32 @@ class JiangjinToDianziSearch extends Model
             ->andFilterWhere(['user_id' => $this->user_id]);
 
         return $dataProvider;
+    }
+
+    /**
+     * Creates data provider instance with search query applied
+     *
+     * @param array $params
+     *
+     * @return ActiveDataProvider
+     */
+    public function search($params)
+    {
+        $this->load($params);
+        return $this->basicSearch();
+    }
+
+    /**
+     * Creates data provider instance with search query applied
+     *
+     * @param array $params
+     *
+     * @return ActiveDataProvider
+     */
+    public function frontendSearch($params)
+    {
+        $this->load($params);
+        $this->user_id = \Yii::$app->user->identity->getId();
+        return $this->basicSearch();
     }
 }

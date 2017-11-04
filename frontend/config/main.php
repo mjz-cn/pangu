@@ -16,7 +16,7 @@ return [
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'common\models\NormalUser',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
@@ -36,14 +36,41 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
+        'assetManager' => [
+            'bundles' => [
+                'yii\web\JqueryAsset' => [
+                    'sourcePath' => null,
+                    'js' => [],
+                    'depends' => [
+                        'backend\assets\AppAsset'
+                    ]
+                ],
+                'yii\bootstrap\BootstrapAsset' => [
+                    'css' => []
+                ],
+            ],
+
+        ],
+    ],
+    'as rbac' => [
+        'class' => \frontend\behaviors\RbacBehavior::className(),
+        'allowActions' => [
+            'site/login', 'site/logout', 'public*', 'debug/*', 'gii/*', // 不需要权限检测
+        ]
+    ],
+    'as verbs' => [
+        'class' => \yii\filters\VerbFilter::className(),
+        'actions' => [
+            'create' => ['get', 'post'],
+            'update' => ['get', 'put', 'post'],
+            'delete' => ['post', 'delete'],
+        ],
     ],
     'params' => $params,
 ];

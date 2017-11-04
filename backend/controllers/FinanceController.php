@@ -16,6 +16,7 @@ use backend\models\search\FinanceSearch;
 use backend\models\search\JiangjinToDianziSearch;
 use backend\models\search\ManageHuobiSearch;
 use backend\models\MangageHuobiForm;
+use common\controllers\BaseController;
 use common\models\records\ExchangeLog;
 use common\models\search\TransferSearch;
 use Yii;
@@ -23,7 +24,7 @@ use Yii;
 class FinanceController extends BaseController
 {
 
-    public function actionIndex($detail_type = '')
+    public function actionIndex()
     {
         $this->setForward();
 

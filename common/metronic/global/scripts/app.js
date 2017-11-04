@@ -255,7 +255,7 @@ var App = function() {
             } else {
                 el.removeClass('edited');
             }
-        } 
+        };
 
         $('body').on('keydown', '.form-md-floating-label .form-control', function(e) { 
             handleInput($(this));

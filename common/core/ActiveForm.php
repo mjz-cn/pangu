@@ -3,7 +3,7 @@ namespace common\core;
 
 use Yii;
 
-class ActiveForm extends \yii\widgets\ActiveForm
+class ActiveForm extends \yii\bootstrap\ActiveForm
 {
     /* form表情的默认属性 */
     public $options = [

@@ -53,6 +53,9 @@ class User extends \yii\db\ActiveRecord
     const LEVEL_UNSET = 0;
     const LEVEL_VIP = 1;
 
+
+    private $_baodan;
+
     /**
      * @inheritdoc
      */
@@ -148,7 +151,8 @@ class User extends \yii\db\ActiveRecord
         return $this->hasMany(TransactionLog::className(), ['user_id' => 'id']);
     }
 
-    public function getWallet() {
+    public function getWallet()
+    {
         return $this->hasOne(Wallet::className(), ['user_id' => 'id']);
     }
 
@@ -172,6 +176,16 @@ class User extends \yii\db\ActiveRecord
             return null;
         }
         return static::findOne(['id' => $this->broker_id]);
+    }
+
+    public function getBaodan()
+    {
+        if ($this->_baodan === null) {
+            $model = Baodan::findOne(['user_id' => $this->id, 'status' => Baodan::STATUS_CHECKED]);
+            $this->_baodan = $model === null ? 0 : $model;
+        }
+
+        return $this->_baodan === 0 ? null : $this->_baodan;
     }
 
     public function getStatusText()
@@ -211,40 +225,15 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * 封禁用户
-     * @param array $ids
+     * 返回用户username
+     * @param $id
+     * @return null|string
      */
-    public static function banUsers($ids)
-    {
-        $ids_str = implode(',', $ids);
-        return User::updateAll(['status' => static::STATUS_DELETED], "id in ($ids_str)");
-    }
-
-    /**
-     * 解封用户
-     * @param array $ids
-     */
-    public static function UnbanUsers($ids)
-    {
-        $ids_str = implode(',', $ids);
-        return User::updateAll(['status' => static::STATUS_NORMAL], "id in ($ids_str)");
-    }
-
-    public static function activeUsers($ids)
-    {
-        $ids_str = implode(',', $ids);
-        return User::updateAll(['status' => static::STATUS_ACTIVED], "id in ($ids_str)");
-    }
-
-    public static function getUserName($id)
-    {
-        if ($id === 0) {
-            return '';
+    public static function getUsername($id) {
+        $user = static::findOne(['id' => $id]);
+        if ($user) {
+            return $user->username;
         }
-        $model = static::find()->select('username')->where(['id' => $id])->one();
-        if ($model) {
-            return $model->username;
-        }
-        return '';
+        return null;
     }
 }

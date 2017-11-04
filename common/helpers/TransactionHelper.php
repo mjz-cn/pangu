@@ -69,6 +69,7 @@ class TransactionHelper
         TransactionHelper::TRANSACTION_EXCHANGE => "提现税",
         TransactionHelper::TRANSACTION_TRANSFER_IN => "转账-转入",
         TransactionHelper::TRANSACTION_TRANSFER_OUT => "转账-转出",
+        TransactionHelper::TRANSACTION_JIANGJIN_TO_DIANZIBI => "奖金转电子币",
     ];
 
     /**

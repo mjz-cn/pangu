@@ -34,5 +34,7 @@ class CommonCoreAsset extends AssetBundle
         'global/plugins/jquery-slimscroll/jquery.slimscroll.min.js',
         'global/plugins/jquery.blockui.min.js',
         'global/plugins/bootstrap-switch/js/bootstrap-switch.min.js',
+        'other/js/common.js',
+        'global/scripts/app.min.js',
     ];
 }

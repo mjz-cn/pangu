@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\search\BaodanMembersSearch;
+use common\controllers\BaseController;
 use Yii;
 use common\models\records\Baodan;
 use backend\models\search\BaodanSearch;

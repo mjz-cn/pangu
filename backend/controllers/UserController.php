@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\ActiveUserForm;
 use backend\models\RelationGraphForm;
+use common\controllers\BaseController;
 use common\models\NormalUser;
 use common\models\records\User;
 use common\models\search\NormalUserSearch;

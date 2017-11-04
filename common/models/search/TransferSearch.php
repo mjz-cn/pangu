@@ -39,22 +39,18 @@ class TransferSearch extends Model
     }
 
     /**
-     * @param array $params
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    private function basicSearch()
     {
         $query = TransactionLog::find();
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
                 'pageSize' => 10,
             ],
         ]);
-
-        $this->load($params);
 
         if (!$this->validate()) {
             $query->where('0=1');
@@ -66,5 +62,25 @@ class TransferSearch extends Model
             ->andFilterWhere(['or', ['user_id' => $this->user_id], ['from_user_id' => $this->user_id]]);
 
         return $dataProvider;
+    }
+
+    public function search($params)
+    {
+        $this->load($params);
+        return $this->basicSearch();
+    }
+
+    /**
+     * Creates data provider instance with search query applied
+     *
+     * @param array $params
+     *
+     * @return ActiveDataProvider
+     */
+    public function frontendSearch($params)
+    {
+        $this->load($params);
+        $this->user_id = \Yii::$app->user->identity->getId();
+        return $this->basicSearch();
     }
 }

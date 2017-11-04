@@ -15,7 +15,7 @@ use yii\data\ActiveDataProvider;
 
 class CheckInfoSearch extends Model
 {
-// 用户账号
+    // 用户账号
     public $user_id;
     // 查询开始时间
     public $start_time;

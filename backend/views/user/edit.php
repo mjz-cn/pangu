@@ -31,7 +31,7 @@ $this->params['title_sub'] = '添加前台用户';  // 在\yii\base\View中有$p
         <hr>
         <?php $form = ActiveForm::begin([
             'options' => [
-                'class' => "form-aaa "
+                'class' => "form-aaa"
             ]
         ]); ?>
 
@@ -85,7 +85,7 @@ $this->params['title_sub'] = '添加前台用户';  // 在\yii\base\View中有$p
         <?php
         $data = [];
         if ($model->broker_id) {
-            $data[$model->broker_id] = User::getUserName($model->broker_id);
+            $data[$model->broker_id] = User::getUsername($model->broker_id);
         }
         echo $form->field($model, "broker_id")->widget(Select2::classname(), [
             'data' => $data, // 填充username,
@@ -120,7 +120,7 @@ $this->params['title_sub'] = '添加前台用户';  // 在\yii\base\View中有$p
         <?php
         $data = [];
         if ($model->referrer_id) {
-            $data[$model->referrer_id] = User::getUserName($model->referrer_id);
+            $data[$model->referrer_id] = User::getUsername($model->referrer_id);
         }
         echo $form->field($model, "referrer_id")->widget(Select2::classname(), [
             'data' => $data, // 填充username,

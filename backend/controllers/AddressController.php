@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\controllers\BaseController;
 use Yii;
 use common\models\records\Address;
 use common\models\search\AddressSearch;

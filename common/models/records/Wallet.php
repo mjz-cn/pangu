@@ -60,6 +60,7 @@ class Wallet extends \yii\db\ActiveRecord
         $wallet = static::findOne(['user_id' => $userId]);
         if (empty($wallet)) {
             $wallet = new Wallet();
+            $wallet->user_id = $userId;
             $wallet->loadDefaultValues();
             $wallet->save();
         }

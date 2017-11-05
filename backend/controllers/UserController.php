@@ -130,7 +130,7 @@ class UserController extends BaseController
 
             /* 保存用户数据到数据库 */
             if ($userModel->save()) {
-                $this->success('操作成功', Url::to(['un-actived']));
+                $this->success('操作成功', $this->getForward('un-actived'));
             } else {
                 $errors = array_merge([], $userModel->errors);
                 $this->error(json_encode($errors));
@@ -171,7 +171,7 @@ class UserController extends BaseController
             }
             /* 保存用户数据到数据库 */
             if ($userModel->save()) {
-                $this->success('操作成功', $this->getForward());
+                $this->success('操作成功', $this->getForward('actived'));
             } else {
                 $errors = array_merge([], $userModel->errors);
                 $this->error(json_encode($errors));

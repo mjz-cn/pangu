@@ -23,7 +23,7 @@ use yii\widgets\ActiveForm;
     <div style="display: none">
         <?= $form->field($model, "is_actived")->hiddenInput()->label(false)?>
     </div>
-    <div class="col-md-2" style="padding-left:0;">
+    <div class="col-md-2" >
         <?= $form->field($model, "user_id")->widget(Select2::classname(), [
             'data' => [],
             'options' => ['placeholder' => '选择用户'],
@@ -42,7 +42,7 @@ use yii\widgets\ActiveForm;
             ],
         ]); ?>
     </div>
-    <div class="col-md-2" style="padding-left:0;">
+    <div class="col-md-2" >
         <?= $form->field($model, "referrer_id")->widget(Select2::classname(), [
             'data' => [],
             'options' => ['placeholder' => '选择用户'],

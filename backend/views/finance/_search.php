@@ -45,7 +45,7 @@ use yii\widgets\ActiveForm;
 
     <?php
     if ($model->detail_type != \backend\models\search\FinanceSearch::DETAIL_TYPE_ALL) {
-        echo '<div class="col-md-2" style="padding-left:0;">';
+        echo '<div class="col-md-2">';
         echo $form->field($model, "user_id")->widget(Select2::classname(), [
             'data' => [],
             'options' => ['placeholder' => '选择用户'],

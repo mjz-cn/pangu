@@ -32,7 +32,7 @@ use yii\web\JsExpression;
         }
         ?>
     </div>
-    <div class="col-md-2" style="padding-left:0;">
+    <div class="col-md-2" >
         <?= $form->field($model, "user_id")->widget(Select2::classname(), [
             'data' => [],
             'options' => ['placeholder' => '选择用户'],

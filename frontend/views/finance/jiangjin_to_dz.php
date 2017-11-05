@@ -43,9 +43,9 @@ $columns = [
     <div class="panel-body">
 
         <div class="row">
-            <div class="col-md-2">奖金余额：<?= $jiangjinBalance ?></div>
-            <div class="col-md-2">电子币余额：<?= $dianzibiBalance ?></div>
-            <div class="col-md-3">
+            <div class="col-md-3">奖金余额：<?= $jiangjinBalance ?>
+                <span style="margin-left: 35px"></span>电子币余额：<?= $dianzibiBalance ?></div>
+            <div class="col-md-4">
                 <?php $form = ActiveForm::begin([
                     'action' => ['bonus-to-dianzibi'],
                     'method' => 'post',
@@ -62,6 +62,7 @@ $columns = [
                 <?= Html::submitButton('确定', [
                     'class' => 'btn btn-xs blue',
                     'target-form' => 'form-aaa',
+                    'style' => " margin-bottom: 7px;"
                 ]) ?>
                 <?php ActiveForm::end(); ?>
             </div>

@@ -19,7 +19,7 @@ return [
     'components' => [
         'request' => [
             'class' => 'common\core\Request',
-            'csrfParam' => '_csrf',
+            'csrfParam' => '_csrf-backend',
 //            'baseUrl' => Yii::getAlias('@backendUrl'), //等于 Yii::getAlias('@web')
         ],
         'user' => [

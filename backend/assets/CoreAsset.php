@@ -22,7 +22,7 @@ class CoreAsset extends AssetBundle
         'global/plugins/simple-line-icons/simple-line-icons.min.css',
         'global/plugins/bootstrap/css/bootstrap.min.css',
         'other/css/style.css',
-        'global/css/fonts.googleapis.css',
+//        'global/css/fonts.googleapis.css',
         'global/plugins/bootstrap-switch/css/bootstrap-switch.min.css',
     ];
     /* 全局JS文件 */

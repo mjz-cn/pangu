@@ -37,8 +37,9 @@ $id = Yii::$app->request->get('id',1);
                 </div>
                 <div class="portlet-body form">
                     <form action="<?=\yii\helpers\Url::toRoute(['group'])?>" method="post" class="form-aaa ">
-                        <input name="_csrf" type="hidden" id="_csrf" value="<?= Yii::$app->request->csrfToken ?>">
-                        
+                        <input name="<?= Yii::$app->request->csrfParam ?>" type="hidden"
+                               id="<?= Yii::$app->request->csrfParam ?>"
+                               value="<?= Yii::$app->request->csrfToken ?>">
                         <?php foreach ($groups as $group): ?>
                         <div class="form-group">
                             <div>

@@ -104,7 +104,7 @@ class FinanceController extends BaseController
     {
         $this->setForward();
 
-        $form = new JiangjintoDianziForm();
+        $form = new JiangjinToDianziForm();
         if (Yii::$app->request->isPost) {
             if ($form->load(Yii::$app->request->post()) && $form->save()) {
                 return $this->refresh();

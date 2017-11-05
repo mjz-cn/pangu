@@ -76,7 +76,7 @@ class JiangjinToDianziForm extends Model
         $transferOutLog->from_user_id = $userId;
         $transferOutLog->currency_type = TransactionHelper::CURRENCY_DIANZIBI;
         $transferOutLog->transaction_type = TransactionHelper::TRANSACTION_JIANGJIN_TO_DIANZIBI;
-        $transferOutLog->amount =  $this->amount;
+        $transferOutLog->amount = $this->amount;
         $transferOutLog->create_time = $transactionTime;
         $transferOutLog->date = $transactionDate;
         $transferOutLog->generateDesc();

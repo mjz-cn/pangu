@@ -40,7 +40,7 @@ use yii\widgets\ActiveForm;
             ],
         ]); ?>
     </div>
-    <div class="col-md-2" >
+    <div class="col-md-2">
         <?= $form->field($model, "referrer_id")->widget(Select2::classname(), [
             'data' => [],
             'options' => ['placeholder' => '选择用户'],

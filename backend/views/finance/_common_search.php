@@ -21,14 +21,14 @@ use yii\widgets\ActiveForm;
 <div class="row">
     <div style="display:none;">
         <?php
-            if (!empty($hiddenFields)) {
-                foreach ($hiddenFields as $hiddenField) {
-                    echo $form->field($model, $hiddenField)->hiddenInput();
-                }
+        if (!empty($hiddenFields)) {
+            foreach ($hiddenFields as $hiddenField) {
+                echo $form->field($model, $hiddenField)->hiddenInput();
             }
+        }
         ?>
     </div>
-    <div class="col-md-2" >
+    <div class="col-md-2">
         <?= $form->field($model, "user_id")->widget(Select2::classname(), [
             'data' => [],
             'options' => ['placeholder' => '选择用户'],

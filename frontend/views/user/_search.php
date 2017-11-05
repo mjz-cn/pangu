@@ -14,16 +14,16 @@ use yii\widgets\ActiveForm;
 <?php $form = ActiveForm::begin([
 //    'action' => [],
     'method' => 'get',
-    'options'=>[
+    'options' => [
         //'class'=>"form-inline",
         'data-pjax' => true, //开启pjax搜索
     ]
 ]); ?>
 <div class="row">
     <div style="display: none">
-        <?= $form->field($model, "status")->hiddenInput()->label(false)?>
+        <?= $form->field($model, "status")->hiddenInput()->label(false) ?>
     </div>
-    <div class="col-md-2" >
+    <div class="col-md-2">
         <?= $form->field($model, "user_id")->widget(Select2::classname(), [
             'data' => [],
             'options' => ['placeholder' => '选择用户'],
@@ -42,7 +42,7 @@ use yii\widgets\ActiveForm;
             ],
         ]); ?>
     </div>
-    <div class="col-md-2" >
+    <div class="col-md-2">
         <?= $form->field($model, "referrer_id")->widget(Select2::classname(), [
             'data' => [],
             'options' => ['placeholder' => '选择用户'],
@@ -83,8 +83,8 @@ use yii\widgets\ActiveForm;
 
     <div class="col-md-2">
         <div class="form-group" style="margin-top: 24px;">
-        <?= Html::submitButton('搜索', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('重置', ['class' => 'btn btn-default']) ?>
+            <?= Html::submitButton('搜索', ['class' => 'btn btn-primary']) ?>
+            <?= Html::resetButton('重置', ['class' => 'btn btn-default']) ?>
         </div>
     </div>
 </div>

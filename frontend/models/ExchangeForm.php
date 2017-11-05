@@ -26,7 +26,8 @@ class ExchangeForm extends Model
         ];
     }
 
-    public function save() {
+    public function save()
+    {
         $model = new ExchangeLog();
         $model->user_id = \Yii::$app->user->getId();
         $model->amount = $this->amount;

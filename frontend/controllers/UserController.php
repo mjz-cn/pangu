@@ -96,7 +96,7 @@ class UserController extends BaseController
             }
             /* 保存用户数据到数据库 */
             if ($userModel->save()) {
-                $this->success('操作成功', '/user/index');
+                $this->success('操作成功', $this->getForward());
             } else {
                 $errors = array_merge([], $userModel->errors);
                 $this->error(json_encode($errors));
@@ -142,7 +142,7 @@ class UserController extends BaseController
 
             /* 保存用户数据到数据库 */
             if ($userModel->save()) {
-                $this->success('操作成功', '/user/index');
+                $this->success('操作成功', $this->getForward());
             } else {
                 $errors = array_merge([], $userModel->errors);
                 $this->error(json_encode($errors));

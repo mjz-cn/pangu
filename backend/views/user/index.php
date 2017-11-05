@@ -101,7 +101,7 @@ if ($searchModel->is_actived) {
             //'options' => ['width' => '200px;'],
             'buttons' => [
                 'edit' => function ($url, $model, $key) {
-                    return Html::a('更新', ['edit', 'uid' => $key], [
+                    return Html::a('更新', ['edit', 'id' => $key], [
                         'title' => Yii::t('app', '更新'),
                         'class' => 'btn btn-xs btn-default'
                     ]);

@@ -10,6 +10,7 @@ use common\models\records\User;
 use common\models\search\NormalUserSearch;
 use common\helpers\Constants;
 use Yii;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -129,7 +130,7 @@ class UserController extends BaseController
 
             /* 保存用户数据到数据库 */
             if ($userModel->save()) {
-                $this->success('操作成功', '/user/index');
+                $this->success('操作成功', Url::to(['un-actived']));
             } else {
                 $errors = array_merge([], $userModel->errors);
                 $this->error(json_encode($errors));
@@ -170,7 +171,7 @@ class UserController extends BaseController
             }
             /* 保存用户数据到数据库 */
             if ($userModel->save()) {
-                $this->success('操作成功', '/user/index');
+                $this->success('操作成功', $this->getForward());
             } else {
                 $errors = array_merge([], $userModel->errors);
                 $this->error(json_encode($errors));

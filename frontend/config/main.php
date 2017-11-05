@@ -30,6 +30,16 @@ return [
                 [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
+                    'logFile' => '@runtime/logs/app_error.log',
+                    'maxFileSize' => 1024 * 1024,
+                    'maxLogFiles' => 10
+                ],
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['info'],
+                    'logFile' => '@runtime/logs/app_info.log',
+                    'maxFileSize' => 1024 * 1024,
+                    'maxLogFiles' => 10
                 ],
             ],
         ],

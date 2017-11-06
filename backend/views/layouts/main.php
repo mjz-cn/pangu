@@ -76,28 +76,11 @@ $this->beginPage();
                 <ul class="nav navbar-nav pull-right">
 
                     <!-- BEGIN NOTIFICATION DROPDOWN 通知消息（主要显示一些待处理的事件） -->
-                    <?php $this->beginContent('@app/views/layouts/public/notice.php') ?>
-                    <?php $this->endContent() ?>
                     <!-- END NOTIFICATION DROPDOWN -->
 
                     <!-- BEGIN USER LOGIN DROPDOWN -->
                     <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
-                    <li class="dropdown dropdown-user">
-                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                            <img alt="" class="img-circle" src="<?=Yii::getAlias('@web/static/images/avatar2.jpg')?>" />
-                            <span class="username username-hide-on-mobile"> <?=Yii::$app->user->identity->username?> </span>
-                            <i class="fa fa-angle-down"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-default">
-                            <li><a href="#"><i class="icon-user"></i> 个人主页 </a></li>
-                            <li><a href="#"><i class="icon-calendar"></i> 日历 </a></li>
-                            <li><a href="#"><i class="icon-envelope-open"></i> 收件箱<span class="badge badge-danger"> 3 </span></a></li>
-                            <li><a href="#"><i class="icon-rocket"></i> 我的任务<span class="badge badge-success"> 7 </span></a></li>
-                            <li class="divider"> </li>
-                            <li><a href="#"><i class="icon-lock"></i> 锁屏 </a></li>
-                            <li><a href="<?=Url::toRoute('site/logout')?>"><i class="icon-key"></i> 注销 </a></li>
-                        </ul>
-                    </li>
+
                     <!-- END USER LOGIN DROPDOWN -->
                     <!-- BEGIN QUICK SIDEBAR TOGGLER -->
                     <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->

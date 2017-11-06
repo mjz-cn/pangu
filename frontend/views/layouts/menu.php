@@ -45,7 +45,7 @@ use yii\widgets\Breadcrumbs;
                         ['label' => '帐户提现', 'url' => '/finance/exchange'],
                         ['label' => '帐户转账', 'url' => '/finance/transfer'],
                         ['label' => '奖金币转换', 'url' => '/finance/bonus-to-dianzibi'],
-//                        ['label' => '充值记录', 'url' => '/crawler-node'],
+                        ['label' => '重复报单', 'url' => '#']
                     ]];
 
                     echo Nav::widget([

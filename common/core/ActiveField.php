@@ -37,8 +37,6 @@ class ActiveField extends \yii\widgets\ActiveField
      */
     public function iconTextInput($options = [])
     {
-
-
         /* 设置图标左右位置 */
         $icon_pos = isset($options['iconPos']) ? $options['iconPos'] : 'left';
         /* 设置图标样式 */

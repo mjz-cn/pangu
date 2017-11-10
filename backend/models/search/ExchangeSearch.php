@@ -29,7 +29,7 @@ class ExchangeSearch extends Model
     {
         return [
             ['status', 'required'],
-            ['status', 'in', 'range' => [ExchangeLog::STATUS_CHECKING, ExchangeLog::STATUS_APPROVE]],
+            ['status', 'in', 'range' => [ExchangeLog::STATUS_CHECKING, ExchangeLog::STATUS_APPROVE, ExchangeLog::STATUS_CHECKING]],
             [['user_id', 'status'], 'integer'],
             [['start_time', 'end_time'], 'date', 'format' => 'php:Y-m-d']
         ];

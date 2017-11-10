@@ -2,6 +2,8 @@
 
 namespace frontend\controllers;
 
+use common\models\NormalUser;
+use common\models\records\Wallet;
 use frontend\models\LoginForm;
 use Yii;
 use yii\web\Controller;
@@ -37,7 +39,12 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $wallet = Wallet::getValidWallet(Yii::$app->user->getId());
+        $referrerCnt = NormalUser::find()->andWhere(['referrer_id' => Yii::$app->user->getId()])->count();
+        return $this->render('index', [
+            'wallet' => $wallet,
+            'referrerCnt' => $referrerCnt
+        ]);
     }
 
     /**

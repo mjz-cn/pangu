@@ -9,9 +9,12 @@
 namespace frontend\controllers;
 
 use backend\models\ActiveUserForm;
+use common\helpers\BrokerHelper;
 use common\models\ResetPasswordForm;
 use common\models\search\NormalUserSearch;
+use common\models\UserTree;
 use frontend\models\search\UserSearch;
+use common\models\search\UserTreeSearch;
 use Yii;
 use common\controllers\BaseController;
 use common\models\NormalUser;
@@ -43,6 +46,21 @@ class UserController extends BaseController
 
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        switch ($searchModel->status) {
+            case UserSearch::STATUS_REFERRER:
+                $this->view->title = '推荐人列表';
+                break;
+            case UserSearch::STATUS_CHECKING:
+                $this->view->title = '审核会员列表';
+                break;
+            case UserSearch::STATUS_ACTIVED:
+                $this->view->title = '已激活会员';
+                break;
+            default:
+                $this->view->title = '未知';
+        }
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -114,8 +132,10 @@ class UserController extends BaseController
     public function actionAdd()
     {
         $userModel = new NormalUser();
+        $userModel->setScenario(NormalUser::SCENARIO_CREATE);
         $userModel->loadDefaultValues();
         $userModel->referrer_id = Yii::$app->user->identity->getId();
+        $userModel->baodan_id = Yii::$app->user->identity->getBaodan()->id;
         if (Yii::$app->request->isPost) {
             /* 表单验证 */
             $data = Yii::$app->request->post($userModel->formName());
@@ -124,15 +144,9 @@ class UserController extends BaseController
             $data['last_login_time'] = 0;
             $data['last_login_ip'] = ip2long(Yii::$app->request->getUserIP());
             $data['update_time'] = 0;
-            /* 表单数据加载和验证，具体验证规则在模型rule中配置 */
-            /* 密码单独验证，否则setPassword后密码肯定符合rule */
-            if (empty($data['password']) || strlen($data['password']) < 6) {
-                $this->error('密码为空或小于6字符');
-            }
 
             $userModel->setAttributes($data);
             $userModel->generateAuthKey();
-            $userModel->setPassword($data['password']);
             if ($userModel->broker_id == null) {
                 $userModel->broker_id = 0;
             }
@@ -142,14 +156,18 @@ class UserController extends BaseController
 
             /* 保存用户数据到数据库 */
             if ($userModel->save()) {
-                $this->success('操作成功', $this->getForward());
+
+                $node = UserTree::findOne(['user_id' => $userModel->broker_id]);
+                $c = new UserTree(['user_id' => $userModel->id]);
+                $c->appendTo($node);
+
+                $this->redirect($this->getForward());
             } else {
-                $errors = array_merge([], $userModel->errors);
-                $this->error(json_encode($errors));
+                $userModel->password = null;
             }
         }
 
-        return $this->render('edit', [
+        return $this->render('add', [
             'model' => $userModel
         ]);
     }
@@ -160,7 +178,17 @@ class UserController extends BaseController
      */
     public function actionUserTree()
     {
+        $searchModel = new UserTreeSearch();
+        $searchModel->username = Yii::$app->user->identity->username;
+        $searchModel->setScenario(UserTreeSearch::SCENARIO_FRONTEND);
+        if (Yii::$app->request->isPost) {
+            $data = $searchModel->frontendSearch(Yii::$app->request->post());
+            return $this->asJson(['status' => 1, 'data' => $data]);
+        }
 
+        return $this->render('user_tree', [
+            'searchModel' => $searchModel
+        ]);
     }
 
     /**
@@ -169,7 +197,6 @@ class UserController extends BaseController
     public function actionActiveUser()
     {
         // TODO: 监测是否有权限激活用户
-
         $model = new ActiveUserForm();
         $model->setAttributes(Yii::$app->request->get());
         if ($model->validate() && $model->active()) {
@@ -209,5 +236,11 @@ class UserController extends BaseController
     public function actionExists($username)
     {
         return $this->asJson(NormalUser::findOne(['username' => $username]) !== null);
+    }
+
+    // 验证broker的有效性
+    public function actionValidateBroker($broker_id)
+    {
+        return BrokerHelper::validateBroker($broker_id);
     }
 }

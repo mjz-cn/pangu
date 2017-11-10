@@ -9,10 +9,10 @@ use yii\widgets\ActiveForm;
 ?>
 
 <?php $form = ActiveForm::begin([
-    'action' => ['relation-graph'],
-    'method' => 'get',
+    'action' => ['user-tree'],
+    'method' => 'post',
     'options'=> [
-        'class'=>"form-relation-graph ",
+        'class'=>"form-user-tree-search",
         'data-pjax' => false, //开启pjax搜索
     ]]);
 
@@ -41,7 +41,7 @@ use yii\widgets\ActiveForm;
     <div class="col-md-2">
         <div class="form-group" style="margin-top: 24px;">
         <?= Html::submitButton('确定', ['class' => 'btn btn-primary ajax-get-relation',
-            'target-form'=>'form-relation-graph ']) ?>
+            'target-form'=>'form-user-tree-search']) ?>
         <?= Html::resetButton('重置', ['class' => 'btn btn-default']) ?>
         </div>
     </div>

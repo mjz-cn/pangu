@@ -14,9 +14,12 @@ use backend\models\search\FinanceSearch;
 use backend\models\search\JiangjinToDianziSearch;
 use common\controllers\BaseController;
 use common\models\records\ExchangeLog;
+use common\models\records\RechargeLog;
 use common\models\records\Wallet;
+use common\models\search\RechargeLogSearch;
 use common\models\search\TransferSearch;
 use frontend\models\JiangjinToDianziForm;
+use frontend\models\RechargeForm;
 use frontend\models\TransferForm;
 use Yii;
 
@@ -128,8 +131,24 @@ class FinanceController extends BaseController
     /**
      * 充值记录
      */
-    public function actionRechargeInfo()
+    public function actionRecharge()
     {
-        // 暂无
+        // 展示充值界面
+        $rechargeForm = new RechargeForm();
+        if (Yii::$app->request->isPost) {
+            if ($rechargeForm->load(Yii::$app->request->post()) && $rechargeForm->save()) {
+                return $this->refresh();
+            }
+        }
+
+        // 充值记录
+        $searchModel = new RechargeLogSearch();
+        $dataProvider = $searchModel->frontendSearch(Yii::$app->request->queryParams);
+
+        return $this->render('recharge', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'model' => $rechargeForm,
+        ]);
     }
 }

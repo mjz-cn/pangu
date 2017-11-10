@@ -153,4 +153,15 @@ class NormalUser extends User implements \yii\web\IdentityInterface
         $this->last_login_ip = ip2long(Yii::$app->request->userIP);
         $this->update(false, ['last_login_time', 'last_login_ip']);
     }
+
+    public function beforeSave($insert)
+    {
+        $result = parent::beforeSave($insert);
+        if ($result) {
+            if ($insert) {
+                $this->setPassword($this->password);
+            }
+        }
+        return $result;
+    }
 }

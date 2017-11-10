@@ -1,12 +1,13 @@
 <?php
 
+use common\core\ActiveForm;
+use common\models\records\RechargeLog;
 use kartik\widgets\DatePicker;
 use kartik\widgets\Select2;
 use yii\helpers\Html;
-use yii\web\JsExpression;
-use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
+/* @var $model \common\models\search\RechargeLogSearch */
 /* @var $form common\core\ActiveForm */
 ?>
 
@@ -19,15 +20,7 @@ use yii\widgets\ActiveForm;
     ]
 ]); ?>
 <div class="row">
-    <div style="display:none;">
-        <?php
-        if (!empty($hiddenFields)) {
-            foreach ($hiddenFields as $hiddenField) {
-                echo $form->field($model, $hiddenField)->hiddenInput();
-            }
-        }
-        ?>
-    </div>
+
     <div class="col-md-4">
         <?php echo '<label class="control-label">时间范围</label>';
         echo DatePicker::widget([
@@ -44,6 +37,22 @@ use yii\widgets\ActiveForm;
                 'autoclose' => true,
             ]
         ]); ?>
+    </div>
+    <div class="col-md-2">
+        <?= $form->field($model, 'baodan_status', ['inputOptions' => ['class' => 'form-control']])->selectList([
+            '' => '全部',
+            RechargeLog::STATUS_CHECKING => '审核中',
+            RechargeLog::STATUS_APPROVE => '通过',
+            RechargeLog::STATUS_REJECT => '拒绝',
+        ]) ?>
+    </div>
+    <div class="col-md-2">
+        <?= $form->field($model, 'status', ['inputOptions' => ['class' => 'form-control']])->selectList([
+            '' => '全部',
+            RechargeLog::STATUS_CHECKING => '审核中',
+            RechargeLog::STATUS_APPROVE => '通过',
+            RechargeLog::STATUS_REJECT => '拒绝',
+        ]) ?>
     </div>
 
     <div class="col-md-2">

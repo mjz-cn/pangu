@@ -64,4 +64,12 @@ class Baodan extends \yii\db\ActiveRecord
         }
         return $this->_user;
     }
+
+    public static function getName($id) {
+        $model = static::findOne(['id' => $id]);
+        if ($model) {
+            return $model->name;
+        }
+        return null;
+    }
 }

@@ -1,6 +1,36 @@
 //dom加载完成后执行的js
 ;$(function () {
 
+    var ajaxSuccessHandler = function (data, form, submitBtn) {
+        if (data.status === 1) {
+            if (data.url) {
+                updateAlert(data.info + ' 页面即将自动跳转~', 'alert-success');
+            } else {
+                updateAlert(data.info, 'alert-success');
+            }
+            setTimeout(function () {
+                if (data.url) {
+                    location.href = data.url;
+                } else if ($(that).hasClass('no-refresh')) {
+                    $('#top-alert').find('button').click();
+                    $(submitBtn).removeClass('disabled').prop('disabled', false);
+                } else {
+                    location.reload();
+                }
+            }, 1500);
+        } else {
+            updateAlert(data.info);
+            setTimeout(function () {
+                if (data.url) {
+                    //location.href=data.url;
+                } else {
+                    $('#top-alert').find('button').click();
+                    $(submitBtn).removeClass('disabled').prop('disabled', false);
+                }
+            }, 1500);
+        }
+    };
+
     //ajax get请求
     $('.ajax-get').click(function () {
         var target;
@@ -97,35 +127,26 @@
             }
             $(that).addClass('disabled').attr('autocomplete', 'off').prop('disabled', true);
             $.post(target, query).success(function (data) {
-                if (data.status == 1) {
-                    if (data.url) {
-                        updateAlert(data.info + ' 页面即将自动跳转~', 'alert-success');
-                    } else {
-                        updateAlert(data.info, 'alert-success');
-                    }
-                    setTimeout(function () {
-                        if (data.url) {
-                            location.href = data.url;
-                        } else if ($(that).hasClass('no-refresh')) {
-                            $('#top-alert').find('button').click();
-                            $(that).removeClass('disabled').prop('disabled', false);
-                        } else {
-                            location.reload();
-                        }
-                    }, 1500);
-                } else {
-                    updateAlert(data.info);
-                    setTimeout(function () {
-                        if (data.url) {
-                            //location.href=data.url;
-                        } else {
-                            $('#top-alert').find('button').click();
-                            $(that).removeClass('disabled').prop('disabled', false);
-                        }
-                    }, 1500);
-                }
+                ajaxSuccessHandler(data, form, that);
             });
         }
+        return false;
+    });
+
+    // 结合yii form表单进行提交
+    $('.ajax-yii-form').on('beforeSubmit', function () {
+        var $yiiform = $(this);
+        var submitBtn = $yiiform.find('[type=submit]');
+        $(submitBtn).addClass('disabled').attr('autocomplete', 'off').prop('disabled', true);
+        $.ajax({
+                type: $yiiform.attr('method'),
+                url: $yiiform.attr('action'),
+                data: $yiiform.serializeArray(),
+                success: function (data) {
+                    ajaxSuccessHandler(data, $yiiform, submitBtn);
+                }
+            }
+        );
         return false;
     });
 

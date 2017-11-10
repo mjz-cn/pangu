@@ -2,6 +2,7 @@
 
 namespace common\models\records;
 
+use common\helpers\BrokerHelper;
 use Yii;
 
 /**
@@ -13,6 +14,8 @@ use Yii;
  * @property string $salt
  * @property string $email
  * @property string $phone
+ * @property string $wechat
+ * @property integer $qq
  * @property integer $role
  * @property integer $reg_ip
  * @property integer $last_login_time
@@ -53,6 +56,11 @@ class User extends \yii\db\ActiveRecord
     const LEVEL_UNSET = 0;
     const LEVEL_VIP = 1;
 
+    const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
+
+
+    public $password_1;
 
     private $_baodan;
 
@@ -70,16 +78,19 @@ class User extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username', 'password', 'phone', 'salt', 'email', 'real_name', 'gender', 'card_id', 'bank_account', 'bank_name', 'bank_username'], 'required'],
+            [['username', 'phone', 'salt', 'email', 'real_name', 'gender', 'card_id', 'bank_account', 'broker_id', 'bank_name', 'bank_username'], 'required'],
             [['role', 'reg_ip', 'last_login_time', 'last_login_ip', 'broker_id', 'referrer_id',
                 'baodan_id', 'gender', 'level', 'status', 'update_time', 'create_time', 'is_shidan',
-                'is_baned', 'is_actived', 'reg_user_id'],
+                'is_baned', 'is_actived', 'reg_user_id', 'qq'],
                 'integer'],
             [['reg_money'], 'number'],
             [['username', 'password', 'salt', 'email', 'image', 'real_name', 'bank_account', 'bank_name', 'bank_username'], 'string', 'max' => 255],
-            [['phone'], 'string', 'max' => 15],
+            [['phone', 'wechat'], 'string', 'max' => 15],
+            [['password_1'], 'string', 'min' => 6],
             [['broker_path', 'card_id'], 'string', 'max' => 20],
             [['username'], 'unique'],
+            ['broker_id', 'validateBroker'],
+            ['password', 'required', 'on' => static::SCENARIO_CREATE]
         ];
     }
 
@@ -92,6 +103,7 @@ class User extends \yii\db\ActiveRecord
             'id' => 'ID',
             'username' => '用户名',
             'password' => '密码',
+            'password_1' => '密码',
             'salt' => 'Salt',
             'email' => '邮箱',
             'phone' => '电话',
@@ -120,6 +132,13 @@ class User extends \yii\db\ActiveRecord
             'reg_user_id' => '开通此用户的账号',
             'reg_money' => '注册金额'
         ];
+    }
+
+    public function validateBroker() {
+        $result = BrokerHelper::validateBroker($this->broker_id);
+        if ($result['status'] !== 1) {
+            $this->addError('broker_id', $result['msg']);
+        }
     }
 
     public function beforeSave($insert)

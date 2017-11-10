@@ -12,6 +12,17 @@ namespace common\models;
 use creocoder\nestedsets\NestedSetsBehavior;
 use yii\db\ActiveRecord;
 
+/**
+ * This is the model class for table "{{%user_tree}}".
+ *
+ * @property integer $id
+ * @property string $name
+ * @property integer $lft
+ * @property integer $rgt
+ * @property integer $depth
+ * @property integer $tree
+ * @property integer $user_id
+ */
 class UserTree extends ActiveRecord
 {
     public function behaviors() {
@@ -25,7 +36,7 @@ class UserTree extends ActiveRecord
 
     public static function tableName()
     {
-        return 't_user_tree';
+        return '{{%user_tree}}';
     }
 
     public function transactions()

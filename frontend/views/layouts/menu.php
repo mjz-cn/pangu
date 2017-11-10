@@ -21,6 +21,7 @@ use yii\widgets\Breadcrumbs;
                         ['label' => '会员资料', 'options' => ['class' => 'menu-dropdown'], 'items' => [
                             ['label' => '资料编辑', 'url' => '/user/edit'],
                             ['label' => '修改密码', 'url' => '/user/reset-password'],
+                            ['label' => '收获地址', 'url' => '/user/address'],
                         ]],
                         ['label' => '部门情况', 'options' => ['class' => 'menu-dropdown'], 'items' => [
                             ['label' => '推荐会员', 'url' => '/user/index?status=1'],
@@ -32,6 +33,7 @@ use yii\widgets\Breadcrumbs;
                             ['label' => '注册会员', 'url' => '/user/add'],
                             ['label' => '激活会员', 'url' => '/user/index?status=2'],
                             ['label' => '已激活会员', 'url' => '/user/index?status=3'],
+                            ['label' => '审核报单', 'url' => '/baodan/check'],
                             ['label' => '申请中心', 'url' => '/baodan/register'],
                         ]];
                     } else {
@@ -45,7 +47,7 @@ use yii\widgets\Breadcrumbs;
                         ['label' => '帐户提现', 'url' => '/finance/exchange'],
                         ['label' => '帐户转账', 'url' => '/finance/transfer'],
                         ['label' => '奖金币转换', 'url' => '/finance/bonus-to-dianzibi'],
-                        ['label' => '重复报单', 'url' => '#']
+                        ['label' => '重复报单', 'url' => '/finance/recharge']
                     ]];
 
                     echo Nav::widget([

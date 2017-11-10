@@ -1,13 +1,13 @@
 (function () {
 
-    // 如何将异步生成的数据加载到页面中
-    $('.ajax-get-relation').click(function () {
-        var that = this;
-        var target_form = $(this).attr('target-form');
-        var form = $('.' + target_form);
-        // 目前全部更新
-        $.get(form.get(0).action, form.serialize()).success(
-            function (resp) {
+    var form = $('#user-tree-search-form');
+    form.submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: form.attr('method'),
+            url: form.attr('action'),
+            data: form.serialize(),
+            success: function (resp) {
                 if (resp.status !== 1) {
                     updateAlert(resp.info);
                     setTimeout(function () {
@@ -15,43 +15,55 @@
                             //location.href=data.url;
                         } else {
                             $('#top-alert').find('button').click();
-                            $(that).removeClass('disabled').prop('disabled', false);
                         }
                     }, 3000);
                 } else {
                     // 更新整个二叉树
                     updateTreeGraph(resp.data);
                 }
+            },
+            error: function (data) {
+                console.log('An error occurred.');
+                console.log(data);
             }
-        );
-        // 发送请求
-        return false;
+        });
     });
 
     function updateTreeGraph(data) {
         var g_chart_config = {
             chart: {
-                container: "#relation-graph",
+                container: "#user-tree-container",
                 nodeAlign: "BOTTOM",
                 connectors: {
                     type: 'step'
                 },
+                animateOnInit: true,
+                rootOrientation: 'WEST',
+                scrollbar: "fancy",
+                animation: {
+                    nodeAnimation: "easeOutBounce",
+                    nodeSpeed: 700,
+                    connectorsAnimation: "linear",
+                    connectorsSpeed: 700
+                },
                 node: {
-                    HTMLclass: 'node-user'
+                    HTMLclass: 'node-user',
+                    collapsable: true
                 }
             },
             nodeStructure: data
         };
+
         // 生成二叉树
         new Treant(g_chart_config);
         // 重新定义node里面的内容
-        $('.node').each(function() {
+        $('.node').each(function () {
             var that = $(this);
             // that.empty();
             var table = $('.node-table-tpl').clone();
             table.removeClass('node-table-tpl');
             // 获取所有数据
-            that.find('[class^=node-]').each(function() {
+            that.find('[class^=node-]').each(function () {
                 var nodeThat = $(this);
                 var css = nodeThat.attr('class');
                 table.attr('data-' + css.replace('node-', ''), nodeThat.text());
@@ -61,9 +73,10 @@
         });
     }
 
-    // 如果url中包含user_id则执行任务
-    var user_id = urlParam('user_id');
-    if (user_id !== null) {
-        $('.ajax-get-relation').click();
-    }
+    // 如果url中包含user_id则执行搜索
+    // var user_id = urlParam('user_id');
+    // if (user_id !== null) {
+    //     form.trigger('submit');
+    // }
+    form.trigger('submit');
 })();

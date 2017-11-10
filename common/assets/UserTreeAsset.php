@@ -3,31 +3,30 @@
  * Created by PhpStorm.
  * User: mjz
  * Date: 17/10/15
- * Time: 上午1:38
+ * Time: 下午10:33
  */
 
-namespace backend\assets;
+namespace common\assets;
 
 
 use yii\web\AssetBundle;
 
-class TreantAsset extends AssetBundle
+class UserTreeAsset extends AssetBundle
 {
     public $sourcePath = '@common/metronic';
 
     /* 全局CSS文件 */
     public $css = [
-        'treant/Treant.css',
+        'other/css/user-tree.css',
     ];
 
     /* 全局JS文件 */
     public $js = [
-        'treant/Treant.js',
-        'treant/vendor/raphael.js',
+        'other/js/user-tree.js',
     ];
 
     /* 依赖关系 */
     public $depends = [
-        'backend\assets\CoreAsset',
+        'common\assets\TreantAsset',
     ];
 }

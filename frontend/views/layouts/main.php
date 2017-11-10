@@ -51,7 +51,58 @@ IeAsset::register($this);
     </div>
 </div>
 
+<style>
+    .fixed {
+        position: fixed !important;
+    }
 
+    .alert {
+        color: #c09853;
+        font-weight: bold;
+        border: 1px solid #fbeed5;
+        background-color: #fcf8e3;
+    }
+
+    #top-alert {
+        display: block;
+        top: 40px;
+        right: 20px;
+        z-index: 10052;
+        margin-top: 20px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        overflow: hidden;
+        font-size: 16px;
+    }
+
+    .alert-error {
+        color: white;
+        border-color: #eed3d7;
+        background-color: #FF6666;
+    }
+
+    .alert-success {
+        color: #468847;
+        background-color: #CCFF99;
+        border-color: #eed3d7;
+    }
+
+    @media (max-width: 768px) {
+        .alert_left {
+            left: 20px;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .alert_left {
+            left: 245px;
+        }
+    }
+</style>
+<div id="top-alert" class="fixed alert alert-error alert_left" style="display: none;">
+    <button class="close" style="margin-top:6px;">&times;</button>
+    <div class="alert-content">这是Ajax弹出内容</div>
+</div>
 <?php \frontend\assets\LayoutAsset::register($this); ?>
 <?php $this->endBody() ?>
 </body>

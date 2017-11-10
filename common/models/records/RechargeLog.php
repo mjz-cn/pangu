@@ -7,7 +7,7 @@ use Exception;
 use Yii;
 
 /**
- * This is the model class for table "{{%exchange_log}}".
+ * This is the model class for table "{{%recharge_log}}".
  *
  * @property integer $id
  * @property integer $user_id
@@ -15,8 +15,9 @@ use Yii;
  * @property integer $create_time
  * @property string $date
  * @property integer $status
+ * @property integer $baodan_status
  */
-class ExchangeLog extends \yii\db\ActiveRecord
+class RechargeLog extends \yii\db\ActiveRecord
 {
 
     // 审核中
@@ -27,9 +28,9 @@ class ExchangeLog extends \yii\db\ActiveRecord
     const STATUS_REJECT = 2;
 
     private static $STATUS_ARR = [
-        ExchangeLog::STATUS_CHECKING => '审核中',
-        ExchangeLog::STATUS_APPROVE => '审核通过',
-        ExchangeLog::STATUS_REJECT => '拒绝',
+        RechargeLog::STATUS_CHECKING => '审核中',
+        RechargeLog::STATUS_APPROVE => '审核通过',
+        RechargeLog::STATUS_REJECT => '拒绝',
     ];
 
     private $_user;
@@ -39,7 +40,7 @@ class ExchangeLog extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%exchange_log}}';
+        return '{{%recharge_log}}';
     }
 
     /**
@@ -49,7 +50,7 @@ class ExchangeLog extends \yii\db\ActiveRecord
     {
         return [
             [['user_id'], 'required'],
-            [['user_id', 'amount', 'create_time', 'status'], 'integer'],
+            [['user_id', 'amount', 'create_time', 'status', 'baodan_status'], 'integer'],
             [['date'], 'safe'],
         ];
     }
@@ -65,7 +66,8 @@ class ExchangeLog extends \yii\db\ActiveRecord
             'amount' => '兑现金额',
             'create_time' => 'Create Time',
             'date' => 'Date',
-            'status' => '是否审核，0 未审核， 已审核',
+            'status' => '公司财务是否审核，0 未审核， 已审核',
+            'baodan_status' => '上级是否审核，0 未审核， 已审核',
         ];
     }
 
@@ -82,11 +84,17 @@ class ExchangeLog extends \yii\db\ActiveRecord
         return static::$STATUS_ARR[$this->status];
     }
 
+    public function getBaodanStatusText()
+    {
+        return static::$STATUS_ARR[$this->baodan_status];
+    }
+
     public function beforeSave($insert)
     {
         $result = parent::beforeSave($insert);
         if ($result && $insert) {
             $this->status = static::STATUS_CHECKING;
+            $this->baodan_status = static::STATUS_CHECKING;
             if (empty($this->create_time)) {
                 $this->create_time = time();
             }
@@ -98,56 +106,36 @@ class ExchangeLog extends \yii\db\ActiveRecord
     }
 
     /**
-     * @param $exchangeLog  static
+     * @param $rechargeLog static
      */
-    private static function approve($exchangeLog)
+    private static function approve($rechargeLog)
     {
-        $exchangeLog->status = ExchangeLog::STATUS_APPROVE;
+        $rechargeLog->status = RechargeLog::STATUS_APPROVE;
 
+        // 增加一条交易记录
         $transactionLog = new TransactionLog();
-        $transactionLog->user_id = $exchangeLog->user_id;
-        $transactionLog->amount = -1 * $exchangeLog->amount;
+        $transactionLog->user_id = $rechargeLog->user_id;
+        $transactionLog->amount = $rechargeLog->amount;
         $transactionLog->currency_type = TransactionHelper::CURRENCY_JIANGJIN;
-        $transactionLog->transaction_type = TransactionHelper::TRANSACTION_EXCHANGE;
+        $transactionLog->transaction_type = TransactionHelper::TRANSACTION_RECHARGE;
         $transactionLog->create_time = time();
         $transactionLog->date = date('Y-m-d', $transactionLog->create_time);
         $transactionLog->from_admin_id = \Yii::$app->user->identity->getId();
 
+        // 钱包增加金额
+        $wallet = Wallet::getValidWallet($rechargeLog->user_id);
+        $wallet->jiangjin += $rechargeLog->amount;
+
         $db = \Yii::$app->db;
         $dbTransaction = $db->beginTransaction();
         try {
-            $exchangeLog->update();
+            $rechargeLog->update();
             $transactionLog->save();
-
-            $dbTransaction->commit();
-        } catch (Exception $e) {
-            \Yii::error("exchange approve failed", $e);
-            $dbTransaction->rollback();
-            return '审核失败';
-        }
-        return null;
-    }
-
-    /**
-     * @param $exchangeLog  static
-     * @return string
-     */
-    private static function reject($exchangeLog)
-    {
-        $exchangeLog->status = ExchangeLog::STATUS_REJECT;
-
-        $wallet = Wallet::getValidWallet($exchangeLog->user_id);
-        $wallet->jiangjin += $exchangeLog->amount;
-
-        $db = $exchangeLog->getDb();
-        $dbTransaction = $db->beginTransaction();
-        try {
-            $exchangeLog->update();
             $wallet->update();
 
             $dbTransaction->commit();
         } catch (Exception $e) {
-            \Yii::error("exchange approve failed");
+            \Yii::error("recharge approve failed", $e);
             $dbTransaction->rollback();
             return '审核失败';
         }
@@ -155,26 +143,48 @@ class ExchangeLog extends \yii\db\ActiveRecord
     }
 
     /**
-     * @param $exchangeId     integer   审核单子ID
+     * @param $rechargeLog  static
+     * @return string
+     */
+    private static function reject($rechargeLog)
+    {
+        $rechargeLog->status = RechargeLog::STATUS_REJECT;
+
+        $db = $rechargeLog->getDb();
+        $dbTransaction = $db->beginTransaction();
+        try {
+            $rechargeLog->update();
+
+            $dbTransaction->commit();
+        } catch (Exception $e) {
+            \Yii::error("recharge approve failed");
+            $dbTransaction->rollback();
+            return '审核失败';
+        }
+        return null;
+    }
+
+    /**
+     * @param $rechargeId     integer   审核单子ID
      * @param $status         integer   申请状态
      * @return string 返回为空，代表操作成功，否则表示失败
      */
-    public static function exchange($exchangeId, $status)
+    public static function recharge($rechargeId, $status)
     {
-        $exchangeLog = ExchangeLog::findOne(['id' => $exchangeId, 'status' => static::STATUS_CHECKING]);
-        if ($exchangeLog == null) {
-            return '提现申请不存在或者已经被处理过';
+        $rechargeLog = RechargeLog::findOne(['id' => $rechargeId, 'status' => static::STATUS_CHECKING]);
+        if ($rechargeLog == null) {
+            return '重置单号不存在或者已经被处理过';
         }
         if ($status == static::STATUS_APPROVE) {
-            return static::approve($exchangeLog);
+            return static::approve($rechargeLog);
         } elseif ($status == static::STATUS_REJECT) {
-            return static::reject($exchangeLog);
+            return static::reject($rechargeLog);
         }
-        return '提现申请状态错误';
+        return '重置申请状态错误';
     }
 
     public static function create($userId, $amount) {
-        $model = new ExchangeLog();
+        $model = new RechargeLog();
         $model->user_id = $userId;
         $model->amount = $amount;
         $model->create_time = time();

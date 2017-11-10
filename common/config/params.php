@@ -37,4 +37,6 @@ return [
         "scrawlUrlPrefix"      => Yii::getAlias('@storageUrl'),
         'scrawlPathFormat'     => '/image/{yyyy}{mm}/editor{time}{rand:6}',
     ],
+
+    'broker_child' => 8,
 ];

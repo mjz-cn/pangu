@@ -58,6 +58,7 @@ class TransactionHelper
     // 转账转入
     const TRANSACTION_TRANSFER_OUT = 9;
     const TRANSACTION_JIANGJIN_TO_DIANZIBI = 10;
+    const TRANSACTION_RECHARGE = 11;
 
     public static $TRANSACTION_TYPE_ARR = [
         TransactionHelper::TRANSACTION_ADMIN => "来自管理员",
@@ -70,6 +71,7 @@ class TransactionHelper
         TransactionHelper::TRANSACTION_TRANSFER_IN => "转账-转入",
         TransactionHelper::TRANSACTION_TRANSFER_OUT => "转账-转出",
         TransactionHelper::TRANSACTION_JIANGJIN_TO_DIANZIBI => "奖金转电子币",
+        TransactionHelper::TRANSACTION_RECHARGE => "重复报单",
     ];
 
     /**

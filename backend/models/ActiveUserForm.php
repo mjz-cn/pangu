@@ -80,8 +80,11 @@ class ActiveUserForm extends Model
         // 一级分成
         $now = time();
         foreach ($parentNodes as $parentNode) {
-            $level = ($parentNode->depth - $userNode->depth) + Yii::$app->params['user_tree_depth'] + 1;
-            $ratio = Yii::$app->params['user_tree_ratio'];
+            $level = $userNode->depth - $parentNode->depth;
+            if (!isset(Yii::$app->params['user_tree_ratio'][$level])) {
+                continue;
+            }
+            $ratio = Yii::$app->params['user_tree_ratio'][$level];
             $jiangjin = $model->reg_money * $ratio;
 
             $ratioLog = new ActiveUserRatioLog();
@@ -93,7 +96,7 @@ class ActiveUserForm extends Model
             $ratioLog->manage_tax = $jiangjin * TransactionHelper::RATIO_MANAGE_TAX;
             $ratioLog->chongxiao = $jiangjin * TransactionHelper::RATIO_CHONGXIAO_TAX;
             $ratioLog->jiangjin = $jiangjin;
-            $ratioLog->desc = $level;
+            $ratioLog->desc = '第' . $level . '层';
 
             $ratioLogArr[] = $ratioLog;
         }
@@ -102,6 +105,9 @@ class ActiveUserForm extends Model
         try {
             foreach ($ratioLogArr as $ratioLog) {
                 $ratioLog->save();
+                if ($ratioLog->errors) {
+                    var_dump($ratioLog->errors);exit;
+                }
             }
             $model->update();
 

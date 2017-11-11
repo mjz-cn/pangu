@@ -46,6 +46,8 @@ use common\helpers\Html;
             <span class="text-danger">申请正在审核中</span>
         <?php elseif ($model->status == \common\models\records\Baodan::STATUS_REJECT): ?>
             <span class="text-danger">申请被拒绝</span>
+        <?php elseif ($model->status == \common\models\records\Baodan::STATUS_BAN): ?>
+            <span class="text-danger">报单中心被冻结</span>
         <?php else: ?>
             <span class="text-danger">您已经是报单中心了</span>
         <?php endif ?>

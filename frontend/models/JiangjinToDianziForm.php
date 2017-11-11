@@ -89,7 +89,7 @@ class JiangjinToDianziForm extends Model
         try {
             $fromUserWallet = Wallet::getValidWallet($userId);
 
-            $fromUserWallet->dianzi = $this->amount;
+            $fromUserWallet->dianzi += $this->amount;
             $fromUserWallet->jiangjin -= $this->amount;
 
             $transferInLog->save();

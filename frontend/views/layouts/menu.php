@@ -28,7 +28,7 @@ use yii\widgets\Breadcrumbs;
                             ['label' => '会员网络', 'url' => '/user/user-tree'],
                         ]]
                     ];
-                    if (!empty($baodanModel)) {
+                    if ($baodanModel !== null && $baodanModel->status == \common\models\records\Baodan::STATUS_APPROVE) {
                         $menuItems[] = ['label' => '代理中心', 'options' => ['class' => 'menu-dropdown'], 'items' => [
                             ['label' => '注册会员', 'url' => '/user/add'],
                             ['label' => '激活会员', 'url' => '/user/index?status=2'],

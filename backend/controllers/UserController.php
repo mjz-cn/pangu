@@ -10,6 +10,7 @@ use common\models\records\User;
 use common\models\search\NormalUserSearch;
 use common\helpers\Constants;
 use common\models\search\UserTreeSearch;
+use common\models\UserTree;
 use Yii;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
@@ -104,6 +105,7 @@ class UserController extends BaseController
     public function actionAdd()
     {
         $userModel = new NormalUser();
+        $userModel->setScenario(NormalUser::SCENARIO_CREATE);
         $userModel->loadDefaultValues();
         if (Yii::$app->request->isPost) {
             /* 表单验证 */
@@ -113,15 +115,9 @@ class UserController extends BaseController
             $data['last_login_time'] = 0;
             $data['last_login_ip'] = ip2long(Yii::$app->request->getUserIP());
             $data['update_time'] = 0;
-            /* 表单数据加载和验证，具体验证规则在模型rule中配置 */
-            /* 密码单独验证，否则setPassword后密码肯定符合rule */
-            if (empty($data['password']) || strlen($data['password']) < 6) {
-                $this->error('密码为空或小于6字符');
-            }
 
             $userModel->setAttributes($data);
             $userModel->generateAuthKey();
-            $userModel->setPassword($data['password']);
             if ($userModel->broker_id == null) {
                 $userModel->broker_id = 0;
             }
@@ -131,14 +127,20 @@ class UserController extends BaseController
 
             /* 保存用户数据到数据库 */
             if ($userModel->save()) {
-                $this->success('操作成功', $this->getForward('un-actived'));
+
+                $node = UserTree::findOne(['user_id' => $userModel->broker_id]);
+                if ($node == null) {
+                    $node->makeRoot();
+                }
+                $c = new UserTree(['user_id' => $userModel->id]);
+                $c->appendTo($node);
+
+                $this->redirect($this->getForward());
             } else {
-                $errors = array_merge([], $userModel->errors);
-                $this->error(json_encode($errors));
+                $userModel->password = null;
             }
         }
-
-        return $this->render('edit', [
+        return $this->render('add', [
             'model' => $userModel
         ]);
     }

@@ -44,12 +44,12 @@ $columns = [
 <div class="panel  panel-default">
     <div class="panel-heading" style="margin-bottom: 10px;">
         <i class="icon-settings font-dark"></i>
-        <span class="">我要转换电子币</span>
+        <span class="">我要转账</span>
     </div>
     <div class="panel-body">
 
         <div class="row">
-            <div class="col-md-2">奖金余额：<?= $dianziBalance ?></div>
+            <div class="col-md-2">电子币余额：<?= $dianziBalance ?></div>
             <div class="col-md-9">
                 <?php $form = ActiveForm::begin([
                     'action' => ['transfer'],

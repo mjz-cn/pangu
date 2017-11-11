@@ -181,4 +181,12 @@ class BaodanController extends BaseController
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    public function actionSearch($name)
+    {
+        $rows = Baodan::find()->select('id, name')->where('name like :name', [
+            ':name' => "%" . $name . "%",
+        ])->asArray()->all();
+        return $this->asJson($rows);
+    }
 }

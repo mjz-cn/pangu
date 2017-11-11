@@ -82,6 +82,7 @@ class NormalUserSearch extends Model
         }
         $query->andFilterWhere(['between', 'create_time', strtotime($this->start_time), strtotime($this->end_time . ' +1 day')]);
 
+        $query->orderBy('create_time desc');
         return $dataProvider;
     }
 }

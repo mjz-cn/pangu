@@ -13,7 +13,7 @@ $this->title = '用户管理';
 $this->params['title_sub'] = '管理用户信息';  // 在\yii\base\View中有$params这个可以在视图模板中共享的参数
 
 /* 加载页面级别资源 */
-\backend\assets\TablesAsset::register($this);
+//\backend\assets\TablesAsset::register($this);
 
 $columns = [
     [

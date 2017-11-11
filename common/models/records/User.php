@@ -200,11 +200,11 @@ class User extends \yii\db\ActiveRecord
     public function getBaodan()
     {
         if ($this->_baodan === null) {
-            $model = Baodan::findOne(['user_id' => $this->id, 'status' => Baodan::STATUS_APPROVE]);
-            $this->_baodan = $model === null ? 0 : $model;
+            $model = Baodan::findOne(['user_id' => $this->id]);
+            $this->_baodan = $model === null ? false : $model;
         }
 
-        return $this->_baodan === 0 ? null : $this->_baodan;
+        return $this->_baodan === false ? null : $this->_baodan;
     }
 
     public function getStatusText()

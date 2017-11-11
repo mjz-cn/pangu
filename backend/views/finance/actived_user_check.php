@@ -32,6 +32,10 @@ $columns = [
         'value' => 'fromUser.real_name'
     ],
     [
+        'header' => '注册资金',
+        'value' => 'fromUser.reg_money'
+    ],
+    [
         'header' => '用户账号',
         'value' => 'user.username'
     ],
@@ -50,6 +54,10 @@ $columns = [
     [
         'header' => '重复消费',
         'value' => 'chongxiao'
+    ],
+    [
+        'header' => '描述',
+        'value' => 'desc'
     ],
     [
         'header' => '激活日期',

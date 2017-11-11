@@ -64,9 +64,13 @@ class BaodanController extends BaseController
                     throw new BadRequestHttpException('状态错误');
                 }
             } else {
-                throw new NotFoundHttpException('重置记录未找到');
+                throw new NotFoundHttpException('有效报单记录未找到');
             }
+            return $this->redirect($this->getForward());
         }
+
+        $this->setForward();
+
         $searchModel = new RechargeLogSearch();
         $dataProvider = $searchModel->frontendCheckSearch(Yii::$app->request->queryParams);
 

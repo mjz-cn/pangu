@@ -17,8 +17,9 @@ use Yii;
 class Baodan extends \yii\db\ActiveRecord
 {
     const STATUS_CHECKING = 0;
-    const STATUS_CHECKED = 1;
+    const STATUS_APPROVE = 1;
     const STATUS_REJECT = 2;
+    const STATUS_BAN = 3;
 
     private $_user;
 
@@ -52,7 +53,7 @@ class Baodan extends \yii\db\ActiveRecord
             'name' => '报单中心编号',
             'user_id' => '用户账号',
             'baodanbi' => '报单币',
-            'create_time' => 'Create Time',
+            'create_time' => '申请时间',
             'status' => '状态 , 0 未审核, 1 已审核',
         ];
     }
@@ -65,11 +66,26 @@ class Baodan extends \yii\db\ActiveRecord
         return $this->_user;
     }
 
-    public static function getName($id) {
+    public function getStatusText() {
+        return static::getStatusArr()[$this->status];
+    }
+
+    public static function getName($id)
+    {
         $model = static::findOne(['id' => $id]);
         if ($model) {
             return $model->name;
         }
         return null;
+    }
+
+    public static function getStatusArr()
+    {
+        return [
+            Baodan::STATUS_CHECKING => '审核中',
+            Baodan::STATUS_APPROVE => '已通过',
+            Baodan::STATUS_REJECT => '已拒绝',
+            Baodan::STATUS_BAN => '冻结',
+        ];
     }
 }

@@ -6,6 +6,7 @@
  * Time: 下午3:01
  */
 
+use common\models\records\Baodan;
 use kartik\helpers\Html;
 use common\core\GridView;
 
@@ -37,7 +38,9 @@ $columns = [
     ],
     [
         'label' => '代理级别',
-        'value' => function($model) {return "";}
+        'value' => function ($model) {
+            return "";
+        }
     ],
     [
         'label' => '购买报单币',
@@ -49,89 +52,48 @@ $columns = [
         'format' => ['date', 'php:Y-m-d H:i']
     ],
     [
-        'class' => 'yii\grid\ActionColumn',
+        'header' => '状态',
+        'value' => 'statusText'
+    ],
+    [
         'header' => '操作',
-        'template' => '{sure} {delete}',
-        //'options' => ['width' => '200px;'],
-        'buttons' => [
-            'sure' => function ($url, $model, $key) {
-                return Html::a('确定', ['check','id'=>$model->id], [
+        'format' => 'raw',
+        'value' => function ($model) {
+            $btnArr = [];
+            if ($model->status == Baodan::STATUS_CHECKING) {
+                $btnArr[] = Html::a('通过', ['index', 'baodan_id' => $model->id, 'baodan_status' => Baodan::STATUS_APPROVE], [
                     'title' => Yii::t('app', '确定'),
-                    'class' => 'btn btn-xs',
+                    'class' => 'btn btn-xs btn-default',
                     'data-method' => "post",
                     'data-confirm' => "您确定通过吗？"
                 ]);
-            },
-            'delete' => function ($url, $model, $key) {
-                return Html::a('删除', ['delete','id'=>$model->id], [
+                $btnArr[] = Html::a('拒绝', ['index', 'baodan_id' => $model->id, 'baodan_status' => Baodan::STATUS_REJECT], [
+                    'title' => Yii::t('app', '确定'),
+                    'class' => 'btn btn-xs btn-primary',
+                    'data-method' => "post",
+                    'data-confirm' => "您确定拒绝吗？"
+                ]);
+                $btnArr[] = Html::a('删除', ['delete', 'id' => $model->id], [
                     'title' => Yii::t('app', '删除'),
-                    'class' => 'btn btn-xs',
+                    'class' => 'btn btn-xs btn-danger',
                     'data-method' => "post",
                     'data-confirm' => "您确定要删除此项吗？"
                 ]);
-            },
-        ],
-    ],
-];
-
-if ($searchModel->status == \backend\models\search\BaodanSearch::STATUS_CHECKED) {
-    $columns = [
-        [
-            'label' => '报单中心编号',
-            'value' => 'name'
-        ],
-        [
-            'label' => '用户账号',
-            'value' => 'user.username'
-        ],
-        [
-            'label' => '会员姓名',
-            'value' => 'user.real_name'
-        ],
-        [
-            'label' => '会员级别',
-            'value' => 'user.levelText'
-        ],
-        [
-            'label' => '查看报单',
-            'format' => 'raw',
-            'value' => function ($model) {
-                return Html::a("查看报单会员", ["members", "id" => $model->id], [
+            } elseif ($model->status == Baodan::STATUS_APPROVE) {
+                $btnArr[] = Html::a('冻结', ['index', 'baodan_id' => $model->id, 'baodan_status' => Baodan::STATUS_BAN], [
+                    'title' => Yii::t('app', '冻结'),
+                    'class' => 'btn btn-xs',
+                    'data-method' => "post",
+                    'data-confirm' => "您确定要冻结此报单中心吗？"
+                ]);
+                $btnArr[] = Html::a("查看报单会员", ["members", "id" => $model->id], [
                     'class' => 'btn btn-xs',
                 ]);
             }
-        ],
-        [
-            'label' => '申请日期',
-            'attribute' => 'create_time',
-            'format' => ['date', 'php:Y-m-d H:i']
-        ],
-        [
-            'class' => 'yii\grid\ActionColumn',
-            'header' => '操作',
-            'template' => '{sure} {delete}',
-            //'options' => ['width' => '200px;'],
-            'buttons' => [
-                'sure' => function ($url, $model, $key) {
-                    return Html::a('确定', ['check','id'=>$model->id], [
-                        'title' => Yii::t('app', '确定'),
-                        'class' => 'btn btn-xs',
-                        'data-method' => "post",
-                        'data-confirm' => "您确定通过吗？"
-                    ]);
-                },
-                'delete' => function ($url, $model, $key) {
-                    return Html::a('删除', ['delete','id'=>$model->id], [
-                        'title' => Yii::t('app', '删除'),
-                        'class' => 'btn btn-xs',
-                        'data-method' => "post",
-                        'data-confirm' => "您确定要删除此项吗？"
-                    ]);
-                },
-            ],
-        ],
-    ];
-}
+            return implode('', $btnArr);
+        }
+    ]
+];
 ?>
 
     <div class="portlet light portlet-fit portlet-datatable bordered">
@@ -144,7 +106,7 @@ if ($searchModel->status == \backend\models\search\BaodanSearch::STATUS_CHECKED)
         <div class="portlet-body">
             <?php \yii\widgets\Pjax::begin(['options' => ['id' => 'pjax-container']]); ?>
             <div>
-                <?php echo $this->render('_check_hb_search', ['model' => $searchModel]); ?> <!-- 条件搜索-->
+                <?php echo $this->render('_index_search', ['model' => $searchModel]); ?> <!-- 条件搜索-->
             </div>
             <div class="table-container">
                 <form class="ids">

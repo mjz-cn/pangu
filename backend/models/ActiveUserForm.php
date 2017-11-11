@@ -11,9 +11,12 @@ namespace backend\models;
 
 use common\helpers\BrokerHelper;
 use common\helpers\TransactionHelper;
+use common\models\records\ActiveUserRatioLog;
 use common\models\records\User;
 use common\helpers\Constants;
 use common\models\UserTree;
+use http\Exception;
+use Yii;
 use yii\base\Model;
 
 class ActiveUserForm extends Model
@@ -53,7 +56,14 @@ class ActiveUserForm extends Model
         return $model->update(false, ['is_actived', 'is_shidan']);
     }
 
-    // 激活实单用户
+    /*
+     * 激活实单用户
+     * 目前激活，暂不发放奖金，到月底由财务审核之后再进行发放
+     * 生成激活实单用户记录，记录要接受奖金的用户，金额，税费，重消, 等月底财务进行审核
+     *
+     *  from_user_id user_id jiangjin manage_tax chongxiao create_time status
+     *
+     */
     private function activeShiDanUser()
     {
         $model = $this->findUser();
@@ -61,9 +71,46 @@ class ActiveUserForm extends Model
             return false;
         }
         $model->is_shidan = Constants::NUMBER_TRUE;
-        $model->reg_money = 6800.0;
+        $model->reg_money = Yii::$app->params['reg_money'];
 
-        return $model->update('false', ['is_actived', 'is_shidan'] && $this->shareRegMoney($model));
+
+        $ratioLogArr = [];
+        $userNode = UserTree::findOne(['user_id' => $model->id]);
+        $parentNodes = $userNode->parents(Yii::$app->params['user_tree_depth'])->all();
+        // 一级分成
+        $now = time();
+        foreach ($parentNodes as $parentNode) {
+            $level = ($parentNode->depth - $userNode->depth) + Yii::$app->params['user_tree_depth'] + 1;
+            $ratio = Yii::$app->params['user_tree_ratio'];
+            $jiangjin = $model->reg_money * $ratio;
+
+            $ratioLog = new ActiveUserRatioLog();
+            $ratioLog->user_id = $parentNode->user_id;
+            $ratioLog->from_user_id = $model->id;
+            $ratioLog->status = ActiveUserRatioLog::STATUS_CHECKING;
+            $ratioLog->create_time = $now;
+            $ratioLog->date = date('Y-m-d', $now);
+            $ratioLog->manage_tax = $jiangjin * TransactionHelper::RATIO_MANAGE_TAX;
+            $ratioLog->chongxiao = $jiangjin * TransactionHelper::RATIO_CHONGXIAO_TAX;
+            $ratioLog->jiangjin = $jiangjin;
+            $ratioLog->desc = $level;
+
+            $ratioLogArr[] = $ratioLog;
+        }
+
+        $dbTransaction = Yii::$app->db->beginTransaction();
+        try {
+            foreach ($ratioLogArr as $ratioLog) {
+                $ratioLog->save();
+            }
+            $model->update();
+
+            $dbTransaction->commit();
+        } catch (Exception $e) {
+            $dbTransaction->rollback();
+        }
+
+        return true;
     }
 
     /**

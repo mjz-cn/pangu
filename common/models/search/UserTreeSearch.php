@@ -49,9 +49,15 @@ class UserTreeSearch extends Model
     public function search($params)
     {
         $this->load($params);
-        $this->depth = empty($this->depth) ? 2 : $this->depth;
+        $this->depth = empty($this->depth) ? 3 : $this->depth;
 
+        if (empty($this->user_id)) {
+            return null;
+        }
         $validUserNode = UserTree::findOne(['user_id' => $this->user_id]);
+        if ($validUserNode == null) {
+            return null;
+        }
         return $this->basicSearch($validUserNode, $this->depth);
     }
 

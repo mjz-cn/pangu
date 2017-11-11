@@ -9,6 +9,7 @@ use common\models\NormalUser;
 use common\models\records\User;
 use common\models\search\NormalUserSearch;
 use common\helpers\Constants;
+use common\models\search\UserTreeSearch;
 use Yii;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
@@ -238,6 +239,19 @@ class UserController extends BaseController
 
         return $this->render('relation-graph', [
             'searchModel' => $searchModel,
+        ]);
+    }
+
+    public function actionUserTree()
+    {
+        $searchModel = new UserTreeSearch();
+        if (Yii::$app->request->isPost) {
+            $data = $searchModel->search(Yii::$app->request->post());
+            return $this->asJson(['status' => 1, 'data' => $data]);
+        }
+
+        return $this->render('user_tree', [
+            'searchModel' => $searchModel
         ]);
     }
 

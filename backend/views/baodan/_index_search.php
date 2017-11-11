@@ -1,14 +1,15 @@
 <?php
 
+use common\core\ActiveForm;
+use common\models\records\Baodan;
 use kartik\datetime\DateTimePicker;
 use kartik\widgets\DatePicker;
 use kartik\widgets\Select2;
 use yii\helpers\Html;
 use yii\web\JsExpression;
-use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\search\BonusSearch */
+/* @var $model backend\models\search\BaodanSearch */
 /* @var $form common\core\ActiveForm */
 ?>
 
@@ -41,7 +42,7 @@ use yii\widgets\ActiveForm;
                 'templateResult' => new JsExpression('function(user) { return user.username; }'),
                 'templateSelection' => new JsExpression('function (user) { return user.username; }'),
             ],
-        ]); ?>
+        ], ['class' => 'c-md-12']); ?>
     </div>
     <div class="col-md-4">
         <?php
@@ -61,6 +62,15 @@ use yii\widgets\ActiveForm;
             ]
         ]); ?>
 
+    </div>
+    <div class="col-md-2">
+        <?= $form->field($model, 'status', ['inputOptions' => ['class' => 'form-control']])->selectList([
+            '' => '全部',
+            Baodan::STATUS_CHECKING => '审核中',
+            Baodan::STATUS_APPROVE => '通过',
+            Baodan::STATUS_REJECT => '拒绝',
+            Baodan::STATUS_BAN => '冻结',
+        ]) ?>
     </div>
 
     <div class="col-md-2">

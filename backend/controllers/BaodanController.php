@@ -4,9 +4,12 @@ namespace backend\controllers;
 
 use backend\models\search\BaodanMembersSearch;
 use common\controllers\BaseController;
+use common\models\records\RechargeLog;
+use common\models\search\RechargeLogSearch;
 use Yii;
 use common\models\records\Baodan;
 use backend\models\search\BaodanSearch;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -38,10 +41,34 @@ class BaodanController extends BaseController
      */
     public function actionIndex()
     {
+        if (Yii::$app->request->isPost) {
+            // id, status
+            $status = Yii::$app->request->get('baodan_status');
+            $conditions = ['id' => Yii::$app->request->get('baodan_id')];
+            if ($status == Baodan::STATUS_CHECKING) {
+                // 审核未审核的报单中心申请
+                if ($status == Baodan::STATUS_APPROVE || $status == Baodan::STATUS_REJECT) {
+                    $conditions[] = ['status' => Baodan::STATUS_CHECKING];
+                } else {
+                    throw new BadRequestHttpException('状态错误');
+                }
+            } elseif ($status == Baodan::STATUS_REJECT) {
+                // 冻结已经通过审核的报单中心
+                $conditions[] = ['status' => Baodan::STATUS_APPROVE];
+            }
+
+            $model = Baodan::findOne($conditions);
+            if ($model === null) {
+                throw new NotFoundHttpException('未找到有效报单中心');
+            }
+            $model->status = $status;
+            $model->update(false, ['status']);
+
+            return $this->redirect($this->getForward());
+        }
         $this->setForward();
 
         $searchModel = new BaodanSearch();
-        $searchModel->status = Yii::$app->request->get('status');
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -50,14 +77,50 @@ class BaodanController extends BaseController
         ]);
     }
 
+    // 审核报单中心
     public function actionCheck($id)
     {
-        Baodan::updateAll(['status' => Baodan::STATUS_CHECKED], ['id' => $id]);
-
         return $this->redirect($this->getForward());
     }
 
+    // 审核重复报单
+    public function actionRepeatCheck()
+    {
+        if (Yii::$app->request->isPost) {
+            // id, status
+            $model = RechargeLog::findOne([
+                'id' => Yii::$app->request->get('r_id'),
+                'baodan_status' => RechargeLog::STATUS_APPROVE,
+                'status' => RechargeLog::STATUS_CHECKING
+            ]);
+            $status = Yii::$app->request->get('r_status');
+            if ($model) {
+                if ($status == RechargeLog::STATUS_APPROVE || $status == RechargeLog::STATUS_REJECT) {
+                    $model->status = $status;
+                    $model->check();
+                }
+                else {
+                    throw new BadRequestHttpException('状态错误');
+                }
+            } else {
+                throw new NotFoundHttpException('有效重复报单记录未找到');
+            }
+            return $this->redirect($this->getForward());
+        }
 
+        $this->setForward();
+
+        $searchModel = new RechargeLogSearch();
+        $searchModel->baodan_status = RechargeLog::STATUS_APPROVE;
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('repeat_check', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    // 查看报单中心会员
     public function actionMembers()
     {
         $this->setForward();

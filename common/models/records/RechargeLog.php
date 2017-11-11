@@ -108,14 +108,12 @@ class RechargeLog extends \yii\db\ActiveRecord
     /**
      * @param $rechargeLog static
      */
-    private static function approve($rechargeLog)
+    private function approve()
     {
-        $rechargeLog->status = RechargeLog::STATUS_APPROVE;
-
         // 增加一条交易记录
         $transactionLog = new TransactionLog();
-        $transactionLog->user_id = $rechargeLog->user_id;
-        $transactionLog->amount = $rechargeLog->amount;
+        $transactionLog->user_id = $this->user_id;
+        $transactionLog->amount = $this->amount;
         $transactionLog->currency_type = TransactionHelper::CURRENCY_JIANGJIN;
         $transactionLog->transaction_type = TransactionHelper::TRANSACTION_RECHARGE;
         $transactionLog->create_time = time();
@@ -123,13 +121,13 @@ class RechargeLog extends \yii\db\ActiveRecord
         $transactionLog->from_admin_id = \Yii::$app->user->identity->getId();
 
         // 钱包增加金额
-        $wallet = Wallet::getValidWallet($rechargeLog->user_id);
-        $wallet->jiangjin += $rechargeLog->amount;
+        $wallet = Wallet::getValidWallet($this->user_id);
+        $wallet->addJiangjin($this->amount);
 
         $db = \Yii::$app->db;
         $dbTransaction = $db->beginTransaction();
         try {
-            $rechargeLog->update();
+            $this->update();
             $transactionLog->save();
             $wallet->update();
 
@@ -142,45 +140,12 @@ class RechargeLog extends \yii\db\ActiveRecord
         return null;
     }
 
-    /**
-     * @param $rechargeLog  static
-     * @return string
-     */
-    private static function reject($rechargeLog)
-    {
-        $rechargeLog->status = RechargeLog::STATUS_REJECT;
-
-        $db = $rechargeLog->getDb();
-        $dbTransaction = $db->beginTransaction();
-        try {
-            $rechargeLog->update();
-
-            $dbTransaction->commit();
-        } catch (Exception $e) {
-            \Yii::error("recharge approve failed");
-            $dbTransaction->rollback();
-            return '审核失败';
+    public function check() {
+        if ($this->status == static::STATUS_APPROVE) {
+            $this->approve();
+        } elseif ($this->status == static::STATUS_REJECT) {
+            $this->update();
         }
-        return null;
-    }
-
-    /**
-     * @param $rechargeId     integer   审核单子ID
-     * @param $status         integer   申请状态
-     * @return string 返回为空，代表操作成功，否则表示失败
-     */
-    public static function recharge($rechargeId, $status)
-    {
-        $rechargeLog = RechargeLog::findOne(['id' => $rechargeId, 'status' => static::STATUS_CHECKING]);
-        if ($rechargeLog == null) {
-            return '重置单号不存在或者已经被处理过';
-        }
-        if ($status == static::STATUS_APPROVE) {
-            return static::approve($rechargeLog);
-        } elseif ($status == static::STATUS_REJECT) {
-            return static::reject($rechargeLog);
-        }
-        return '重置申请状态错误';
     }
 
     public static function create($userId, $amount) {

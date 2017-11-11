@@ -38,5 +38,9 @@ return [
         'scrawlPathFormat'     => '/image/{yyyy}{mm}/editor{time}{rand:6}',
     ],
 
-    'broker_child' => 8,
+    'broker_child_cnt' => 8,
+    'reg_money' => 10000,
+    // 一个用户可以形成三层子节点
+    'user_tree_depth' => 3,
+    'user_tree_ratio' => [1 => 0.15, 2 => 0.06, 3 => 0.04]
 ];

@@ -10,7 +10,7 @@ $config = [
 ];
 
 if (YII_ENV_DEV) {
-//    $config['components']['assetManager']['forceCopy'] = true;
+    $config['components']['assetManager']['forceCopy'] = true;
 
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';

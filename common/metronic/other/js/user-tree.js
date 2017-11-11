@@ -19,7 +19,9 @@
                     }, 3000);
                 } else {
                     // 更新整个二叉树
-                    updateTreeGraph(resp.data);
+                    if (resp.data !== null) {
+                        updateTreeGraph(resp.data);
+                    }
                 }
             },
             error: function (data) {

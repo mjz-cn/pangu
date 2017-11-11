@@ -40,7 +40,7 @@ class BrokerHelper
             return ['status' => 1, 'msg' => 'success'];
         }
         $children = $node->children(1)->all();
-        if (count($children) >= \Yii::$app->params['broker_child']) {
+        if (count($children) >= \Yii::$app->params['broker_child_cnt']) {
             return ['status' => 0, 'msg' => '人数已满'];
         }
         return ['status' => 1, 'msg' => 'success'];

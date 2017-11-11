@@ -1,16 +1,19 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: mjz
+ * Date: 17/11/11
+ * Time: 下午9:42
+ */
 
 namespace backend\models\search;
 
-use Yii;
+
+use common\models\records\ActiveUserRatioLog;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\records\Baodan;
 
-/**
- * BaodanSearch represents the model behind the search form about `common\models\records\Baodan`.
- */
-class BaodanSearch extends Model
+class ActivedUserRatioLogSearch extends Model
 {
     // 查询开始时间
     public $start_time;
@@ -18,6 +21,8 @@ class BaodanSearch extends Model
     public $end_time;
     public $status;
     public $user_id;
+    // 被激活用户
+    public $from_user_id;
 
     /**
      * @inheritdoc
@@ -47,7 +52,7 @@ class BaodanSearch extends Model
      */
     public function search($params)
     {
-        $query = Baodan::find();
+        $query = ActiveUserRatioLog::find();
 
         // add conditions that should always apply here
 

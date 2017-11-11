@@ -200,7 +200,7 @@ class User extends \yii\db\ActiveRecord
     public function getBaodan()
     {
         if ($this->_baodan === null) {
-            $model = Baodan::findOne(['user_id' => $this->id, 'status' => Baodan::STATUS_CHECKED]);
+            $model = Baodan::findOne(['user_id' => $this->id, 'status' => Baodan::STATUS_APPROVE]);
             $this->_baodan = $model === null ? 0 : $model;
         }
 

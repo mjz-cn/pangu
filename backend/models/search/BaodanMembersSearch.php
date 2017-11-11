@@ -15,7 +15,7 @@ use yii\data\ActiveDataProvider;
 
 class BaodanMembersSearch extends Model
 {
-    //   报单中心ID
+    //  报单中心ID
     public $bd_id;
     // 查询开始时间
     public $start_time;

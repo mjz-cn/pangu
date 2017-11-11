@@ -66,4 +66,9 @@ class Wallet extends \yii\db\ActiveRecord
         }
         return $wallet;
     }
+
+    public function addJiangjin($amount) {
+        $this->jiangjin += $amount;
+        $this->total_jiangjin += $amount;
+    }
 }

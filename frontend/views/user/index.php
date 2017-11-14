@@ -13,8 +13,13 @@ $this->params['title_sub'] = '管理用户信息';  // 在\yii\base\View中有$p
 
 $columns = [
     [
-        'label' => '推荐人账号',
-        'value' => 'referrer.username',
+        'label' => '领路老师账号',
+        'value' => 'broker.username',
+        'defaultValue' => '-'
+    ],
+    [
+        'label' => '领路老师姓名',
+        'value' => 'broker.real_name',
         'defaultValue' => '-'
     ],
     [
@@ -39,22 +44,6 @@ $columns = [
         'format' => ['date', 'php:Y-m-d H:i']
     ]
 ];
-if ($searchModel->status == \frontend\models\search\UserSearch::STATUS_CHECKING) {
-    $columns[] = [
-        'class' => 'yii\grid\ActionColumn',
-        'header' => '操作',
-        'template' => '{check}',
-        //'options' => ['width' => '200px;'],
-        'buttons' => [
-            'check' => function ($url, $model, $key) {
-                return Html::a('审核', ['/user/active', 'id' => $key], [
-                    'title' => Yii::t('app', '更新'),
-                    'class' => 'btn btn-xs btn-default'
-                ]);
-            }
-        ],
-    ];
-}
 
 ?>
 <div class="portlet light portlet-fit portlet-datatable bordered">

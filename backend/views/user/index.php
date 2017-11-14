@@ -18,11 +18,6 @@ $this->params['title_sub'] = '管理用户信息';  // 在\yii\base\View中有$p
 if ($searchModel->is_actived) {
     $columns = [
         [
-            'label' => '推荐人账号',
-            'value' => 'referrer.username',
-            'defaultValue' => '-'
-        ],
-        [
             'header' => '会员账号',
             'attribute' => 'username',
         ],
@@ -39,7 +34,7 @@ if ($searchModel->is_actived) {
             'attribute' => 'reg_money'
         ],
         [
-            'header' => '接点人账号',
+            'header' => '领路老师账号',
             'value' => 'broker.username',
             'defaultValue' => '-'
         ],

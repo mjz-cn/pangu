@@ -68,6 +68,7 @@ return [
             ],
         ],
         'assetManager' => [
+            'linkAssets' => true,
             'bundles' => [
                 'yii\web\JqueryAsset' => [
                     'sourcePath' => null,

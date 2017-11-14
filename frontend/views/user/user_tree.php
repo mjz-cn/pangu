@@ -26,7 +26,7 @@ $this->params['title_sub'] = '管理用户信息';  // 在\yii\base\View中有$p
     </div>
     <div class="panel-body">
         <div>
-            <?php echo $this->render('_user_tree_search', ['searchModel' => $searchModel]); ?>
+<!--            --><?php //echo $this->render('_user_tree_search', ['searchModel' => $searchModel]); ?>
         </div>
         <hr>
         <!--   -->

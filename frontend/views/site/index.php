@@ -11,7 +11,6 @@ $this->title = '商务会员管理系统';
         <ul class="list-group">
             <li class="list-group-item"><i class="icon-home icons"></i>
                 用户: <?= Yii::$app->user->identity->username ?></li>
-            <li class="list-group-item">推荐人数: <?= $referrerCnt ?></li>
             <li class="list-group-item ">奖金币: <?= number_format($wallet->jiangjin) ?></li>
             <li class="list-group-item">电子币: <?= number_format($wallet->dianzi) ?></li>
             <li class="list-group-item">累计收入: <?= number_format($wallet->total_jiangjin) ?></li>

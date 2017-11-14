@@ -52,13 +52,13 @@ class UserController extends BaseController
                 $this->view->title = '推荐人列表';
                 break;
             case UserSearch::STATUS_CHECKING:
-                $this->view->title = '审核会员列表';
+                $this->view->title = '审核会员';
                 break;
             case UserSearch::STATUS_ACTIVED:
                 $this->view->title = '已激活会员';
                 break;
             default:
-                $this->view->title = '未知';
+                $this->view->title = '';
         }
 
         return $this->render('index', [

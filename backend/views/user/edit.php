@@ -89,48 +89,13 @@ $this->params['title_sub'] = '添加前台用户';  // 在\yii\base\View中有$p
         }
         echo $form->field($model, "broker_id")->widget(Select2::classname(), [
             'data' => $data, // 填充username,
-            'options' => ['placeholder' => '选择接点人'],
+            'options' => ['placeholder' => '选择领路老师'],
             'addon' => [
                 'prepend' => [
                     'content' => Html::icon('user', [], 'icon-')
                 ],
             ],
             'initValueText' => '',
-            'pluginOptions' => [
-                'allowClear' => true,
-                'minimumInputLength' => 2,
-                'dataType' => 'json',
-                'ajax' => [
-                    'url' => \yii\helpers\Url::toRoute('/user/search'),
-                    'delay' => 250,
-                    'data' => new JsExpression('function(params) { return {user_name:params.term}; }'),
-                    'processResults' => new JsExpression('function(data, params) {return {results: data};}'),
-                    'cache' => true
-                ],
-                'templateResult' => new JsExpression('function(user) { return user.username; }'),
-                'templateSelection' => new JsExpression('function (user) { 
-                    if (user.username) {return user.username}
-                    return user.text; }
-                '),
-            ],
-        ], [
-            'class' => 'c-md-3',
-        ]); ?>
-
-        <?php
-        $data = [];
-        if ($model->referrer_id) {
-            $data[$model->referrer_id] = User::getUsername($model->referrer_id);
-        }
-        echo $form->field($model, "referrer_id")->widget(Select2::classname(), [
-            'data' => $data, // 填充username,
-            'class' => 'form-control c-md-2',
-            'options' => ['placeholder' => '选择推荐人'],
-            'addon' => [
-                'prepend' => [
-                    'content' => Html::icon('user', [], 'icon-')
-                ],
-            ],
             'pluginOptions' => [
                 'allowClear' => true,
                 'minimumInputLength' => 2,

@@ -22,13 +22,13 @@ class BonusSearch extends NormalUser
     // 查询结束时间
     public $end_time;
     // 推荐人账号
-    public $referrer_id;
+    public $broker_id;
 
 
     public function rules()
     {
         return [
-            [['user_id', 'referrer_id'], 'integer'],
+            [['user_id', 'broker_id'], 'integer'],
             [['start_time', 'end_time'], 'date', 'format' => 'php:Y-m-d']
         ];
     }
@@ -37,7 +37,7 @@ class BonusSearch extends NormalUser
     {
         return [
             'user_id' => '用户账号',
-            'referrer_id' => '推荐人账号',
+            'broker_id' => '领路老师账号',
             'start_time' => '起始时间',
             'end_time' => '结束时间',
         ];
@@ -69,12 +69,8 @@ class BonusSearch extends NormalUser
             return $dataProvider;
         }
 
-        if (!empty($this->user_id)) {
-            $query->filterWhere(['id' => $this->user_id]);
-        } else if (!empty($this->referrer_id)) {
-            $query->filterWhere(['id' => $this->referrer_id]);
-        }
-        $query->filterWhere(['between', 'create_time', strtotime($this->start_time), strtotime($this->end_time . ' +1 day')]);
+        $query->andFilterWhere(['id' => $this->user_id]);
+        $query->andFilterWhere(['between', 'create_time', strtotime($this->start_time), strtotime($this->end_time . ' +1 day')]);
 
         return $dataProvider;
     }

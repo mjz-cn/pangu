@@ -40,10 +40,8 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $wallet = Wallet::getValidWallet(Yii::$app->user->getId());
-        $referrerCnt = NormalUser::find()->andWhere(['referrer_id' => Yii::$app->user->getId()])->count();
         return $this->render('index', [
-            'wallet' => $wallet,
-            'referrerCnt' => $referrerCnt
+            'wallet' => $wallet
         ]);
     }
 

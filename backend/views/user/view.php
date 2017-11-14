@@ -34,7 +34,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'image',
             'broker_id',
             'broker_path',
-            'referrer_id',
             'real_name',
             'gender',
             'card_id',

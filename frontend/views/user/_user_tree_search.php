@@ -24,12 +24,6 @@ use yii\helpers\Html;
             ->textInput()->label('选择用户：') ?>
     </div>
 
-    <div class="col-md-1">
-        <?= $form->field($searchModel, 'orientation', ['inputOptions' => ['class' => 'form-control']])->selectList([
-            UserTreeSearch::ORIENTATION_DOWN => '向下',
-            UserTreeSearch::ORIENTATION_UP => '向上',
-        ]) ?>
-    </div>
 
     <div class="col-md-2">
         <div class="form-group" style="margin-top: 24px;">

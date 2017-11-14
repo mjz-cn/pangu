@@ -59,7 +59,7 @@
         // 生成二叉树
         new Treant(g_chart_config);
         // 重新定义node里面的内容
-        $('.node').each(function () {
+        $('.node111').each(function () {
             var that = $(this);
             // that.empty();
             var table = $('.node-table-tpl').clone();
@@ -69,6 +69,7 @@
                 var nodeThat = $(this);
                 var css = nodeThat.attr('class');
                 table.attr('data-' + css.replace('node-', ''), nodeThat.text());
+                // 获取level-data 数据
                 table.find('.' + css).text(nodeThat.text());
             });
             that.html(table);

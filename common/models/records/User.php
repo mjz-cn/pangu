@@ -112,7 +112,7 @@ class User extends \yii\db\ActiveRecord
             'last_login_time' => '上一次登陆时间',
             'last_login_ip' => '上一次登陆IP',
             'image' => 'Image',
-            'broker_id' => '接点人',
+            'broker_id' => '领路老师',
             'broker_path' => '系谱图路径',
             'referrer_id' => '推荐人',
             'real_name' => '真实姓名',
@@ -176,18 +176,7 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * 获取推荐人
-     */
-    public function getReferrer()
-    {
-        if (empty($this->referrer_id)) {
-            return null;
-        }
-        return static::findOne(['id' => $this->referrer_id]);
-    }
-
-    /**
-     * 获取接点人
+     * 获取领路老师
      */
     public function getBroker()
     {

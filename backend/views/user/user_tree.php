@@ -38,8 +38,13 @@ $this->params['title_sub'] = '管理用户信息';  // 在\yii\base\View中有$p
     <table align="center" class="table table-bordered table-sm table-condensed table-node node-table-tpl">
         <thead>
         <tr>
-            <th colspan="3" class="node-user_name">bcld111 (VIP)
+            <th colspan="3" class="node-user_name">
             </th>
+        </tr>
+        <tr>
+            <th>层级</th>
+            <th>计划加盟商</th>
+            <th>当前已加盟</th>
         </tr>
         </thead>
         <tbody>

@@ -4,12 +4,11 @@
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
-    background-color: #ffffff;
-    /*border: 1px solid #000;*/
+    background-color: rgba(231, 236, 241, 0.23);
+    border: 1px solid #000;
     width: 200px;
-    font-family: Tahoma;
     font-size: 12px;
-    height: 75px;
+    /*height: 75px;*/
 }
 
 .table-node {
@@ -30,4 +29,32 @@
 
 .table-node>tbody {
     background-color: #C0DBF3;
+}
+
+.table-user-tree {
+    margin-bottom: 0;
+}
+.table-user-tree>tbody>tr>td, .table-user-tree>tbody>tr>th, .table-user-tree>tfoot>tr>td,
+.table-user-tree>tfoot>tr>th, .table-user-tree>thead>tr>td, .table-user-tree>thead>tr>th
+{
+    padding: 1px;
+}
+
+.Treant .collapse-switch {
+    width: 26px;
+    height: 17px;
+    border: none;
+}
+
+.Treant .collapse-switch::before {
+    content: '折叠';
+
+}
+
+.Treant .collapsed .collapse-switch {
+    background-color: transparent;
+}
+
+.Treant .collapsed .collapse-switch::before {
+    content: '展开';
 }

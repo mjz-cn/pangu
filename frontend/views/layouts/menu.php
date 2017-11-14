@@ -14,33 +14,20 @@ use yii\widgets\Breadcrumbs;
             <div class="hor-menu">
                 <?php
                 if (!Yii::$app->user->isGuest) {
-                    $baodanModel = Yii::$app->user->identity->getBaoDan();
-
                     $menuItems = [
                         ['label' => '首页', 'options' => ['class' => 'menu-dropdown'], 'url' => ['/site/index']],
                         ['label' => '会员资料', 'options' => ['class' => 'menu-dropdown'], 'items' => [
-                            ['label' => '资料编辑', 'url' => '/user/edit'],
+                            ['label' => '资料收集', 'url' => '/user/edit'],
                             ['label' => '修改密码', 'url' => '/user/reset-password'],
-                            ['label' => '收获地址', 'url' => '/user/address'],
+                            ['label' => '收货地址', 'url' => '/user/address'],
                         ]],
                         ['label' => '部门情况', 'options' => ['class' => 'menu-dropdown'], 'items' => [
-                            ['label' => '推荐会员', 'url' => '/user/index?status=1'],
                             ['label' => '会员网络', 'url' => '/user/user-tree'],
+                            ['label' => '审核报单', 'url' => '/baodan/check'],
+                            ['label' => '注册会员', 'url' => '/user/add'],
+                            ['label' => '部门会员列表', 'url' => '/user/index'],
                         ]]
                     ];
-                    if ($baodanModel !== null && $baodanModel->status == \common\models\records\Baodan::STATUS_APPROVE) {
-                        $menuItems[] = ['label' => '代理中心', 'options' => ['class' => 'menu-dropdown'], 'items' => [
-                            ['label' => '注册会员', 'url' => '/user/add'],
-                            ['label' => '激活会员', 'url' => '/user/index?status=2'],
-                            ['label' => '已激活会员', 'url' => '/user/index?status=3'],
-                            ['label' => '审核报单', 'url' => '/baodan/check'],
-                            ['label' => '申请中心', 'url' => '/baodan/register'],
-                        ]];
-                    } else {
-                        $menuItems[] = ['label' => '代理中心', 'options' => ['class' => 'menu-dropdown'], 'items' => [
-                            ['label' => '申请中心', 'url' => '/baodan/register'],
-                        ]];
-                    }
 
                     $menuItems[] = ['label' => '财务管理', 'options' => ['class' => 'menu-dropdown'], 'items' => [
                         ['label' => '奖金明细', 'url' => '/finance/index'],
@@ -62,7 +49,7 @@ use yii\widgets\Breadcrumbs;
                 if (Yii::$app->user->isGuest) {
                     $menuItems = [['label' => '登录', 'options' => ['style' => 'color: #fff'], 'url' => ['/site/login']]];
                 } else {
-                    $menuItems = [['label' => Yii::$app->user->identity->username. '(退出)', 'options' => ['style' => 'color: #fff'], 'url' => ['/site/logout']]];
+                    $menuItems = [['label' => Yii::$app->user->identity->username . '(退出)', 'options' => ['style' => 'color: #fff'], 'url' => ['/site/logout']]];
                 }
                 echo Nav::widget([
                     'options' => ['class' => 'navbar-nav navbar-right'],

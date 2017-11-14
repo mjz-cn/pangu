@@ -19,10 +19,10 @@ class BrokerHelper
     CONST REVENUE_UP_LEVEL = 5;
 
     /**
-     * 验证用户是否能成为节点人
+     * 验证用户是否能成为领路老师
      *
      * @param $userId integer
-     * @return array 能成为接点人则返回true， 否咋返回false
+     * @return array 能成为领路老师  则返回true， 否咋返回false
      */
     public static function validateBroker($userId)
     {

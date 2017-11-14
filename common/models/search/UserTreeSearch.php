@@ -9,6 +9,7 @@
 namespace common\models\search;
 
 
+use common\helpers\StringHelper;
 use common\models\NormalUser;
 use common\models\UserTree;
 use yii\base\Model;
@@ -122,17 +123,33 @@ class UserTreeSearch extends Model
             }
             $rootUserNode = $tempNode;
         }
+        $childData = $this->traverse($rootUserNode, $depth);
+
         return [
             'text' => [
                 'user_id' => $rootUserNode->user_id,
-                'user_name' => NormalUser::getUsername($rootUserNode->user_id),
+                'username' => NormalUser::getUsername($rootUserNode->user_id),
                 'parent_node_id' => 0,
+                'level_data' => $childData[1]
             ],
+            'innerHTML' => $this->convertNodeToHtmlNode([
+                'user_id' => $rootUserNode->user_id,
+                'username' => NormalUser::getUsername($rootUserNode->user_id),
+                'parent_node_id' => 0,
+                'level_data' => $childData[1]
+            ]),
             'HTMLid' => 'user_tree_node_' . $rootUserNode->id,
-            'children' => $this->traverse($rootUserNode, $depth)
+            'children' => $childData[0]
         ];
     }
 
+    /**
+     * 深度递归遍历一个node的子节点
+     * @param $rootNode
+     * @param $depth
+     * @param $parents array
+     * @return array [children, l1, l2, l3...]
+     */
     private function traverse($rootNode, $depth)
     {
         $data = [];
@@ -142,25 +159,76 @@ class UserTreeSearch extends Model
         // 获取子节点
         $children = $rootNode->children(1)->all();
         if ($children === null || empty($children)) {
-            return [[
-                'text' => [
-                    'user_id' => 0,
-                    'user_name' => '空',
-                    'parent_node_id' => $rootNode->id,
-                ],
-            ]];
+            return [];
         }
+        $cntArr = [];
         foreach ($children as $child) {
+            $childData = $this->traverse($child, $depth - 1);
+            if (empty($childData)) {
+                $childData = [[], []];
+            }
             $data[] = [
                 'text' => [
                     'user_id' => $child->user_id,
-                    'user_name' => NormalUser::getUsername($child->user_id),
+                    'username' => NormalUser::getUsername($child->user_id),
                     'parent_node_id' => $rootNode->id,
+                    'level_data' => $childData[1]
                 ],
+                'innerHTML' => $this->convertNodeToHtmlNode([
+                    'user_id' => $child->user_id,
+                    'username' => NormalUser::getUsername($child->user_id),
+                    'parent_node_id' => $rootNode->id,
+                    'level_data' => $childData[1]
+                ]),
                 'HTMLid' => 'user_tree_node_' . $child->id,
-                'children' => $this->traverse($child, $depth - 1)
+                'children' => $childData[0]
             ];
+            for ($i = 0; $i < count($childData[1]); $i++) {
+                if (count($cntArr) <= $i) {
+                    $cntArr[$i] = 0;
+                }
+                $cntArr[$i] += $childData[1][$i];
+            }
         }
-        return $data;
+        return [$data, array_merge([count($children)], $cntArr)];
+    }
+
+    /**
+     * 将节点数据转换成html格式的数据
+     */
+    private function convertNodeToHtmlNode($data)
+    {
+        $html = <<<HTML
+        <div>用户账号：%s</div>%s
+HTML;
+        $tableData = '<table align="center" class="table-user-tree table table-hover table-striped">
+        <thead>
+        <tr>
+            <th>层级</th>
+            <th>计划加盟商</th>
+            <th>当前已加盟</th>
+        </tr>
+        </thead>
+        <tbody>
+        %s
+        </tbody></table>';
+
+        $trs = '';
+        foreach ($data['level_data'] as $key => $value) {
+            $key += 1;
+            $tr = '<tr>';
+            $tr .= '<td>' . $key . '</td>';
+            $tr .= '<td>' . pow(\Yii::$app->params['broker_child_cnt'], $key) . '</td>';
+            $tr .= '<td>' . $value . '</td>';
+            $tr .= '</tr>';
+            $trs .= $tr;
+        }
+        if ($trs === '') {
+            $tableData = '暂无加盟商信息';
+        } else {
+            $tableData = sprintf($tableData, $trs);
+        }
+
+        return sprintf($html, $data['username'], $tableData);
     }
 }

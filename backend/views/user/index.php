@@ -70,11 +70,6 @@ if ($searchModel->is_actived) {
             'defaultValue' => '0.00'
         ],
         [
-            'header' => '重消余额',
-            'value' => 'wallet.chongxiao',
-            'defaultValue' => '0.00'
-        ],
-        [
             'header' => '管理级别',
             'defaultValue' => '暂无',
         ],

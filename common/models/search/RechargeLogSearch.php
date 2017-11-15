@@ -135,8 +135,8 @@ class RechargeLogSearch extends Model
         ]);
 
         // 查找报单ID
-        $baodan = \Yii::$app->user->identity->getBaodan();
-        if ($baodan === null) {
+
+        if (!$this->validate()) {
             $query->andWhere('0=1');
             return $dataProvider;
         }
@@ -152,7 +152,7 @@ class RechargeLogSearch extends Model
         ])->andFilterWhere(['between', 'date', $this->start_time, $this->end_time]);
 
         $query->innerJoin(NormalUser::tableName() . ' u', [
-            'u.baodan_id' => $baodan->id,
+            'u.broker_id' => \Yii::$app->user->getId(),
             'u.id' => 't_recharge_log.user_id']);
 
         $query->orderBy('create_time desc');

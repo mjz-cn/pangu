@@ -23,18 +23,6 @@ $this->params['title_sub'] = '';  // 在\yii\base\View中有$params这个可以�
             <i class="icon-settings font-red-sunglo"></i>
             <span class="caption-subject bold uppercase"> 内容信息</span>
         </div>
-        <div class="actions">
-            <div class="btn-group">
-                <a class="btn btn-sm green dropdown-toggle" href="javascript:;" data-toggle="dropdown"> 工具箱
-                    <i class="fa fa-angle-down"></i>
-                </a>
-                <ul class="dropdown-menu pull-right" role="menu">
-                    <li><a href="javascript:;"><i class="fa fa-pencil"></i> 导出Excel </a></li>
-                    <li class="divider"> </li>
-                    <li><a href="javascript:;"> 其他 </a></li>
-                </ul>
-            </div>
-        </div>
     </div>
     <div class="portlet-body form">
         <!-- BEGIN FORM-->

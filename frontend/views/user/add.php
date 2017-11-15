@@ -1,9 +1,12 @@
 <?php
 
+use common\helpers\ArrayHelper;
+use common\models\records\Region;
 use common\models\records\User;
 use kartik\helpers\Html;
 use kartik\widgets\Select2;
 use common\core\ActiveForm;
+use yii\helpers\Url;
 use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
@@ -123,40 +126,53 @@ $this->params['title_sub'] = '添加前台用户';  // 在\yii\base\View中有$p
             </div>
 
             <div class="col-md-6">
-                <?php
-                $data = [];
-                if ($model->baodan_id) {
-                    $data[$model->baodan_id] = \common\models\records\Baodan::getName($model->baodan_id);
-                }
-                echo $form->field($model, "baodan_id")->widget(Select2::classname(), [
-                    'data' => $data, // 填充username,
-                    'options' => ['placeholder' => '选择报单中心'],
-                    'addon' => [
-                        'prepend' => [
-                            'content' => Html::icon('user', [], 'icon-')
-                        ],
-                    ],
-                    'initValueText' => '',
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                        'minimumInputLength' => 2,
-                        'dataType' => 'json',
-                        'ajax' => [
-                            'url' => \yii\helpers\Url::toRoute('/baodan/search'),
-                            'delay' => 250,
-                            'data' => new JsExpression('function(params) { return {name:params.term}; }'),
-                            'processResults' => new JsExpression('function(data, params) {return {results: data};}'),
-                            'cache' => true
-                        ],
-                        'templateResult' => new JsExpression('function(baodan) { return baodan.name; }'),
-                        'templateSelection' => new JsExpression('function (baodan) { 
-                            if (baodan.name) {return baodan.name}
-                            return baodan.text; }
-                        '),
-                    ],
-                ], [
-                    'class' => 'c-md-10',
-                ]); ?>
+
+                <div class="form-group">
+                    <div>
+                        <label>省 市 区</label>
+                        <span class="help-inline"></span>
+                    </div>
+                    <div class="col-md-4" style="padding-left:0px;">
+                        <?=\kartik\widgets\Select2::widget([
+                            'model' => $model,
+                            'attribute' => 'province',
+                            'data' => ArrayHelper::map(Region::find()->where(['parent_code'=>0])->asArray()->all(), 'code', 'fullname')
+                        ]);?>
+                    </div>
+                    <div class="col-md-4">
+                        <?=\kartik\widgets\DepDrop::widget([
+                            'model' => $model,
+                            'attribute' => 'city',
+                            'options' => ['placeholder' => '选择'],
+                            'type' => \kartik\widgets\DepDrop::TYPE_SELECT2,
+                            'select2Options'=>['pluginOptions'=>['allowClear'=>true]],
+                            'pluginOptions'=>[
+                                //'initialize' => true,
+                                //'initDepends'=>['order-province'],
+                                'depends'=>[Html::getInputId($model, 'province')],
+                                'url' => Url::to(['/public/region','sid'=>$model['city']]),
+                                'loadingText' => '加载中',
+                            ]
+                        ]);?>
+                    </div>
+                    <div class="col-md-4">
+                        <?=\kartik\widgets\DepDrop::widget([
+                            'model' => $model,
+                            'attribute' => 'area',
+                            'options' => ['placeholder' => '选择'],
+                            'type' => \kartik\widgets\DepDrop::TYPE_SELECT2,
+                            'select2Options'=>['pluginOptions'=>['allowClear'=>true]],
+                            'pluginOptions'=>[
+                                'initialize' => true,
+                                'initDepends'=>[Html::getInputId($model, 'province')],
+                                'depends'=>[Html::getInputId($model, 'city')],
+                                'url' => Url::to(['/public/region','sid'=>$model['area']]),
+                                'loadingText' => '加载中',
+                            ]
+                        ]);?>
+                    </div>
+                    <div style="clear:both;"></div>
+                </div>
 
                 <?= $form->field($model, 'real_name')->iconTextInput([
                     'class' => 'form-control c-md-10',
@@ -198,6 +214,7 @@ $this->params['title_sub'] = '添加前台用户';  // 在\yii\base\View中有$p
                 ]) ?>
 
             </div>
+
         </div>
         <?= $form->errorSummary($model) ?>
         <div class="form-actions row">

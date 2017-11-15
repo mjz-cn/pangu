@@ -93,8 +93,6 @@ class ActiveUserForm extends Model
             $ratioLog->status = ActiveUserRatioLog::STATUS_CHECKING;
             $ratioLog->create_time = $now;
             $ratioLog->date = date('Y-m-d', $now);
-            $ratioLog->manage_tax = $jiangjin * TransactionHelper::RATIO_MANAGE_TAX;
-            $ratioLog->chongxiao = $jiangjin * TransactionHelper::RATIO_CHONGXIAO_TAX;
             $ratioLog->jiangjin = $jiangjin;
             $ratioLog->desc = '第' . $level . '层';
 

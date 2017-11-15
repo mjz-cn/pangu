@@ -19,7 +19,7 @@ use yii\widgets\Breadcrumbs;
                         ['label' => '会员资料', 'options' => ['class' => 'menu-dropdown'], 'items' => [
                             ['label' => '资料收集', 'url' => '/user/edit'],
                             ['label' => '修改密码', 'url' => '/user/reset-password'],
-                            ['label' => '收货地址', 'url' => '/user/address'],
+                            ['label' => '收货地址', 'url' => '/address/index'],
                         ]],
                         ['label' => '部门情况', 'options' => ['class' => 'menu-dropdown'], 'items' => [
                             ['label' => '会员网络', 'url' => '/user/user-tree'],

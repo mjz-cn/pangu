@@ -39,6 +39,14 @@ $columns = [
         'attribute' => 'phone',
     ],
     [
+      'header' => '加盟商层级',
+      'attribute' => 'depth',
+    ],
+    [
+            'header' => '区域',
+        'attribute' => 'detailAddress'
+    ],
+    [
         'header' => '注册时间',
         'attribute' => 'create_time',
         'format' => ['date', 'php:Y-m-d H:i']

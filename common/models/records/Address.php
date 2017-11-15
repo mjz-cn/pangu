@@ -2,6 +2,7 @@
 
 namespace common\models\records;
 
+use common\helpers\ArrayHelper;
 use Yii;
 
 /**
@@ -13,13 +14,17 @@ use Yii;
  * @property integer $city
  * @property integer $area
  * @property string $street
- * @property integer $phone
+ * @property string $name
+ * @property string $phone
  * @property integer $postcode
  *
  * @property User $user
  */
 class Address extends \yii\db\ActiveRecord
 {
+
+    const USER_ADDRESS_LIMIT = 3;
+
     /**
      * @inheritdoc
      */
@@ -34,9 +39,10 @@ class Address extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'phone'], 'required'],
-            [['user_id', 'province', 'city', 'area', 'phone', 'postcode'], 'integer'],
-            [['street'], 'string', 'max' => 60],
+            [['user_id', 'phone', 'name', 'province', 'city', 'area', 'phone', 'postcode'], 'required'],
+            [['user_id', 'province', 'city', 'area', 'postcode'], 'integer'],
+            [['street', 'name'], 'string', 'max' => 60],
+            [['phone', 'name'], 'string', 'max' => 20],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -48,13 +54,14 @@ class Address extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user_id' => 'User ID',
-            'province' => 'Province',
-            'city' => 'City',
-            'area' => 'Area',
-            'street' => 'Street',
-            'phone' => 'Phone',
-            'postcode' => 'Postcode',
+            'user_id' => '用户',
+            'province' => '省',
+            'city' => '市/县',
+            'area' => '区/县',
+            'street' => '街道',
+            'phone' => '电话',
+            'name' => '收货人姓名',
+            'postcode' => '邮编',
         ];
     }
 
@@ -64,5 +71,19 @@ class Address extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    public function getDetailAddress()
+    {
+        $regions = Region::find()->select('fullname')
+            ->where(['code' => [$this->province, $this->city, $this->area]])
+            ->orderBy('code asc')
+            ->all();
+
+        $da = '';
+        foreach ($regions as $region) {
+            $da .= $region->fullname . '/';
+        }
+        return $da . $this->street;
     }
 }

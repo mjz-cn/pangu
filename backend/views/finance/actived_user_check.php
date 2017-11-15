@@ -48,14 +48,6 @@ $columns = [
         'value' => 'jiangjin'
     ],
     [
-        'header' => '管理税',
-        'value' => 'manage_tax'
-    ],
-    [
-        'header' => '重复消费',
-        'value' => 'chongxiao'
-    ],
-    [
         'header' => '描述',
         'value' => 'desc'
     ],

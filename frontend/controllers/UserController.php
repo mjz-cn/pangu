@@ -134,8 +134,7 @@ class UserController extends BaseController
         $userModel = new NormalUser();
         $userModel->setScenario(NormalUser::SCENARIO_CREATE);
         $userModel->loadDefaultValues();
-        $userModel->referrer_id = Yii::$app->user->identity->getId();
-        $userModel->baodan_id = Yii::$app->user->identity->getBaodan()->id;
+        $userModel->broker_id = Yii::$app->user->identity->getId();
         if (Yii::$app->request->isPost) {
             /* 表单验证 */
             $data = Yii::$app->request->post($userModel->formName());

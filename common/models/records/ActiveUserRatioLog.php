@@ -14,8 +14,6 @@ use Yii;
  * @property integer $from_user_id
  * @property integer $user_id
  * @property integer $jiangjin
- * @property integer $manage_tax
- * @property integer $chongxiao
  * @property integer $from_admin_id
  * @property integer $status
  * @property string $desc
@@ -42,8 +40,8 @@ class ActiveUserRatioLog extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['from_user_id', 'user_id', 'jiangjin', 'manage_tax', 'chongxiao', 'from_admin_id', 'status', 'create_time'], 'integer'],
-            [['user_id', 'jiangjin', 'manage_tax', 'chongxiao', 'date'], 'required'],
+            [['from_user_id', 'user_id', 'jiangjin', 'from_admin_id', 'status', 'create_time'], 'integer'],
+            [['user_id', 'jiangjin', 'date'], 'required'],
             [['date'], 'safe'],
             [['desc'], 'string', 'max' => 255],
         ];
@@ -59,8 +57,6 @@ class ActiveUserRatioLog extends \yii\db\ActiveRecord
             'from_user_id' => 'From User ID',
             'user_id' => 'User ID',
             'jiangjin' => 'Jiangjin',
-            'manage_tax' => 'Manage Tax',
-            'chongxiao' => 'Chongxiao',
             'from_admin_id' => 'From Admin ID',
             'status' => '审核状态, 0 审核中， 1 通过， 2 拒绝',
             'desc' => '此次交易描述',
@@ -116,38 +112,14 @@ class ActiveUserRatioLog extends \yii\db\ActiveRecord
         $transaction->desc = $transaction->generateDesc();
         $transaction->amount = $model->jiangjin;
 
-        // 管理税
-        $tax = new TransactionLog();
-        $tax->user_id = $transaction->user_id;
-        $tax->from_user_id = $transaction->from_user_id;
-        $tax->transaction_type = TransactionHelper::TRANSACTION_MANAGE_TAX;
-        $tax->currency_type = TransactionHelper::CURRENCY_JIANGJIN;
-        $tax->amount = $model->manage_tax;
-        $tax->create_time = $transaction->create_time;
-        $tax->date = $transaction->date;
-        $tax->generateDesc();
-
-        // 重复消费
-        $chongxiao = new TransactionLog();
-        $chongxiao->user_id = $transaction->user_id;
-        $chongxiao->from_user_id = $transaction->from_user_id;
-        $chongxiao->transaction_type = TransactionHelper::TRANSACTION_CHONGXIAO_TAX;
-        $chongxiao->currency_type = TransactionHelper::CURRENCY_CHONGXIAO;
-        $chongxiao->amount = $model->chongxiao;
-        $chongxiao->create_time = $transaction->create_time;
-        $chongxiao->date = $transaction->date;
-        $chongxiao->generateDesc();
-
         $model->status = ActiveUserRatioLog::STATUS_APPROVE;
 
         $wallet = Wallet::getValidWallet($model->user_id);
-        $wallet->jiangjin += $model->jiangjin - $model->manage_tax - $model->chongxiao;
+        $wallet->jiangjin += $model->jiangjin;
         $wallet->total_jiangjin += $wallet->jiangjin;
         $dbTransaction = Yii::$app->db->beginTransaction();
         try {
             $transaction->save();
-            $tax->save();
-            $chongxiao->save();
             $model->update(false, ['status']);
             $model->update(false, ['jiangjin', 'total_jiangjin']);
 

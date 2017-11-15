@@ -40,6 +40,9 @@ use Yii;
  * @property integer $is_actived
  * @property float $reg_money
  * @property integer $reg_user_id
+ * @property integer $province
+ * @property integer $city
+ * @property integer $area
  *
  * @property Address[] $addresses
  * @property TransactionLog[] $consumeLogs
@@ -54,15 +57,18 @@ class User extends \yii\db\ActiveRecord
     const STATUS_NOT_ACTIVED = 3;
 
     const LEVEL_UNSET = 0;
-    const LEVEL_VIP = 1;
+    const LEVEL_BAIYIN = 1;
+    const LEVEL_HUANGJIN = 2;
+    const LEVEL_BAIJIN = 3;
+    const LEVEL_BAOSHI = 4;
+    const LEVEL_ZUANSHI = 5;
 
     const SCENARIO_CREATE = 'create';
     const SCENARIO_UPDATE = 'update';
 
+    // 仅用于展示当前用户在系谱图中与某个父节点的相对深度
+    public $depth;
 
-    public $password_1;
-
-    private $_baodan;
 
     /**
      * @inheritdoc
@@ -78,7 +84,9 @@ class User extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username', 'phone', 'salt', 'email', 'real_name', 'gender', 'card_id', 'bank_account', 'broker_id', 'bank_name', 'bank_username'], 'required'],
+            [['username', 'phone', 'salt', 'email', 'real_name', 'gender', 'card_id', 'bank_account', 'broker_id',
+                'province',
+                'bank_name', 'bank_username'], 'required'],
             [['role', 'reg_ip', 'last_login_time', 'last_login_ip', 'broker_id', 'referrer_id',
                 'baodan_id', 'gender', 'level', 'status', 'update_time', 'create_time', 'is_shidan',
                 'is_baned', 'is_actived', 'reg_user_id', 'qq'],
@@ -86,7 +94,7 @@ class User extends \yii\db\ActiveRecord
             [['reg_money'], 'number'],
             [['username', 'password', 'salt', 'email', 'image', 'real_name', 'bank_account', 'bank_name', 'bank_username'], 'string', 'max' => 255],
             [['phone', 'wechat'], 'string', 'max' => 15],
-            [['password_1'], 'string', 'min' => 6],
+//            [['password_1'], 'string', 'min' => 6],
             [['broker_path', 'card_id'], 'string', 'max' => 20],
             [['username'], 'unique'],
             ['broker_id', 'validateBroker'],
@@ -103,7 +111,7 @@ class User extends \yii\db\ActiveRecord
             'id' => 'ID',
             'username' => '用户名',
             'password' => '密码',
-            'password_1' => '密码',
+//            'password_1' => '密码',
             'salt' => 'Salt',
             'email' => '邮箱',
             'phone' => '电话',
@@ -215,20 +223,18 @@ class User extends \yii\db\ActiveRecord
 
     public function getLevelText()
     {
-        if ($this->level == 0) {
-            return '普通';
-        } else if ($this->level == 1) {
-            return 'VIP';
-        } else {
-            return '未知';
-        }
+        return static::getLevelArr()[$this->level];
     }
 
     public static function getLevelArr()
     {
         return [
-            static::LEVEL_UNSET => '',
-            static::LEVEL_VIP => 'VIP'
+            static::LEVEL_UNSET => '普通',
+            static::LEVEL_BAIYIN => '白银',
+            static::LEVEL_HUANGJIN => '黄金',
+            static::LEVEL_BAIJIN => '白金',
+            static::LEVEL_BAOSHI => '宝石',
+            static::LEVEL_ZUANSHI => '钻石',
         ];
     }
 
@@ -243,5 +249,19 @@ class User extends \yii\db\ActiveRecord
             return $user->username;
         }
         return null;
+    }
+
+    public function getDetailAddress()
+    {
+        $regions = Region::find()->select('fullname')
+            ->where(['code' => [$this->province, $this->city, $this->area]])
+            ->orderBy('code asc')
+            ->all();
+
+        $da = '';
+        foreach ($regions as $region) {
+            $da .= $region->fullname . '/';
+        }
+        return $da;
     }
 }

@@ -15,7 +15,6 @@ $this->params['title_sub'] = '管理用户信息';  // 在\yii\base\View中有$p
 /* 加载页面级别资源 */
 \common\assets\UserTreeAsset::register($this);
 
-// 展示树状图
 ?>
 <div class="panel">
     <div class="panel-heading">
@@ -32,33 +31,4 @@ $this->params['title_sub'] = '管理用户信息';  // 在\yii\base\View中有$p
         <!--   -->
         <div id="user-tree-container">请选择用户或者当前选择的用户没有内容</div>
     </div>
-</div>
-
-<div id="aaa11" style="display: none">
-    <table align="center" class="table table-bordered table-sm table-condensed table-node node-table-tpl">
-        <thead>
-        <tr>
-            <th colspan="3" class="node-user_name">
-            </th>
-        </tr>
-        <tr>
-            <th>层级</th>
-            <th>计划加盟商</th>
-            <th>当前已加盟</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td class="node-m1">1</td>
-            <td class="tdd">总</td>
-            <td class="node-m2">1</td>
-        </tr>
-        <tr>
-            <td class="node-m3">0.0000</td>
-            <td class="tdd">余</td>
-            <td class="node-m4">0.0000</td>
-        </tr>
-        </tbody>
-    </table>
-
 </div>

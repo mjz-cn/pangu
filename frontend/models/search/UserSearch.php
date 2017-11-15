@@ -11,8 +11,10 @@ namespace frontend\models\search;
 use common\helpers\Constants;
 use common\models\NormalUser;
 use common\models\records\User;
+use common\models\UserTree;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
+use yii\db\Query;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -36,7 +38,7 @@ class UserSearch extends \yii\base\Model
     // 查询结束时间
     public $end_time;
     // 推荐人账号
-    public $referrer_id;
+    public $broker_id;
     public $username;
 
     /**
@@ -45,8 +47,9 @@ class UserSearch extends \yii\base\Model
     public function rules()
     {
         return [
-            [['user_id', 'status', 'referrer_id', 'username'], 'integer'],
-            [['start_time', 'end_time'], 'date', 'format' => 'php:Y-m-d']
+            [['user_id', 'status', 'broker_id'], 'integer'],
+            [['start_time', 'end_time'], 'date', 'format' => 'php:Y-m-d'],
+            [['username'], 'string']
         ];
     }
 
@@ -56,7 +59,7 @@ class UserSearch extends \yii\base\Model
             'status' => '状态',
             'user_id' => '用户账号',
             'username' => '用户账号',
-            'referrer_id' => '推荐人账号',
+            'broker_id' => '领路老师账号',
             'start_time' => '起始时间',
             'end_time' => '结束时间',
         ];
@@ -69,7 +72,15 @@ class UserSearch extends \yii\base\Model
 
     public function search($params)
     {
-        $query = NormalUser::find();
+        $node = UserTree::findOne(['user_id' => \Yii::$app->user->getId()]);
+
+        if ($node == null) {
+            $query = UserTree::find();
+            $this->addError('*', 'empty query');
+        } else {
+            $query = $node->children(\Yii::$app->params['user_tree_depth']);
+        }
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
@@ -80,45 +91,26 @@ class UserSearch extends \yii\base\Model
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
             $query->where('0=1');
             return $dataProvider;
         }
 
-        $query->from(NormalUser::tableName());
+        $rootDepth = $node->depth;
+        $query->select("u.*, (depth - $rootDepth) as depth");
 
-        $query->andFilterWhere(['broker_id' => \Yii::$app->user->getId()])
-            ->andFilterWhere(['username' => $this->username]);
-        $query->andFilterWhere(['between', 'create_time', strtotime($this->start_time), strtotime($this->end_time . ' +1 day')]);
+        $query->from(UserTree::tableName());
+        $query->innerJoin(User::tableName() . ' u', 'u.id=user_id');
 
+        $query->andFilterWhere(['broker_id' => $this->broker_id])
+            ->andFilterWhere(['username' => $this->username])
+            ->andFilterWhere(['between', 'create_time', strtotime($this->start_time),
+                strtotime($this->end_time . ' +1 day')]);
+
+
+        $query->orderBy('depth asc, create_time desc');
+
+        // 返回的model为user，方便前端处理
+        $query->modelClass = NormalUser::className();
         return $dataProvider;
-    }
-
-    /**
-     * 获取推荐的所有会员
-     * @param $query ActiveQuery
-     */
-    private function getReferrerQuery($query)
-    {
-        $query->andWhere(['referrer_id' => \Yii::$app->user->identity->getId()]);
-    }
-
-    /**
-     * 获取报单中心的所有会员，仅在当前用户已开通报单中心才可以
-     * @param $query ActiveQuery
-     */
-    private function getBaodanMembers($query)
-    {
-        $baodanModel = \Yii::$app->user->identity->getBaodan();
-
-        if ($baodanModel == null) {
-            return;
-        }
-
-        $query->andWhere([
-            'baodan_id' => $baodanModel->id,
-            'is_actived' => $this->status == static::STATUS_ACTIVED ?
-                Constants::NUMBER_TRUE : Constants::NUMBER_FALSE
-        ]);
     }
 }

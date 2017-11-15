@@ -40,6 +40,14 @@
     padding: 1px;
 }
 
+.table-user-tree thead tr th {
+    font-size: 13px;
+}
+
+.table-user-tree td, .table-user-tree th {
+    font-size: 10px;
+}
+
 .Treant .collapse-switch {
     width: 26px;
     height: 17px;

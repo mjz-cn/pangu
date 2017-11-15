@@ -21,6 +21,8 @@
                     // 更新整个二叉树
                     if (resp.data !== null) {
                         updateTreeGraph(resp.data);
+                    } else {
+                        $("#user-tree-container").text('请选择用户或者当前选择的用户没有内容');
                     }
                 }
             },

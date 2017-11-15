@@ -80,9 +80,9 @@ class UserTreeSearch extends Model
         if ($currentUserId == null) {
             return null;
         }
+        $depth = \Yii::$app->params['user_tree_depth'];
         if ($this->username == \Yii::$app->user->identity->username) {
             $validUserNode = $currentUserNode;
-//            var_dump($validUserNode);
         } elseif (!empty($this->username)) {
             // 查找被查询用户的ID
             $queryUserModel = NormalUser::findOne(['username' => $this->username]);
@@ -91,12 +91,13 @@ class UserTreeSearch extends Model
             }
             // 获取被查询用户的node
             $queryUserNode = UserTree::findOne(['user_id' => $queryUserModel->id]);
-            if ($queryUserModel === null) {
+            if ($queryUserNode === null) {
                 return null;
             }
             // 被查询用户是当前用户向下两层以内的子用户
             if ($queryUserNode->isChildOf($currentUserNode) && ($queryUserNode->depth - $currentUserNode->depth) <= 2) {
                 $validUserNode = $queryUserNode;
+                $depth -= $queryUserNode->depth - $currentUserNode->depth;
             } else {
                 // 判断被查询用户是否是当前用户向上两层以内的子用户
                 $parentNode = $currentUserNode->parents(2)->one();
@@ -109,7 +110,7 @@ class UserTreeSearch extends Model
             }
         }
         if ($validUserNode !== null) {
-            return $this->basicSearch($validUserNode, 2);
+            return $this->basicSearch($validUserNode, $depth);
         }
         return null;
     }
@@ -139,7 +140,7 @@ class UserTreeSearch extends Model
                 'level_data' => $childData[1]
             ]),
             'HTMLid' => 'user_tree_node_' . $rootUserNode->id,
-            'children' => $childData[0]
+            'children' => empty($childData) ? [] : $childData[0]
         ];
     }
 
@@ -201,7 +202,7 @@ class UserTreeSearch extends Model
         $html = <<<HTML
         <div>用户账号：%s</div>%s
 HTML;
-        $tableData = '<table align="center" class="table-user-tree table table-hover table-striped">
+        $tableData = '<table align="center" class="table table-user-tree table-hover table-striped">
         <thead>
         <tr>
             <th>层级</th>

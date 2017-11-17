@@ -32,9 +32,12 @@ $columns = [
         'value' => 'amount'
     ],
     [
-        'header' => '实发金额',
+        'header' => '是否被冻结',
+        'format' => 'raw',
         'value' => function ($model) {
-            return number_format($model->amount * (1 - TransactionHelper::RATIO_EXCHANGE_TAX), 2);
+            $is_baned = $model->user->is_baned == \common\helpers\Constants::NUMBER_TRUE;
+            return Html::tag('span', $is_baned ? '冻结' : '正常',
+                ['class' => 'text-' . ($is_baned ? 'danger' : 'info')]);
         }
     ],
     [

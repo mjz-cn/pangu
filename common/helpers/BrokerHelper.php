@@ -15,9 +15,6 @@ use common\models\UserTree;
 class BrokerHelper
 {
 
-    // 管理奖最高追溯的层数
-    CONST REVENUE_UP_LEVEL = 5;
-
     /**
      * 验证用户是否能成为领路老师
      *
@@ -29,7 +26,13 @@ class BrokerHelper
         // 判断用户是否存在
         $model = NormalUser::findOne(['id' => $userId]);
         if (empty($model)) {
-            return ['status' => 0, 'msg' => '用户不存在'];
+            return ['status' => 0, 'msg' => '领路老师不存在'];
+        }
+        if ($model->is_baned) {
+            return ['status' => 0, 'msg' => '领路老师已被冻结'];
+        }
+        if (!$model->is_actived) {
+            return ['status' => 0, 'msg' => '领路老师尚未激活'];
         }
         // 判断用户是否已经有八个子节点存在
         $node = UserTree::findOne(['user_id' => $userId]);

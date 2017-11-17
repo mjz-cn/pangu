@@ -42,5 +42,7 @@ return [
     'reg_money' => 10000,
     // 一个用户可以形成三层子节点
     'user_tree_depth' => 3,
-    'user_tree_ratio' => [1 => 0.15, 2 => 0.06, 3 => 0.04]
+    'user_tree_ratio' => [1 => 0.15, 2 => 0.06, 3 => 0.04],
+    // 默认领路老师
+    'default_broker_id' => 1
 ];

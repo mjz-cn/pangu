@@ -32,12 +32,21 @@ $columns = [
         'value' => 'fromUser.real_name'
     ],
     [
-        'header' => '接收奖金用户账号',
+        'header' => '推荐人账号',
         'value' => 'user.username'
     ],
     [
-        'header' => '接收奖金用户姓名',
+        'header' => '推荐人姓名',
         'value' => 'user.username'
+    ],
+    [
+        'header' => '推荐人是否被冻结',
+        'format' => 'raw',
+        'value' => function ($model) {
+            $is_baned = $model->user->is_baned == \common\helpers\Constants::NUMBER_TRUE;
+            return Html::tag('span', $is_baned ? '冻结' : '正常',
+                ['class' => 'text-' . ($is_baned ? 'danger' : 'info')]);
+        }
     ],
     [
         'header' => '奖金',

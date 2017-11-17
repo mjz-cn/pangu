@@ -45,29 +45,15 @@ $columns = [
         'header' => '领路老师审核状态',
         'value' => 'baodanStatusText'
     ],
-//    [
-//        'header' => '报单中心审核状态',
-//        'format' => 'raw',
-//        'value' => function ($model) {
-//            if ($model->baodan_status != RechargeLog::STATUS_CHECKING) {
-//                return $model->baodanStatusText;
-//            }
-//            $btn1 = Html::a('通过', ['check', 'r_id' => $model->id, 'r_status' => RechargeLog::STATUS_APPROVE], [
-//                'title' => Yii::t('app', '通过申请'),
-//                'class' => 'btn btn-xs btn-danger',
-//                'data-method' => 'post',
-//                'data-confirm' => '确定通过吗?'
-//            ]);
-//            $btn2 = Html::a('拒绝', ['check', 'r_id' => $model->id, 'r_status' => RechargeLog::STATUS_REJECT], [
-//                'title' => Yii::t('app', '拒绝申请'),
-//                'class' => 'btn btn-xs btn-info',
-//                'data-method' => 'post',
-//                'data-confirm' => '确定拒绝吗?'
-//
-//            ]);
-//            return $btn1 . $btn2;
-//        }
-//    ],
+    [
+        'header' => '是否被冻结',
+        'format' => 'raw',
+        'value' => function ($model) {
+            $is_baned = $model->user->is_baned == \common\helpers\Constants::NUMBER_TRUE;
+            return Html::tag('span', $is_baned ? '冻结' : '正常',
+                ['class' => 'text-' . ($is_baned ? 'danger' : 'info')]);
+        }
+    ],
     [
         'header' => '公司财务审核状态',
         'format' => 'raw',

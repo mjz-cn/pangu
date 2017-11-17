@@ -104,7 +104,7 @@ class User extends \yii\db\ActiveRecord
             [['reg_money'], 'number'],
             [['username', 'password', 'salt', 'email', 'image', 'real_name', 'bank_account', 'bank_name', 'bank_username'], 'string', 'max' => 255],
             [['phone', 'wechat'], 'string', 'max' => 15],
-//            [['password_1'], 'string', 'min' => 6],
+            [['password'], 'string', 'min' => 6, 'max' => 25],
             [['broker_path', 'card_id'], 'string', 'max' => 20],
             [['username'], 'unique'],
             ['broker_id', 'validateBroker'],

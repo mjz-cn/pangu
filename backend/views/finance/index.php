@@ -18,32 +18,16 @@ if ($searchModel->detail_type == $searchModel::DETAIL_TYPE_ALL) {
             'value' => 'date'
         ],
         [
-            'label' => '推荐奖',
-            'value' => 'referrer_revenue'
+            'label' => '一级奖金',
+            'value' => 'bd_revenue_1'
         ],
         [
-            'label' => '运营奖',
-            'value' => 'bd_revenue'
+            'label' => '二级奖金',
+            'value' => 'bd_revenue_2'
         ],
         [
-            'label' => '拓展奖',
-            'value' => 'bd_1_revenue'
-        ],
-        [
-            'label' => '月底薪',
-            'defaultValue' => '0'
-        ],
-        [
-            'label' => '报单佣金',
-            'defaultValue' => '0'
-        ],
-        [
-            'label' => '扣税',
-            'value' => 'manage_tax'
-        ],
-        [
-            'label' => '重复消费',
-            'value' => 'chongxiao_tax'
+            'label' => '三级奖金',
+            'value' => 'bd_revenue_3'
         ],
         [
             'label' => '实发奖金',
@@ -90,32 +74,16 @@ if ($searchModel->detail_type == $searchModel::DETAIL_TYPE_ALL) {
             'value' => 'real_name'
         ],
         [
-            'label' => '推荐奖',
-            'value' => 'referrer_revenue'
+            'label' => '一级奖金',
+            'value' => 'bd_revenue_1'
         ],
         [
-            'label' => '运营奖',
-            'value' => 'bd_revenue'
+            'label' => '二级奖金',
+            'value' => 'bd_revenue_2'
         ],
         [
-            'label' => '拓展奖',
-            'value' => 'bd_1_revenue'
-        ],
-        [
-            'label' => '月底薪',
-            'defaultValue' => '0'
-        ],
-        [
-            'label' => '报单佣金',
-            'defaultValue' => '0'
-        ],
-        [
-            'label' => '扣税',
-            'value' => 'manage_tax'
-        ],
-        [
-            'label' => '重复消费',
-            'value' => 'chongxiao_tax'
+            'label' => '三级奖金',
+            'value' => 'bd_revenue_3'
         ],
         [
             'label' => '实发奖金',

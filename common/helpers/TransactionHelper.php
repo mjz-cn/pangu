@@ -45,9 +45,9 @@ class TransactionHelper
     // 推荐提成奖 15%
     const TRANSACTION_REFERRER_REVENUE = 2;
     // 系谱图左右子节点第一次平衡奖 35%
-    const TRANSACTION_BD_REVENUE = 3;
+    const TRANSACTION_BD_REVENUE_1 = 3;
     // 系谱图左右树平衡奖 10%
-    const TRANSACTION_BD_REVENUE_1 = 4;
+    const TRANSACTION_BD_REVENUE_2 = 4;
     // 所得奖金，扣除 10% 作为重复消费税，7.5%作为管理税
     const TRANSACTION_MANAGE_TAX = 5;
     const TRANSACTION_CHONGXIAO_TAX = 6;
@@ -59,12 +59,15 @@ class TransactionHelper
     const TRANSACTION_TRANSFER_OUT = 9;
     const TRANSACTION_JIANGJIN_TO_DIANZIBI = 10;
     const TRANSACTION_RECHARGE = 11;
+    const TRANSACTION_BD_REVENUE_3 = 12;
+    // 系谱图左右树平衡奖 10%
 
     public static $TRANSACTION_TYPE_ARR = [
         TransactionHelper::TRANSACTION_ADMIN => "来自管理员",
         TransactionHelper::TRANSACTION_REFERRER_REVENUE => "推荐提成",
-        TransactionHelper::TRANSACTION_BD_REVENUE => "拓展奖",
-        TransactionHelper::TRANSACTION_BD_REVENUE_1 => "管理奖",
+        TransactionHelper::TRANSACTION_BD_REVENUE_1 => "一级推荐奖金",
+        TransactionHelper::TRANSACTION_BD_REVENUE_2 => "二级推荐奖金",
+        TransactionHelper::TRANSACTION_BD_REVENUE_3 => "三级推荐奖金",
         TransactionHelper::TRANSACTION_MANAGE_TAX => "管理税",
         TransactionHelper::TRANSACTION_CHONGXIAO_TAX => "重复消费",
         TransactionHelper::TRANSACTION_EXCHANGE => "提现税",

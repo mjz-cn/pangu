@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 ?>
 
 <?php $form = ActiveForm::begin([
-//    'action' => [],
+    'action' => [Yii::$app->request->pathInfo],
     'method' => 'get',
     'options' => [
         //'class'=>"form-inline",
@@ -45,6 +45,7 @@ use yii\widgets\ActiveForm;
     <div class="col-md-4">
 
         <?php echo '<label class="control-label">时间范围</label>';
+
         echo DatePicker::widget([
             'model' => $model,
             'attribute' => 'start_time',
@@ -65,7 +66,7 @@ use yii\widgets\ActiveForm;
     <div class="col-md-2">
         <div class="form-group" style="margin-top: 24px;">
             <?= Html::submitButton('搜索', ['class' => 'btn btn-primary']) ?>
-            <?= Html::resetButton('重置', ['class' => 'btn btn-default']) ?>
+            <?= Html::a('重置', [Yii::$app->request->pathInfo],['class' => 'btn btn-default']) ?>
         </div>
     </div>
 </div>

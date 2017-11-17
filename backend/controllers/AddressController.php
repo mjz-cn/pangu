@@ -6,6 +6,7 @@ use common\controllers\BaseController;
 use Yii;
 use common\models\records\Address;
 use common\models\search\AddressSearch;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -24,9 +25,11 @@ class AddressController extends BaseController
         $searchModel = new AddressSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
+        return $this->render('@common/views/address/index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'showSearchModel' => true,
+            'showCreateBtn' => true
         ]);
     }
 
@@ -51,13 +54,17 @@ class AddressController extends BaseController
     {
         $model = new Address();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+        if ($model->load(Yii::$app->request->post())) {
+            $cnt = Address::find()->where(['user_id' => $model->user_id])->count();
+            if ($cnt >= Address::USER_ADDRESS_LIMIT) {
+                $model->addError('user_id', '一个用户收货地址只能有三个');
+            } else if ($model->save()) {
+                return $this->redirect(['index']);
+            }
         }
+        return $this->render('@common/views/address/create', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -71,9 +78,9 @@ class AddressController extends BaseController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index', 'id' => $model->id]);
         } else {
-            return $this->render('update', [
+            return $this->render('@common/views/address/update', [
                 'model' => $model,
             ]);
         }

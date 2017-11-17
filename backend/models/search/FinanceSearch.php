@@ -115,11 +115,9 @@ class FinanceSearch extends Model
     {
         $query = new Query();
 
-        $query->select(new Expression('date, sum(if (transaction_type=2, `amount`, 0)) as referrer_revenue, 
-                    sum(if (transaction_type=3, amount, 0)) as bd_revenue,
-                    sum(if (transaction_type=4, amount, 0)) as bd_1_revenue,
-                    sum(if (transaction_type=5, amount, 0)) as manage_tax,
-                    sum(if (transaction_type=6, amount, 0)) as chongxiao_tax'))
+        $query->select(new Expression('date,  sum(if (transaction_type=3, amount, 0)) as bd_revenue_1,
+                    sum(if (transaction_type=4, amount, 0)) as bd_revenue_2,
+                    sum(if (transaction_type=12, amount, 0)) as bd_revenue_3'))
             ->from(TransactionLog::tableName())
             ->andFilterWhere(['between', 'date', $this->start_time, $this->end_time])
             ->groupBy('date')
@@ -133,11 +131,9 @@ class FinanceSearch extends Model
         $query = new Query();
 
         $query->select(new Expression('date, user_id, user.username as username, user.real_name as real_name,
-                    sum(if (transaction_type=2, `amount`, 0)) as referrer_revenue, 
-                    sum(if (transaction_type=3, amount, 0)) as bd_revenue,
-                    sum(if (transaction_type=4, amount, 0)) as bd_1_revenue,
-                    sum(if (transaction_type=5, amount, 0)) as manage_tax,
-                    sum(if (transaction_type=6, amount, 0)) as chongxiao_tax'))
+                    sum(if (transaction_type=3, amount, 0)) as bd_revenue_1,
+                    sum(if (transaction_type=4, amount, 0)) as bd_revenue_2,
+                    sum(if (transaction_type=12, amount, 0)) as bd_revenue_3'))
             ->from(TransactionLog::tableName())
             ->innerJoin(User::tableName() . ' user', 'user.id=user_id')
             ->andFilterWhere(['between', 'date', $this->start_time, $this->end_time])

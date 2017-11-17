@@ -34,6 +34,23 @@ $this->params['title_sub'] = '添加前台用户';  // 在\yii\base\View中有$p
             ]
         ]); ?>
 
+        <?= $form->field($model, "user_id")->widget(Select2::classname(), [
+            'data' => [],
+            'options' => ['placeholder' => '选择用户'],
+            'pluginOptions' => [
+                'allowClear' => true,
+                'minimumInputLength' => 2,
+                'dataType' => 'json',
+                'ajax' => [
+                    'url' => \yii\helpers\Url::toRoute('/user/search'),
+                    'delay' => 250,
+                    'data' => new JsExpression('function(params) { return {user_name:params.term}; }'),
+                    'processResults' => new JsExpression('function(data, params) {return {results: data};}'),
+                ],
+                'templateResult' => new JsExpression('function(user) { return user.username; }'),
+                'templateSelection' => new JsExpression('function (user) { return user.username; }'),
+            ],
+        ], ['class' => 'c-md-3']); ?>
 
         <?= $form->field($model, 'password')->iconTextInput([
             'class' => 'form-control c-md-3',

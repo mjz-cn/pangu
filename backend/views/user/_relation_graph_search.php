@@ -42,7 +42,7 @@ use yii\widgets\ActiveForm;
         <div class="form-group" style="margin-top: 24px;">
         <?= Html::submitButton('确定', ['class' => 'btn btn-primary ajax-get-relation',
             'target-form'=>'form-user-tree-search']) ?>
-        <?= Html::resetButton('重置', ['class' => 'btn btn-default']) ?>
+        <?= Html::a('重置', [Yii::$app->request->pathInfo],['class' => 'btn btn-default']) ?>
         </div>
     </div>
 </div>

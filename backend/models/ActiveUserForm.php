@@ -80,11 +80,11 @@ class ActiveUserForm extends Model
         // 一级分成
         $now = time();
         foreach ($parentNodes as $parentNode) {
-            $level = $userNode->depth - $parentNode->depth;
-            if (!isset(Yii::$app->params['user_tree_ratio'][$level])) {
+            $depth = $userNode->depth - $parentNode->depth;
+            if (!isset(Yii::$app->params['user_tree_ratio'][$depth])) {
                 continue;
             }
-            $ratio = Yii::$app->params['user_tree_ratio'][$level];
+            $ratio = Yii::$app->params['user_tree_ratio'][$depth];
             $jiangjin = $model->reg_money * $ratio;
 
             $ratioLog = new ActiveUserRatioLog();
@@ -94,7 +94,8 @@ class ActiveUserForm extends Model
             $ratioLog->create_time = $now;
             $ratioLog->date = date('Y-m-d', $now);
             $ratioLog->jiangjin = $jiangjin;
-            $ratioLog->desc = '第' . $level . '层';
+            $ratioLog->depth_type = $depth;
+            $ratioLog->desc = '第' . $depth . '层';
 
             $ratioLogArr[] = $ratioLog;
         }
@@ -115,57 +116,6 @@ class ActiveUserForm extends Model
         }
 
         return true;
-    }
-
-    /**
-     * 对注册资金进行分成
-     *
-     * @param $userModel User
-     */
-    private function shareRegMoney($userModel)
-    {
-        $now = time();
-        $date = date('Ymd', $now);
-        if (empty($userModel->referrer_id)) {
-            // 推荐奖
-            TransactionHelper::saveRevenueTransaction(
-                $userModel->id,
-                $userModel->referrer_id,
-                $userModel->reg_money,
-                $now,
-                TransactionHelper::TRANSACTION_REFERRER_REVENUE);
-        }
-
-        // 一个节点的出现，最多只能产生一个平衡奖
-        // 检查是否有左兄弟节点
-        $userTreeNode = UserTree::findOne(['user_id' => $userModel->id]);
-        $prevNode = $userTreeNode->prev()->one();
-
-        if (empty($prevNode)) {
-            // 检查整颗树中达到平衡的子树, 管理奖
-            for ($i = 2; $i < BrokerHelper::REVENUE_UP_LEVEL; $i++) {
-                $parent = $userTreeNode->parents(i)->one();
-                $children = $parent->children($i)->all();
-                if (count($children) == 2) {
-                    TransactionHelper::saveRevenueTransaction(
-                        $userModel->id,
-                        $userModel->referrer_id,
-                        $userModel->reg_money,
-                        $now,
-                        TransactionHelper::TRANSACTION_BD_REVENUE);
-                    break;
-                }
-            }
-
-        } else {
-            // 拓展奖, 左边有兄弟节点，说明第一次达到平衡，给节点人，增加奖金
-            TransactionHelper::saveRevenueTransaction(
-                $userModel->id,
-                $userModel->referrer_id,
-                $userModel->reg_money,
-                $now,
-                TransactionHelper::TRANSACTION_BD_REVENUE_1);
-        }
     }
 
     private function findUser()

@@ -39,11 +39,11 @@ $columns = [
         'attribute' => 'phone',
     ],
     [
-      'header' => '加盟商层级',
-      'attribute' => 'depth',
+        'header' => '加盟商层级',
+        'attribute' => 'depth',
     ],
     [
-            'header' => '区域',
+        'header' => '区域',
         'attribute' => 'detailAddress'
     ],
     [

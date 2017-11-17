@@ -32,15 +32,11 @@ $columns = [
         'value' => 'fromUser.real_name'
     ],
     [
-        'header' => '注册资金',
-        'value' => 'fromUser.reg_money'
-    ],
-    [
-        'header' => '用户账号',
+        'header' => '接收奖金用户账号',
         'value' => 'user.username'
     ],
     [
-        'header' => '用户账号姓名',
+        'header' => '接收奖金用户姓名',
         'value' => 'user.username'
     ],
     [

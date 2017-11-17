@@ -41,7 +41,7 @@ class RechargeLogSearch extends Model
     public function attributeLabels()
     {
         return [
-            'baodan_status' => '上级报单中心审核状态',
+            'baodan_status' => '领路老师审核状态',
             'status' => '公司财务审核状态',
             'user_id' => '用户账号',
             'start_time' => '起始时间',

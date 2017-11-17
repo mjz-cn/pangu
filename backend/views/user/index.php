@@ -18,6 +18,16 @@ $this->params['title_sub'] = '管理用户信息';  // 在\yii\base\View中有$p
 if ($searchModel->is_actived) {
     $columns = [
         [
+            'header' => '领路老师账号',
+            'value' => 'broker.username',
+            'defaultValue' => '-'
+        ],
+        [
+            'header' => '领路老师账号',
+            'value' => 'broker.username',
+            'defaultValue' => '-'
+        ],
+        [
             'header' => '会员账号',
             'attribute' => 'username',
         ],
@@ -34,23 +44,18 @@ if ($searchModel->is_actived) {
             'attribute' => 'reg_money'
         ],
         [
-            'header' => '领路老师账号',
-            'value' => 'broker.username',
-            'defaultValue' => '-'
-        ],
-        [
             'header' => '电话',
             'value' => 'phone',
             'defaultValue' => '-'
         ],
         [
-            'header' => '是否实单',
+            'header' => '是否有效',
             'format' => 'raw',
             'value' => function ($model) {
                 if ($model->is_shidan == Constants::NUMBER_TRUE) {
-                    return "实单";
+                    return "有效";
                 } else {
-                    return Html::tag("span", '空单', ['style' => 'color:red']);
+                    return Html::tag("span", '无效', ['style' => 'color:red']);
                 }
             }
         ],
@@ -65,19 +70,14 @@ if ($searchModel->is_actived) {
             'defaultValue' => '0.00'
         ],
         [
-            'header' => '电子币余额',
-            'value' => 'wallet.dianzi',
+            'header' => '电子币累积',
+            'value' => 'wallet.total_dianzi',
             'defaultValue' => '0.00'
         ],
         [
-            'header' => '管理级别',
-            'defaultValue' => '暂无',
-        ],
-        [
-            'header' => '谁开通',
-            'value' => function ($model, $key, $index, $column) {
-                return "管理员";
-            }
+            'header' => '电子币余额',
+            'value' => 'wallet.dianzi',
+            'defaultValue' => '0.00'
         ],
         [
             'header' => '注册时间',
@@ -88,7 +88,6 @@ if ($searchModel->is_actived) {
             'class' => 'yii\grid\ActionColumn',
             'header' => '操作',
             'template' => '{edit} {ban}',
-            //'options' => ['width' => '200px;'],
             'buttons' => [
                 'edit' => function ($url, $model, $key) {
                     return Html::a('更新', ['edit', 'id' => $key], [
@@ -116,8 +115,13 @@ if ($searchModel->is_actived) {
 } else {
     $columns = [
         [
-            'label' => '推荐人账号',
-            'value' => 'referrer.username',
+            'header' => '领路老师账号',
+            'value' => 'broker.username',
+            'defaultValue' => '-'
+        ],
+        [
+            'header' => '领路老师账号',
+            'value' => 'broker.username',
             'defaultValue' => '-'
         ],
         [
@@ -154,14 +158,14 @@ if ($searchModel->is_actived) {
                     ]);
                 },
                 'b1' => function ($url, $model, $key) {
-                    return Html::a('开通空单', ['active', 'user_id' => $model->id, 'active_status' => 0], [
+                    return Html::a('无效', ['active', 'user_id' => $model->id, 'active_status' => 0], [
                         'class' => 'btn btn-xs btn-info ajax-post',
                         'hide-data' => 'true',
                         'data-confirm' => "您确定要为此用户开通空单吗？"
                     ]);
                 },
                 'b2' => function ($url, $model, $key) {
-                    return Html::a('开通实单', ['active', 'user_id' => $model->id, 'active_status' => 1], [
+                    return Html::a('有效', ['active', 'user_id' => $model->id, 'active_status' => 1], [
                         'class' => 'btn btn-xs btn-warning ajax-post',
                         'hide-data' => 'true',
                         'data-confirm' => "您确定要为此用户开通实单吗？"

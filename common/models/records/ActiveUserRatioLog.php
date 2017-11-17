@@ -6,6 +6,7 @@ use common\helpers\TransactionHelper;
 use common\models\NormalUser;
 use http\Exception;
 use Yii;
+use yii\web\BadRequestHttpException;
 
 /**
  * This is the model class for table "{{%active_user_ratio_log}}".
@@ -18,6 +19,7 @@ use Yii;
  * @property integer $status
  * @property string $desc
  * @property integer $create_time
+ * @property integer $depth_type
  * @property string $date
  */
 class ActiveUserRatioLog extends \yii\db\ActiveRecord
@@ -40,7 +42,7 @@ class ActiveUserRatioLog extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['from_user_id', 'user_id', 'jiangjin', 'from_admin_id', 'status', 'create_time'], 'integer'],
+            [['from_user_id', 'user_id', 'jiangjin', 'from_admin_id', 'status', 'create_time', 'depth_type'], 'integer'],
             [['user_id', 'jiangjin', 'date'], 'required'],
             [['date'], 'safe'],
             [['desc'], 'string', 'max' => 255],
@@ -95,33 +97,57 @@ class ActiveUserRatioLog extends \yii\db\ActiveRecord
         ];
     }
 
+    private function getTransactionType() {
+        $type = null;
+        switch ($this->depth_type) {
+            case 1:
+                $type = TransactionHelper::TRANSACTION_BD_REVENUE_1;
+                break;
+            case 2:
+                $type = TransactionHelper::TRANSACTION_BD_REVENUE_2;
+                break;
+            case 3:
+                $type = TransactionHelper::TRANSACTION_BD_REVENUE_3;
+                break;
+            default:
+                throw new BadRequestHttpException('此深度下不能产生奖金');
+        }
+        return $type;
+    }
+
     // 生成交易记录并保存到数据库
     public function convertToTransactions()
     {
+        $model = $this;
+        if ($this->status == static::STATUS_REJECT) {
+            $model->update(false, ['status']);
+            return;
+        }
+
         $now = time();
         $date = date('Y-m-d', $now);
-        $model = $this;
+
+
         // 奖金
         $transaction = new TransactionLog();
         $transaction->user_id = $model->user_id;
         $transaction->from_user_id = $model->from_user_id;
-        $transaction->transaction_type = TransactionHelper::TRANSACTION_BD_REVENUE;
+        $transaction->transaction_type = $model->getTransactionType();
         $transaction->currency_type = TransactionHelper::CURRENCY_JIANGJIN;
         $transaction->create_time = $now;
         $transaction->date = $date;
         $transaction->desc = $transaction->generateDesc();
         $transaction->amount = $model->jiangjin;
 
-        $model->status = ActiveUserRatioLog::STATUS_APPROVE;
-
         $wallet = Wallet::getValidWallet($model->user_id);
         $wallet->jiangjin += $model->jiangjin;
         $wallet->total_jiangjin += $wallet->jiangjin;
+
         $dbTransaction = Yii::$app->db->beginTransaction();
         try {
             $transaction->save();
             $model->update(false, ['status']);
-            $model->update(false, ['jiangjin', 'total_jiangjin']);
+            $wallet->update(false, ['jiangjin', 'total_jiangjin']);
 
             $dbTransaction->commit();
         } catch (Exception $e) {

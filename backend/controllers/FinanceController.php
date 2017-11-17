@@ -140,8 +140,6 @@ class FinanceController extends BaseController
     // 审核本月要结账的激活用户奖金
     public function actionActivedUserCheck()
     {
-        // 激活用户后生成一个表单，表单记录要发放的奖金
-
         // form
         if (Yii::$app->request->isPost) {
             // id, status

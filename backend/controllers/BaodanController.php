@@ -77,12 +77,6 @@ class BaodanController extends BaseController
         ]);
     }
 
-    // 审核报单中心
-    public function actionCheck($id)
-    {
-        return $this->redirect($this->getForward());
-    }
-
     // 审核重复报单
     public function actionRepeatCheck()
     {
@@ -103,7 +97,7 @@ class BaodanController extends BaseController
                     throw new BadRequestHttpException('状态错误');
                 }
             } else {
-                throw new NotFoundHttpException('有效重复报单记录未找到');
+                throw new NotFoundHttpException('有效报单记录未找到, 请检查此次报单是否经过领路老师审核');
             }
             return $this->redirect($this->getForward());
         }

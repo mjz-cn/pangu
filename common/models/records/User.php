@@ -3,6 +3,7 @@
 namespace common\models\records;
 
 use common\helpers\BrokerHelper;
+use common\models\UserTree;
 use Yii;
 
 /**
@@ -66,6 +67,15 @@ class User extends \yii\db\ActiveRecord
     const SCENARIO_CREATE = 'create';
     const SCENARIO_UPDATE = 'update';
 
+    const LEVEL_ARR = [
+        User::LEVEL_UNSET => '普通',
+        User::LEVEL_BAIYIN => '白银',
+        User::LEVEL_HUANGJIN => '黄金',
+        User::LEVEL_BAIJIN => '白金',
+        User::LEVEL_BAOSHI => '宝石',
+        User::LEVEL_ZUANSHI => '钻石',
+    ];
+
     // 仅用于展示当前用户在系谱图中与某个父节点的相对深度
     public $depth;
 
@@ -89,7 +99,7 @@ class User extends \yii\db\ActiveRecord
                 'bank_name', 'bank_username'], 'required'],
             [['role', 'reg_ip', 'last_login_time', 'last_login_ip', 'broker_id', 'referrer_id',
                 'baodan_id', 'gender', 'level', 'status', 'update_time', 'create_time', 'is_shidan',
-                'is_baned', 'is_actived', 'reg_user_id', 'qq'],
+                'is_baned', 'is_actived', 'reg_user_id', 'qq', 'city', 'area'],
                 'integer'],
             [['reg_money'], 'number'],
             [['username', 'password', 'salt', 'email', 'image', 'real_name', 'bank_account', 'bank_name', 'bank_username'], 'string', 'max' => 255],
@@ -142,7 +152,8 @@ class User extends \yii\db\ActiveRecord
         ];
     }
 
-    public function validateBroker() {
+    public function validateBroker()
+    {
         $result = BrokerHelper::validateBroker($this->broker_id);
         if ($result['status'] !== 1) {
             $this->addError('broker_id', $result['msg']);
@@ -223,19 +234,12 @@ class User extends \yii\db\ActiveRecord
 
     public function getLevelText()
     {
-        return static::getLevelArr()[$this->level];
+        return static::LEVEL_ARR[$this->level];
     }
 
     public static function getLevelArr()
     {
-        return [
-            static::LEVEL_UNSET => '普通',
-            static::LEVEL_BAIYIN => '白银',
-            static::LEVEL_HUANGJIN => '黄金',
-            static::LEVEL_BAIJIN => '白金',
-            static::LEVEL_BAOSHI => '宝石',
-            static::LEVEL_ZUANSHI => '钻石',
-        ];
+        return static::LEVEL_ARR;
     }
 
     /**
@@ -243,7 +247,8 @@ class User extends \yii\db\ActiveRecord
      * @param $id
      * @return null|string
      */
-    public static function getUsername($id) {
+    public static function getUsername($id)
+    {
         $user = static::findOne(['id' => $id]);
         if ($user) {
             return $user->username;
@@ -263,5 +268,46 @@ class User extends \yii\db\ActiveRecord
             $da .= $region->fullname . '/';
         }
         return $da;
+    }
+
+    public function getChild()
+    {
+        $data = [
+            'level1' => 0,
+            'level2' => 0,
+            'level3' => 0,
+            'total' => 0,
+        ];
+        $node = UserTree::findOne(['user_id' => $this->id]);
+        if (empty($node)) {
+            return $data;
+        }
+        $children = $node->children(Yii::$app->params['user_tree_depth'])->all();
+        if ($children == null || empty($children)) {
+            return $data;
+        }
+        foreach ($children as $child) {
+            $data['level' . ($child->depth - $node->depth)] += 1;
+            $data['total'] += 1;
+        }
+        return $data;
+    }
+
+    /**
+     * 白银级别：0-5席加盟人员
+     * 黄金级别：6-10席加盟人员
+     * 白金级别：11-20席加盟人员
+     * 宝石级别：21-40席加盟人员
+     * 钻石级别：大于40席加盟人员
+     *
+     * @param $num integer 人数
+     * @return int 加盟商人数对应的级别
+     */
+    public static function countLevel($num)
+    {
+        //
+        $i = intval(($num - 1) / 5) + 1;
+
+        return $i > 8 ? 8 : $i;
     }
 }

@@ -88,7 +88,7 @@ use yii\web\JsExpression;
     <div class="col-md-2">
         <div class="form-group" style="margin-top: 24px;">
             <?= Html::submitButton('搜索', ['class' => 'btn blue']) ?>
-            <?= Html::resetButton('重置', ['class' => 'btn btn-default']) ?>
+            <?= Html::a('重置', [Yii::$app->request->pathInfo],['class' => 'btn btn-default']) ?>
         </div>
     </div>
 </div>

@@ -14,38 +14,28 @@ $this->params['title_sub'] = '管理用户信息';  // 在\yii\base\View中有$p
 
 $columns = [
     [
-        'label' => '推荐人账号',
-        'value' => function ($model, $key, $index, $column) {
-            $referrer = $model->referrer;
-            if (empty($referrer)) {
-                return '-';
-            } else {
-                return $referrer->username;
-            }
-        },
+        'label' => '领路老师账号',
+        'value' => 'broker.username',
+    ],
+    [
+        'label' => '领路老师姓名',
+        'value' => 'broker.real_name',
     ],
     [
         'label' => '会员账号',
         'value' => 'username'
     ],
     [
-        'label' => '真实姓名',
-        'value' => 'real_name',
-    ],
-    [
         'label' => '会员姓名',
         'value' => 'real_name',
-    ],
-    [
-        'label' => '会员级别',
-        'value' => 'level',
     ],
     [
         'label' => '注册金额',
         'value' => 'reg_money',
     ],
     [
-        'label' => '福利级别',
+        'label' => '会员级别',
+        'value' => 'levelText',
         'defaultValue' => '暂无'
     ],
     [
@@ -53,31 +43,35 @@ $columns = [
         'value' => 'phone',
     ],
     [
-        'label' => '是否实单',
+        'label' => '是否有效',
         'format' => 'raw',
         'value' => function ($model) {
             if ($model->is_shidan == Constants::NUMBER_TRUE) {
-                return "实单";
+                return "有效";
             } else {
-                return Html::tag("span", '空单', ['style' => 'color:red']);
+                return Html::tag("span", '无效', ['style' => 'color:red']);
             }
         }
     ],
     [
-        'label' => '奖金余额',
+        'header' => '奖金累积',
+        'value' => 'wallet.total_jiangjin',
+        'defaultValue' => '0.00'
+    ],
+    [
+        'header' => '奖金余额',
         'value' => 'wallet.jiangjin',
+        'defaultValue' => '0.00'
     ],
     [
-        'label' => '电子币余额',
+        'header' => '电子币累积',
+        'value' => 'wallet.total_dianzi',
+        'defaultValue' => '0.00'
+    ],
+    [
+        'header' => '电子币余额',
         'value' => 'wallet.dianzi',
-    ],
-    [
-        'label' => '消费币余额',
-        'value' => 'wallet.chongxiao',
-    ],
-    [
-        'label' => '谁开通',
-        'value' => 'real_name',
+        'defaultValue' => '0.00'
     ],
     [
         'label' => '开通日期',

@@ -7,12 +7,14 @@ use backend\models\RelationGraphForm;
 use common\controllers\BaseController;
 use common\models\NormalUser;
 use common\models\records\User;
+use common\models\ResetPasswordForm;
 use common\models\search\NormalUserSearch;
 use common\helpers\Constants;
 use common\models\search\UserTreeSearch;
 use common\models\UserTree;
 use Yii;
 use yii\helpers\Url;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -283,7 +285,7 @@ class UserController extends BaseController
         if ($model) {
             return $model;
         } else {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('用户未找到');
         }
     }
 
@@ -292,9 +294,57 @@ class UserController extends BaseController
         return $this->asJson(User::findOne(['username' => $username]) !== null);
     }
 
-    public function actionValidateBroker($user_id)
+    /**
+     * 用户级别审核
+     */
+    public function actionLevelCheck()
     {
-        // 验证此用户下是否已经有两个节点人
+        if (Yii::$app->request->isPost) {
+            // id, status
+            $model = NormalUser::findOne(['id' => Yii::$app->request->post('uid')]);
+            $level = Yii::$app->request->post('level');
+            if ($model) {
+                $levelArr = $model::getLevelArr();
+                if (isset($levelArr[$level])) {
+                    $model->level = $level;
+                    $model->update(false, ['level']);
+                } else {
+                    throw new BadRequestHttpException('状态错误');
+                }
+            } else {
+                throw new NotFoundHttpException('有效重复报单记录未找到');
+            }
+            return $this->redirect($this->getForward());
+        }
+        $this->setForward();
+        // 展示一个用户当前共有多少个代理商，一级，二级，三级
+        $this->setForward();
 
+        $searchModel = new NormalUserSearch();
+        $searchModel->is_actived = Constants::NUMBER_TRUE;
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        return $this->render('user_level_check', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /*
+     * 重置当前登录用户密码
+     */
+    public function actionResetPassword()
+    {
+        $form = new ResetPasswordForm();
+
+        if (Yii::$app->request->isPost && $form->load(Yii::$app->request->post())) {
+            if ($form->resetPassword()) {
+                $this->success('重置密码成功', $this->getForward());
+            } else {
+                $this->error('重置密码失败');
+            }
+        }
+        return $this->render('reset_password', [
+            'model' => $form
+        ]);
     }
 }

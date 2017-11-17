@@ -37,7 +37,7 @@ $columns = [
         'template' => '{update} {delete}',
         'buttons' => [
             'update' => function ($url, $model, $key) {
-                return Html::a('编辑', ['edit', 'id' => $key], [
+                return Html::a('编辑', ['update', 'id' => $key], [
                     'title' => Yii::t('app', '更新'),
                     'class' => 'btn btn-xs btn-default'
                 ]);
@@ -51,7 +51,7 @@ $columns = [
     <div class="portlet-title">
         <div class="caption">
             <i class="icon-settings font-dark"></i>
-            <span class="caption-subject font-dark sbold uppercase">管理信息</span>
+            <span class="caption-subject font-dark sbold uppercase">管理收货地址</span>
         </div>
         <div class="actions">
             <div class="btn-group btn-group-devided">
@@ -62,7 +62,7 @@ $columns = [
     <div class="portlet-body">
         <?php \yii\widgets\Pjax::begin(['options' => ['id' => 'pjax-container']]); ?>
         <div>
-            <?php if (!empty($showSearchModel)) $this->render('_search', ['model' => $searchModel]); ?>
+            <?php if (!empty($showSearchModel)) echo $this->render('_search', ['model' => $searchModel]); ?>
         </div>
         <div class="table-container">
             <form class="ids">

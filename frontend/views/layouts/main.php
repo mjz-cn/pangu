@@ -31,7 +31,7 @@ IeAsset::register($this);
         var nav_url = undefined;
     </script>
 </head>
-<body class="page-container-bg-solid page-md" style=" background:#eff3f8;">
+<body class="page-container-bg-solid page-md" style="background:#fff;">
 <?php $this->beginBody() ?>
 
 
@@ -42,7 +42,7 @@ IeAsset::register($this);
         <div class="page-head">
         </div>
         <div class="page-content-wrapper">
-            <div class="page-content">
+            <div class="page-content" style="background:#fff;">
                 <div class="container">
                     <?= $content ?>
                 </div>

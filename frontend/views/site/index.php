@@ -8,22 +8,23 @@ $this->title = '商务会员管理系统';
 $broker = Yii::$app->user->identity->broker;
 
 ?>
-<div class="site-index row">
+<div class="site-index row" style="margin-top: 50px">
 
-    <div class="col-md-3" style="margin-top: 50px">
+    <div class="col-md-3" >
         <ul class="list-group">
-            <li class="list-group-item">用户: <?= Yii::$app->user->identity->username ?></li>
-            <li class="list-group-item ">奖金币: <?= number_format($wallet->jiangjin) ?></li>
-            <li class="list-group-item">电子币: <?= number_format($wallet->dianzi) ?></li>
-            <li class="list-group-item">累计收入: <?= number_format($wallet->total_jiangjin) ?></li>
-            <li class="list-group-item">领路老师账号: <?= $broker === null ? '-' : $broker->username; ?></li>
-            <li class="list-group-item">领路老师姓名: <?= $broker === null ? '-' : $broker->real_name ?></li>
+            <li class="list-group-item site-li">用户: <?= Yii::$app->user->identity->username ?></li>
+            <li class="list-group-item site-li">奖金币: <?= number_format($wallet->jiangjin) ?></li>
+            <li class="list-group-item site-li">累计奖金币收入: <?= number_format($wallet->total_jiangjin) ?></li>
+            <li class="list-group-item site-li">电子币: <?= number_format($wallet->dianzi) ?></li>
+            <li class="list-group-item site-li">累计电子币: <?= number_format($wallet->total_dianzi) ?></li>
+            <li class="list-group-item site-li">领路老师账号: <?= $broker === null ? '-' : $broker->username; ?></li>
+            <li class="list-group-item site-li">领路老师姓名: <?= $broker === null ? '-' : $broker->real_name ?></li>
         </ul>
     </div>
 
     <div class="col-md-9">
-        <div class="jumbotron">
-            <h1>欢迎!</h1>
+        <div class="">
+            <img src="<?= Yii::getAlias('@web/images/1.gif') ?>" width="823" height="409">
         </div>
 
         <div class="body-content">
@@ -35,3 +36,12 @@ $broker = Yii::$app->user->identity->broker;
         </div>
     </div>
 </div>
+<style>
+    .site-li {
+        border: none;
+        padding: 12px 9px 14px 46px;
+        background-repeat: no-repeat;
+        background-color: transparent;
+        background-image: url(<?=Yii::getAlias('@web/images/red.gif')?>);
+    }
+</style>

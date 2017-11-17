@@ -31,10 +31,6 @@ $columns = [
         'attribute' => 'real_name',
     ],
     [
-        'header' => '会员当前级别',
-        'attribute' => 'levelText',
-    ],
-    [
         'header' => '电话',
         'value' => 'phone',
         'defaultValue' => '-'
@@ -72,7 +68,7 @@ $columns = [
     ],
     [
         'header' => '当前级别',
-        'value' => 'levelText'
+        'attribute' => 'levelText',
     ],
     [
         'header' => '建议级别',

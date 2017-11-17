@@ -98,8 +98,10 @@ class TransactionHelper
      */
     public static function generateDescWithModel($model)
     {
-        return self::generateDesc($model->from_user_id, $model->user_id, $model->transaction_type, $model->currency_type,
-            $model->amount);
+        $desc = '交易类型: ' . static::$TRANSACTION_TYPE_ARR[$model->transaction_type];
+        $desc .= '<br>交易对象: ' . $model->fromUser->username;
+
+        return $desc;
     }
 
     public static function generateDesc($from_user_id, $user_id, $transaction_type, $currency_type, $amount)

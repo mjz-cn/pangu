@@ -128,6 +128,7 @@ if ($searchModel->detail_type == $searchModel::DETAIL_TYPE_ALL) {
         ],
         [
             'header' => '金额说明',
+            'format' => 'raw',
             'value' => 'desc',
         ],
         [

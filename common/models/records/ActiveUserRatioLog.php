@@ -110,7 +110,8 @@ class ActiveUserRatioLog extends \yii\db\ActiveRecord
                 $type = TransactionHelper::TRANSACTION_BD_REVENUE_3;
                 break;
             default:
-                throw new BadRequestHttpException('此深度下不能产生奖金');
+                throw new BadRequestHttpException('被激活用户与接收奖金用户在系谱图中的高度必须在三层以内, 
+                当前深度为'.$this->depth_type);
         }
         return $type;
     }

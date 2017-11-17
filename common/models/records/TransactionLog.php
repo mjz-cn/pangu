@@ -106,5 +106,6 @@ class TransactionLog extends \yii\db\ActiveRecord
 
     public function generateDesc() {
         $this->desc = TransactionHelper::generateDescWithModel($this);
+        return $this->desc;
     }
 }

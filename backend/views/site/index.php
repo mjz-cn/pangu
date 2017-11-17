@@ -2,7 +2,7 @@
 
 /* @var $this yii\web\View */
 
-$this->title = '';
+$this->title = '首页';
 ?>
 <div class="site-index">
 

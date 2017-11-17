@@ -24,7 +24,7 @@ IeAsset::register($this);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
+    <title><?= Html::encode($this->title) ?>  | 佰草兰德 </title>
     <?php $this->head() ?>
     <script language="JavaScript">
         var BaseUrl = '<?=Yii::getAlias('@web')?>';

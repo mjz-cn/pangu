@@ -28,7 +28,7 @@ $this->beginPage();
     <!-- BEGIN HEAD -->
     <head>
         <meta charset="utf-8" />
-        <title><?= Html::encode($this->title) ?> | Yii2通用后台 by huanglongfei.cn</title>
+        <title><?= Html::encode($this->title) ?> | 佰草兰德后台管理系统</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="" name="description" />

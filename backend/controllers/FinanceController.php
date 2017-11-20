@@ -12,7 +12,6 @@ namespace backend\controllers;
 use backend\models\search\ActivedUserRatioLogSearch;
 use backend\models\search\BonusSearch;
 use backend\models\search\ExchangeSearch;
-use backend\models\search\CheckInfoSearch;
 use backend\models\search\FinanceSearch;
 use backend\models\search\JiangjinToDianziSearch;
 use backend\models\search\ManageHuobiSearch;

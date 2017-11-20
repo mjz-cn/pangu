@@ -66,6 +66,8 @@ class JiangjinToDianziSearch extends Model
         $query->andFilterWhere(['between', 'date', $this->start_time, $this->end_time])
             ->andFilterWhere(['user_id' => $this->user_id]);
 
+        $query->orderBy(['create_time' => SORT_DESC]);
+
         return $dataProvider;
     }
 

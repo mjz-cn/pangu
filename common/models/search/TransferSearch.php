@@ -14,6 +14,11 @@ use common\models\records\TransactionLog;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
+/**
+ * 转账记录搜索
+ * Class TransferSearch
+ * @package common\models\search
+ */
 class TransferSearch extends Model
 {
     public $user_id;
@@ -61,6 +66,7 @@ class TransferSearch extends Model
             ->andFilterWhere(['between', 'date', $this->start_time, $this->end_time])
             ->andFilterWhere(['or', ['user_id' => $this->user_id], ['from_user_id' => $this->user_id]]);
 
+        $query->orderBy('create_time desc');
         return $dataProvider;
     }
 

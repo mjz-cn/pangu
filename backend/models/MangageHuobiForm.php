@@ -70,8 +70,6 @@ class MangageHuobiForm extends Model
                 throw new BadRequestHttpException('无效的货币类型');
         }
 
-        $wallet->amount += $transactionLog->amount;
-
         $dbTransaction = Yii::$app->db->beginTransaction();
         try {
             $wallet->update();

@@ -35,13 +35,11 @@ $columns = [
     ],
     [
         'label' => '操作金额',
-        'value' => function ($model) {
-            $val = $model->amount / 100;
-            return number_format($val, 2);
-        }
+        'value' => 'amount'
     ],
     [
         'label' => '备注',
+        'format' => 'raw',
         'value' => 'desc'
     ],
     [

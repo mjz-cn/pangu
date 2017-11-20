@@ -72,6 +72,9 @@ class BonusSearch extends NormalUser
         $query->andFilterWhere(['id' => $this->user_id]);
         $query->andFilterWhere(['between', 'create_time', strtotime($this->start_time), strtotime($this->end_time . ' +1 day')]);
 
+        $query->orderBy([
+            'create_time' => SORT_DESC
+        ]);
         return $dataProvider;
     }
 }

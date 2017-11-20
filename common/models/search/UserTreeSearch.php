@@ -15,6 +15,11 @@ use common\models\UserTree;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
+/**
+ * 用户系谱图搜索
+ * Class UserTreeSearch
+ * @package common\models\search
+ */
 class UserTreeSearch extends Model
 {
     const ORIENTATION_UP = 0;

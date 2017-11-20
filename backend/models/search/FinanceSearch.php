@@ -121,7 +121,7 @@ class FinanceSearch extends Model
             ->from(TransactionLog::tableName())
             ->andFilterWhere(['between', 'date', $this->start_time, $this->end_time])
             ->groupBy('date')
-            ->orderBy('date desc');
+            ->orderBy(TransactionLog::tableName() .  '.create_time desc');
 
         return $query;
     }
@@ -138,7 +138,7 @@ class FinanceSearch extends Model
             ->innerJoin(User::tableName() . ' user', 'user.id=user_id')
             ->andFilterWhere(['between', 'date', $this->start_time, $this->end_time])
             ->groupBy('user_id, date')
-            ->orderBy('date desc');
+            ->orderBy(TransactionLog::tableName() . '.create_time desc');
 
         $query->andFilterWhere(['user_id' => $this->user_id]);
 

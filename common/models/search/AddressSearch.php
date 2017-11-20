@@ -70,6 +70,10 @@ class AddressSearch extends Address
 
         $query->andFilterWhere(['like', 'street', $this->street]);
 
+        $query->orderBy([
+           'user_id' => SORT_DESC
+        ]);
+
         return $dataProvider;
     }
 }

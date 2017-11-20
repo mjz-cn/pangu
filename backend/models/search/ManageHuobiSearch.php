@@ -9,6 +9,7 @@
 namespace backend\models\search;
 
 
+use common\helpers\TransactionHelper;
 use common\models\records\TransactionLog;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -63,6 +64,7 @@ class ManageHuobiSearch extends Model
             return $dataProvider;
         }
 
+        $query->andWhere(['transaction_type' => TransactionHelper::TRANSACTION_ADMIN]);
         $query->andFilterWhere(['user_id' => $this->user_id])
             ->andFilterWhere(['between', 'date', $this->start_time, $this->end_time]);
 

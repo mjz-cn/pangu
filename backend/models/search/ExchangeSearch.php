@@ -104,6 +104,8 @@ class ExchangeSearch extends Model
             'user_id' => $this->user_id,
         ])->andFilterWhere(['between', 'date', $this->start_time, $this->end_time]);
 
+        $query->orderBy('create_time desc');
+
         return $dataProvider;
     }
 }

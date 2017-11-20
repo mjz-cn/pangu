@@ -20,7 +20,8 @@ class ManageHuobiSearch extends Model
     // 查询结束时间
     public $end_time;
 
-    public function rules() {
+    public function rules()
+    {
         return [
             [['user_id'], 'integer'],
             [['start_time', 'end_time'], 'date', 'format' => 'php:Y-m-d']
@@ -61,6 +62,11 @@ class ManageHuobiSearch extends Model
             $query->where('0=1');
             return $dataProvider;
         }
+
+        $query->andFilterWhere(['user_id' => $this->user_id])
+            ->andFilterWhere(['between', 'date', $this->start_time, $this->end_time]);
+
+        $query->orderBy('create_time desc');
 
         return $dataProvider;
     }

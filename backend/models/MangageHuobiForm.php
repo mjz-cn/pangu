@@ -11,7 +11,11 @@ namespace backend\models;
 
 use common\helpers\TransactionHelper;
 use common\models\records\TransactionLog;
+use common\models\records\Wallet;
+use http\Exception;
+use Yii;
 use yii\base\Model;
+use yii\web\BadRequestHttpException;
 
 class MangageHuobiForm extends Model
 {
@@ -40,27 +44,50 @@ class MangageHuobiForm extends Model
         ];
     }
 
-    public function save() {
-        $model = new TransactionLog();
+    public function save()
+    {
+        // 生成交易记录
+        $transactionLog = new TransactionLog();
+        $transactionLog->user_id = $this->user_id;
+        $transactionLog->amount = $this->amount;
+        $transactionLog->currency_type = $this->huobi_type;
+        $transactionLog->transaction_type = TransactionHelper::TRANSACTION_ADMIN;
+        $transactionLog->create_time = time();
+        $transactionLog->date = date('Ymd');
+        $transactionLog->from_admin_id = \Yii::$app->user->identity->getId();
+        $transactionLog->desc = $this->generateDesc();
 
-        $model->user_id = $this->user_id;
-        $model->amount = $this->amount;
-        $model->currency_type = $this->huobi_type;
-        $model->transaction_type = TransactionHelper::TRANSACTION_ADMIN;
-        $model->create_time = time();
-        $model->date = date('Ymd');
-        $model->from_admin_id = \Yii::$app->user->identity->getId();
-        $model->desc = $this->generateDesc();
+        // 修改钱包中数据
+        $wallet = Wallet::getValidWallet($transactionLog->user_id);
+        switch ($this->huobi_type) {
+            case TransactionHelper::CURRENCY_JIANGJIN:
+                $wallet->addJiangjin($transactionLog->amount);
+                break;
+            case TransactionHelper::CURRENCY_DIANZIBI:
+                $wallet->addDianzi($transactionLog->amount);
+                break;
+            default:
+                throw new BadRequestHttpException('无效的货币类型');
+        }
 
-        if ($model->save()) {
+        $wallet->amount += $transactionLog->amount;
+
+        $dbTransaction = Yii::$app->db->beginTransaction();
+        try {
+            $wallet->update();
+            $transactionLog->save();
+
+            $dbTransaction->commit();
             return true;
-        } else {
-            $this->addErrors($model->errors);
+        } catch (Exception $e) {
+            $dbTransaction->rollback();
+            Yii::error('manage huobi save occur an error');
             return false;
         }
     }
 
-    private function generateDesc() {
+    private function generateDesc()
+    {
         $fmt = " %s会员%s; ";
         if (!empty($this->desc)) {
             $fmt .= $this->desc;

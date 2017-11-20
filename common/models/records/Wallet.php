@@ -55,6 +55,10 @@ class Wallet extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @param $userId
+     * @return Wallet
+     */
     public static function getValidWallet($userId) {
         $wallet = static::findOne(['user_id' => $userId]);
         if (empty($wallet)) {
@@ -68,6 +72,15 @@ class Wallet extends \yii\db\ActiveRecord
 
     public function addJiangjin($amount) {
         $this->jiangjin += $amount;
-        $this->total_jiangjin += $amount;
+        if ($amount > 0) {
+            $this->total_jiangjin += $amount;
+        }
+    }
+
+    public function addDianzi($amount) {
+        $this->dianzi += $amount;
+        if ($amount > 0) {
+            $this->total_dianzi += $amount;
+        }
     }
 }

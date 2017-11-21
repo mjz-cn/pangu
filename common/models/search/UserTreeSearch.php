@@ -160,19 +160,16 @@ class UserTreeSearch extends Model
     {
         $data = [];
         if ($depth == 0) {
-            return [];
+            return [[], []];
         }
         // 获取子节点
         $children = $rootNode->children(1)->all();
         if ($children === null || empty($children)) {
-            return [];
+            return [[], []];
         }
         $cntArr = [];
         foreach ($children as $child) {
             $childData = $this->traverse($child, $depth - 1);
-            if (empty($childData)) {
-                $childData = [[], []];
-            }
             $data[] = [
                 'text' => [
                     'user_id' => $child->user_id,

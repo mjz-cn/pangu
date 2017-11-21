@@ -23,6 +23,16 @@ $this->params['title_sub'] = '管理用户信息';
 
 $columns = [
     [
+        'header' => '领路老师账号',
+        'value' => 'user.broker.username',
+        'defaultValue' => '－'
+    ],
+    [
+        'header' => '领路老师姓名',
+        'value' => 'user.broker.real_name',
+        'defaultValue' => '－'
+    ],
+    [
         'header' => '报单用户账号',
         'value' => 'user.username'
     ],

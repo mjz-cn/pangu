@@ -51,7 +51,7 @@ $columns = [
     <div class="portlet-title">
         <div class="caption">
             <i class="icon-settings font-dark"></i>
-            <span class="caption-subject font-dark sbold uppercase">管理收货地址</span>
+            <span class="caption-subject font-dark sbold uppercase">管理收货地址 (最多有三个收货地址)</span>
         </div>
         <div class="actions">
             <div class="btn-group btn-group-devided">

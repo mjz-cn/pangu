@@ -37,12 +37,11 @@ $columns = [
     <div class="portlet-title">
         <div class="caption">
             <i class="icon-settings font-dark"></i>
-            <span class="caption-subject font-dark sbold uppercase">管理信息</span>
+            <span class="caption-subject font-dark sbold uppercase">收货地址</span>
         </div>
         <div class="actions">
             <div class="btn-group btn-group-devided">
                 <?php if (!empty($showCreateBtn)) echo Html::a('添加', ['create'],['class'=>'btn btn-default']) ?>
-                <?=Html::a('删除', ['delete'],['class'=>'btn red ajax-post confirm','target-form'=>'ids'])?>
             </div>
         </div>
     </div>

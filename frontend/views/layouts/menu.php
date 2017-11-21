@@ -59,17 +59,22 @@ use yii\widgets\Breadcrumbs;
                     ]];
 
                     $pathInfo = Yii::$app->request->pathInfo;
+                    if ($pathInfo == '') {
+                        $pathInfo = 'site/index';
+                    }
 
                     foreach ($menuItems as &$menuItem) {
                         if (!empty($menuItem['items'])) {
                             foreach ($menuItem['items'] as $item) {
                                 if (strpos($item['url'], $pathInfo) !== false) {
                                     $menuItem['options']['class'] .= ' active opened';
+                                    break;
                                 }
                             }
                         } elseif (!empty($menuItem['url'])) {
                             if (strpos($menuItem['url'][0], $pathInfo) !== false) {
                                 $menuItem['options']['class'] .= ' active';
+                                break;
                             }
                         }
                     }

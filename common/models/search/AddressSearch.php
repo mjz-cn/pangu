@@ -41,6 +41,22 @@ class AddressSearch extends Address
      */
     public function search($params)
     {
+        $this->load($params);
+
+        return $this->basicSearch();
+    }
+
+    public function frontendSearch($params)
+    {
+        $this->load($params);
+
+        $this->user_id = Yii::$app->user->getId();
+
+        return $this->basicSearch();
+    }
+
+    protected function basicSearch()
+    {
         $query = Address::find();
 
         // add conditions that should always apply here
@@ -49,7 +65,6 @@ class AddressSearch extends Address
             'query' => $query,
         ]);
 
-        $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -71,7 +86,7 @@ class AddressSearch extends Address
         $query->andFilterWhere(['like', 'street', $this->street]);
 
         $query->orderBy([
-           'user_id' => SORT_DESC
+            'user_id' => SORT_DESC
         ]);
 
         return $dataProvider;

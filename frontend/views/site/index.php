@@ -8,9 +8,9 @@ $this->title = '商务会员管理系统';
 $broker = Yii::$app->user->identity->broker;
 
 ?>
-<div class="site-index row" style="margin-top: 50px">
+<div class="site-index row" style="margin-top: 50px;min-width: 500px">
 
-    <div class="col-md-3" >
+    <div class="col-md-3 col-sm-4 col-xs-6" >
         <ul class="list-group">
             <li class="list-group-item site-li">用户: <?= Yii::$app->user->identity->username ?></li>
             <li class="list-group-item site-li">奖金币: <?= number_format($wallet->jiangjin) ?></li>
@@ -22,9 +22,9 @@ $broker = Yii::$app->user->identity->broker;
         </ul>
     </div>
 
-    <div class="col-md-9">
+    <div class="col-md-9 col-sm-8 col-xs-6">
         <div class="">
-            <img src="<?= Yii::getAlias('@web/images/1.gif') ?>" width="823" height="409">
+            <img src="<?= Yii::getAlias('@web/images/1.gif') ?>">
         </div>
 
         <div class="body-content">

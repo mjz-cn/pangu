@@ -8,7 +8,28 @@ use yii\widgets\Breadcrumbs;
 
 ?>
 
+<style>
+    @media (min-width: 991px) {
+        .page-header-top {
+            display: none;
+        }
+    }
+    @media (max-width: 991px) {
+        .page-header .page-header-top .menu-toggler {
+            float: left;
+            background-image: none;
+            margin: 5px;
+            width: 45px;
+            height: 19px;
+        }
+    }
+</style>
 <div class="page-header">
+    <div class="page-header-top" style="background-color: #e2e7ea;margin-bottom: 15px">
+        <div class="container">
+            <a href="javascript:;" class="menu-toggler">菜单栏</a>
+        </div>
+    </div>
     <div class="page-header-menu">
         <div class="container">
             <div class="hor-menu">
@@ -16,12 +37,12 @@ use yii\widgets\Breadcrumbs;
                 if (!Yii::$app->user->isGuest) {
                     $menuItems = [
                         ['label' => '首页', 'options' => ['class' => 'menu-dropdown'], 'url' => ['/site/index']],
-                        ['label' => '会员资料', 'options' => ['class' => 'menu-dropdown'], 'items' => [
+                        ['label' => '会员资料', 'options' => ['class' => 'menu-dropdown mega-menu-dropdown'], 'items' => [
                             ['label' => '资料收集', 'url' => '/user/edit'],
                             ['label' => '修改密码', 'url' => '/user/reset-password'],
                             ['label' => '收货地址', 'url' => '/address/index'],
                         ]],
-                        ['label' => '部门情况', 'options' => ['class' => 'menu-dropdown'], 'items' => [
+                        ['label' => '部门情况', 'options' => ['class' => 'menu-dropdown mega-menu-dropdown'], 'items' => [
                             ['label' => '会员网络', 'url' => '/user/user-tree'],
                             ['label' => '审核报单', 'url' => '/baodan/check'],
                             ['label' => '注册会员', 'url' => '/user/add'],
@@ -29,7 +50,7 @@ use yii\widgets\Breadcrumbs;
                         ]]
                     ];
 
-                    $menuItems[] = ['label' => '财务管理', 'options' => ['class' => 'menu-dropdown'], 'items' => [
+                    $menuItems[] = ['label' => '财务管理', 'options' => ['class' => 'menu-dropdown mega-menu-dropdown'], 'items' => [
                         ['label' => '奖金明细', 'url' => '/finance/index'],
                         ['label' => '帐户提现', 'url' => '/finance/exchange'],
                         ['label' => '帐户转账', 'url' => '/finance/transfer'],
@@ -37,6 +58,21 @@ use yii\widgets\Breadcrumbs;
                         ['label' => '重复报单', 'url' => '/finance/recharge']
                     ]];
 
+                    $pathInfo = Yii::$app->request->pathInfo;
+
+                    foreach ($menuItems as &$menuItem) {
+                        if (!empty($menuItem['items'])) {
+                            foreach ($menuItem['items'] as $item) {
+                                if (strpos($item['url'], $pathInfo) !== false) {
+                                    $menuItem['options']['class'] .= ' active opened';
+                                }
+                            }
+                        } elseif (!empty($menuItem['url'])) {
+                            if (strpos($menuItem['url'][0], $pathInfo) !== false) {
+                                $menuItem['options']['class'] .= ' active';
+                            }
+                        }
+                    }
                     echo Nav::widget([
                         'options' => ['class' => 'navbar-nav'],
                         'items' => $menuItems,

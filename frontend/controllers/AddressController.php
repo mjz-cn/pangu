@@ -21,7 +21,7 @@ class AddressController extends BaseController
     public function actionIndex()
     {
         $searchModel = new AddressSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->frontendSearch(Yii::$app->request->queryParams);
 
         $cnt = Address::find()->where(['user_id' => Yii::$app->user->getId()])->count();
 
